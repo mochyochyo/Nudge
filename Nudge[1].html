@@ -1,0 +1,2656 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#4f8f63" />
+  <meta name="description" content="5分だけ始めることで、今日の一歩を後押しするブラウザアプリ Nudge" />
+  <title>Nudge｜5分だけ始める</title>
+  
+  
+<style>
+:root {
+  --bg: #f5f7f2;
+  --surface: #ffffff;
+  --surface-soft: #edf4eb;
+  --surface-strong: #dcebd8;
+  --text: #203126;
+  --muted: #66736a;
+  --primary: #4f8f63;
+  --primary-dark: #346f49;
+  --accent: #e6a33d;
+  --danger: #b64646;
+  --border: #dce4dc;
+  --shadow: 0 18px 50px rgba(44, 73, 52, 0.10);
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --nav-height: 78px;
+  font-family: Inter, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% -10%, rgba(173, 211, 165, 0.45), transparent 35%),
+    var(--bg);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(79, 143, 99, 0.30);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  width: min(1040px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding-bottom: calc(var(--nav-height) + 28px);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px 12px;
+  background: rgba(245, 247, 242, 0.86);
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 23px;
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand strong {
+  font-size: 20px;
+  letter-spacing: 0.02em;
+}
+
+.brand small {
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.top-stats {
+  display: flex;
+  gap: 8px;
+}
+
+.stat-chip {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.stat-chip strong {
+  font-size: 15px;
+}
+
+.stat-chip small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+main {
+  padding: 14px 24px 30px;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+  animation: viewIn 240ms ease;
+}
+
+@keyframes viewIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-card {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 24px;
+  align-items: center;
+  padding: 34px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(229, 241, 225, 0.95)),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary-dark);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.hero-card h1,
+.page-heading h1 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.hero-card h1 {
+  font-size: clamp(34px, 7vw, 60px);
+  letter-spacing: -0.04em;
+}
+
+.hero-card h1 span {
+  color: var(--primary);
+}
+
+.hero-copy {
+  max-width: 570px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.character-panel {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid rgba(79, 143, 99, 0.14);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.70);
+}
+
+.character-stage {
+  display: grid;
+  place-items: center;
+  min-height: 170px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 30%, transparent 31%),
+    linear-gradient(180deg, #dff0db, #f7faf3);
+}
+
+.character-emoji {
+  font-size: 86px;
+  filter: drop-shadow(0 12px 12px rgba(34, 74, 45, 0.12));
+  animation: breathe 2.8s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.03); }
+}
+
+.character-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.character-meta div {
+  display: flex;
+  gap: 7px;
+}
+
+.character-meta strong {
+  color: var(--text);
+}
+
+.progress-track {
+  height: 9px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dfe7dd;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), #8abc75);
+  transition: width 450ms ease;
+}
+
+.section-heading,
+.page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.section-heading {
+  margin: 34px 0 16px;
+}
+
+.section-heading.compact {
+  margin: 0 0 18px;
+}
+
+.section-heading h2,
+.page-heading h1,
+.settings-card h2 {
+  margin: 0;
+}
+
+.page-heading {
+  margin: 12px 0 28px;
+}
+
+.page-heading h1 {
+  font-size: clamp(34px, 7vw, 54px);
+}
+
+.page-heading p:not(.eyebrow) {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+
+.primary-button,
+.secondary-button,
+.danger-button {
+  min-height: 44px;
+  padding: 11px 17px;
+  border-radius: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+
+.primary-button {
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(79, 143, 99, 0.24);
+}
+
+.primary-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.secondary-button {
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.secondary-button:hover {
+  border-color: #aebcaf;
+  transform: translateY(-1px);
+}
+
+.danger-button {
+  border: 1px solid rgba(182, 70, 70, 0.25);
+  background: #fff6f6;
+  color: var(--danger);
+}
+
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--primary-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mission-list,
+.task-list {
+  display: grid;
+  gap: 12px;
+}
+
+.mission-card,
+.task-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 8px 28px rgba(44, 73, 52, 0.06);
+}
+
+.mission-card {
+  padding: 18px;
+  border-radius: 20px;
+}
+
+.mission-card.done {
+  opacity: 0.72;
+}
+
+.mission-card.done .mission-title {
+  text-decoration: line-through;
+}
+
+.mission-priority,
+.task-priority {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.mission-priority {
+  width: 48px;
+  height: 48px;
+}
+
+.priority-high {
+  background: #fff0ea;
+  color: #b55331;
+}
+
+.priority-medium {
+  background: #edf4eb;
+  color: var(--primary-dark);
+}
+
+.priority-low {
+  background: #eef2f5;
+  color: #5a6e7a;
+}
+
+.mission-copy {
+  min-width: 0;
+}
+
+.mission-title {
+  margin: 0;
+  font-size: 17px;
+}
+
+.mission-parent,
+.mission-meta {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.start-button {
+  min-width: 130px;
+  border: 0;
+  border-radius: 15px;
+  padding: 13px 16px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.start-button:hover {
+  background: var(--primary-dark);
+}
+
+.done-label {
+  min-width: 110px;
+  text-align: center;
+  color: var(--primary-dark);
+  font-weight: 800;
+}
+
+.empty-state {
+  padding: 38px 22px;
+  border: 1px dashed #b9c7b8;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+.empty-state span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 42px;
+}
+
+.empty-state h3 {
+  margin: 0;
+}
+
+.empty-state p {
+  margin: 8px 0 18px;
+  color: var(--muted);
+}
+
+.insight-card {
+  display: flex;
+  gap: 14px;
+  margin-top: 22px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #fff9e9;
+  border: 1px solid #f0dfac;
+}
+
+.insight-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #fff;
+  font-size: 22px;
+}
+
+.insight-card p {
+  margin: 5px 0 0;
+  color: #6d6249;
+  line-height: 1.7;
+}
+
+.task-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.filter-tabs {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 13px;
+  background: #e8eee7;
+}
+
+.filter-tab {
+  border: 0;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.filter-tab.active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 4px 12px rgba(44, 73, 52, 0.08);
+}
+
+.task-card {
+  padding: 18px;
+  border-radius: 18px;
+}
+
+.task-card.completed {
+  opacity: 0.66;
+}
+
+.task-card.completed .task-card-title {
+  text-decoration: line-through;
+}
+
+.task-priority {
+  align-self: start;
+  padding: 5px 9px;
+}
+
+.task-copy {
+  min-width: 0;
+}
+
+.task-card-title {
+  margin: 0;
+  font-size: 17px;
+}
+
+.task-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.subtask-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.subtask-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.subtask-row.completed {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.subtask-check {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface-soft);
+  color: var(--primary-dark);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.task-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.record-card {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 8px 28px rgba(44, 73, 52, 0.05);
+}
+
+.record-card span {
+  font-size: 24px;
+}
+
+.record-card strong,
+.record-card small {
+  display: block;
+}
+
+.record-card strong {
+  margin-top: 18px;
+  font-size: 30px;
+}
+
+.record-card small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.weekly-card,
+.badges-card,
+.history-card,
+.settings-card {
+  margin-top: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+}
+
+.weekly-chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  align-items: end;
+  min-height: 190px;
+}
+
+.chart-day {
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 8px;
+  align-items: end;
+  height: 180px;
+  text-align: center;
+}
+
+.chart-bar-wrap {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  height: 130px;
+}
+
+.chart-bar {
+  width: min(34px, 70%);
+  min-height: 5px;
+  border-radius: 999px 999px 8px 8px;
+  background: linear-gradient(180deg, #86b779, var(--primary));
+}
+
+.chart-value {
+  color: var(--primary-dark);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.chart-label {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.badge-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.badge {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+
+.badge.locked {
+  filter: grayscale(1);
+  opacity: 0.48;
+}
+
+.badge span {
+  font-size: 28px;
+}
+
+.badge strong,
+.badge small {
+  display: block;
+}
+
+.badge small {
+  margin-top: 3px;
+  color: var(--muted);
+}
+
+.history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-item:last-child {
+  border-bottom: 0;
+}
+
+.history-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+
+.history-item strong,
+.history-item small {
+  display: block;
+}
+
+.history-item small {
+  margin-top: 3px;
+  color: var(--muted);
+}
+
+.history-points {
+  color: var(--primary-dark);
+  font-weight: 900;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.settings-card {
+  margin-top: 0;
+}
+
+.settings-card label:not(.switch-row) {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+  font-weight: 800;
+}
+
+.settings-card select,
+.modal input,
+.modal select {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+}
+
+.settings-note,
+.danger-zone p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.switch-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 18px;
+  cursor: pointer;
+}
+
+.switch-row input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.switch-row strong,
+.switch-row small {
+  display: block;
+}
+
+.switch-row small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 50px;
+  height: 28px;
+  border-radius: 999px;
+  background: #c7d0c7;
+  transition: background 180ms ease;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+  transition: transform 180ms ease;
+}
+
+.switch-row input:checked + .switch {
+  background: var(--primary);
+}
+
+.switch-row input:checked + .switch::after {
+  transform: translateX(22px);
+}
+
+.danger-zone {
+  grid-column: 1 / -1;
+  border-color: #efd2d2;
+}
+
+.bottom-nav {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  bottom: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: min(620px, calc(100% - 28px));
+  min-height: var(--nav-height);
+  padding: 8px;
+  border: 1px solid rgba(220, 228, 220, 0.95);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 60px rgba(34, 57, 40, 0.16);
+  backdrop-filter: blur(18px);
+  transform: translateX(-50%);
+}
+
+.nav-button {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  border: 0;
+  border-radius: 17px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.nav-button span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.nav-button small {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.nav-button.active {
+  background: var(--surface-soft);
+  color: var(--primary-dark);
+}
+
+.modal {
+  width: min(560px, calc(100% - 28px));
+  max-height: calc(100vh - 28px);
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  border-radius: 26px;
+  background: var(--surface);
+  box-shadow: 0 28px 90px rgba(27, 47, 33, 0.24);
+}
+
+.modal::backdrop {
+  background: rgba(25, 36, 28, 0.50);
+  backdrop-filter: blur(5px);
+}
+
+.modal form,
+.focus-content,
+.reward-content {
+  padding: 26px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.modal label:not(.checkbox-row) {
+  display: grid;
+  gap: 7px;
+  margin-top: 18px;
+  font-weight: 800;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checkbox-row {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.checkbox-row input {
+  margin-top: 4px;
+}
+
+.checkbox-row strong,
+.checkbox-row small {
+  display: block;
+}
+
+.checkbox-row small {
+  margin-top: 4px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.breakdown-preview {
+  display: none;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--surface-soft);
+}
+
+.breakdown-preview.visible {
+  display: block;
+}
+
+.breakdown-preview strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.breakdown-preview ol {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.focus-modal,
+.reward-modal {
+  text-align: center;
+}
+
+.focus-content {
+  position: relative;
+}
+
+.focus-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
+
+.focus-content h2,
+.reward-content h2 {
+  margin: 0;
+  font-size: clamp(28px, 7vw, 42px);
+}
+
+.focus-parent {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.timer-ring {
+  position: relative;
+  width: min(300px, 76vw);
+  aspect-ratio: 1;
+  margin: 28px auto 20px;
+}
+
+.timer-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-track,
+.timer-progress {
+  fill: none;
+  stroke-width: 12;
+}
+
+.timer-track {
+  stroke: #e4ebe2;
+}
+
+.timer-progress {
+  stroke: var(--primary);
+  stroke-linecap: round;
+  stroke-dasharray: 427.26;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 500ms linear;
+}
+
+.timer-text {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+}
+
+.timer-text strong,
+.timer-text small {
+  display: block;
+}
+
+.timer-text strong {
+  font-size: clamp(44px, 12vw, 72px);
+  letter-spacing: -0.04em;
+}
+
+.timer-text small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+#focusMessage {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.focus-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.reward-burst {
+  margin: 10px 0 14px;
+  font-size: 58px;
+  animation: pop 520ms cubic-bezier(.2,.9,.3,1.4);
+}
+
+@keyframes pop {
+  from { transform: scale(.2) rotate(-10deg); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.reward-points {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin: 22px 0 10px;
+  color: var(--primary-dark);
+}
+
+.reward-points strong {
+  font-size: 62px;
+}
+
+.reward-points small {
+  color: var(--muted);
+}
+
+.reward-content p:not(.eyebrow) {
+  color: var(--muted);
+}
+
+.reward-content .primary-button {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.toast {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: 112px;
+  max-width: calc(100% - 40px);
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: #203126;
+  color: #fff;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.confetti-piece {
+  position: fixed;
+  z-index: 200;
+  top: -24px;
+  width: 10px;
+  height: 18px;
+  border-radius: 3px;
+  background: currentColor;
+  pointer-events: none;
+  animation: confettiFall 1.5s linear forwards;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translate(var(--drift), 110vh) rotate(720deg);
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 760px) {
+  main {
+    padding-inline: 16px;
+  }
+
+  .topbar {
+    padding-inline: 16px;
+  }
+
+  .hero-card {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .character-panel {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    column-gap: 14px;
+    align-items: center;
+  }
+
+  .character-stage {
+    grid-row: 1 / 4;
+    min-height: 120px;
+  }
+
+  .character-emoji {
+    font-size: 62px;
+  }
+
+  .character-meta {
+    margin-top: 0;
+  }
+
+  .progress-track {
+    align-self: start;
+  }
+
+  .record-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .badge-list {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .danger-zone {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar {
+    padding-top: 12px;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  .hero-card h1 {
+    font-size: 39px;
+  }
+
+  .section-heading,
+  .page-heading {
+    align-items: flex-start;
+  }
+
+  .page-heading {
+    flex-direction: column;
+  }
+
+  .mission-card {
+    grid-template-columns: auto 1fr;
+  }
+
+  .mission-card .start-button,
+  .mission-card .done-label {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .task-card {
+    grid-template-columns: 1fr auto;
+  }
+
+  .task-priority {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .task-copy {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .task-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .task-toolbar {
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-card,
+  .badges-card,
+  .history-card,
+  .settings-card {
+    padding: 18px;
+  }
+
+  .record-card {
+    padding: 18px;
+  }
+
+  .bottom-nav {
+    bottom: 10px;
+  }
+}
+
+
+/* Robust modal fallback for browser previews / file:// */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+.modal.open { display: block; }
+.modal.open::before {
+  content: "";
+  position: fixed;
+  inset: 50vh 50vw;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  background: rgba(25, 36, 28, 0.50);
+  backdrop-filter: blur(5px);
+  z-index: -1;
+}
+</style></head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="brand" data-view-target="home" aria-label="ホームへ">
+        <span class="brand-mark" aria-hidden="true">🌱</span>
+        <span>
+          <strong>Nudge</strong>
+          <small>5分だけ始める</small>
+        </span>
+      </button>
+
+      <div class="top-stats" aria-label="現在の記録">
+        <div class="stat-chip">
+          <span aria-hidden="true">✨</span>
+          <strong id="headerPoints">0</strong>
+          <small>pt</small>
+        </div>
+        <div class="stat-chip">
+          <span aria-hidden="true">🔥</span>
+          <strong id="headerStreak">0</strong>
+          <small>日</small>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="view-home" class="view active" aria-labelledby="homeTitle">
+        <div class="hero-card">
+          <div>
+            <p class="eyebrow" id="todayLabel"></p>
+            <h1 id="homeTitle">今日の一歩を、<br><span>5分だけ。</span></h1>
+            <p class="hero-copy">
+              やる気が出るのを待たずに、小さく始めるためのデイリーミッション。
+            </p>
+          </div>
+
+          <div class="character-panel" aria-label="育成キャラクター">
+            <div id="characterStage" class="character-stage">
+              <div id="characterEmoji" class="character-emoji" aria-hidden="true">🌱</div>
+            </div>
+            <div class="character-meta">
+              <div>
+                <span id="levelLabel">Lv.1</span>
+                <strong id="characterName">Nudgeの芽</strong>
+              </div>
+              <span id="xpText">0 / 100 XP</span>
+            </div>
+            <div class="progress-track" aria-label="次のレベルまで">
+              <div id="xpBar" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">DAILY MISSIONS</p>
+            <h2>今日やること</h2>
+          </div>
+          <button id="openAddTask" class="secondary-button">＋ 追加する</button>
+        </div>
+
+        <div id="missionList" class="mission-list" aria-live="polite"></div>
+
+        <article class="insight-card">
+          <div class="insight-icon" aria-hidden="true">💡</div>
+          <div>
+            <strong>今日のNudge</strong>
+            <p>「全部やる」ではなく、「始める」に成功しよう。5分で止めても達成です。</p>
+          </div>
+        </article>
+      </section>
+
+      <section id="view-tasks" class="view" aria-labelledby="tasksTitle">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">TASKS</p>
+            <h1 id="tasksTitle">タスク管理</h1>
+            <p>大きな課題を、小さく始められる形にします。</p>
+          </div>
+          <button id="openAddTaskTasks" class="primary-button">＋ 新しいタスク</button>
+        </div>
+
+        <div class="task-toolbar">
+          <div class="filter-tabs" role="tablist" aria-label="タスク表示">
+            <button class="filter-tab active" data-filter="active" role="tab">未完了</button>
+            <button class="filter-tab" data-filter="completed" role="tab">完了</button>
+            <button class="filter-tab" data-filter="all" role="tab">すべて</button>
+          </div>
+          <button id="sampleTasksButton" class="text-button">サンプルを追加</button>
+        </div>
+
+        <div id="taskList" class="task-list"></div>
+      </section>
+
+      <section id="view-records" class="view" aria-labelledby="recordsTitle">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">MY RECORDS</p>
+            <h1 id="recordsTitle">積み上げ記録</h1>
+            <p>比べる相手は、過去の自分です。</p>
+          </div>
+        </div>
+
+        <div class="record-grid">
+          <article class="record-card">
+            <span aria-hidden="true">✅</span>
+            <strong id="totalCompleted">0</strong>
+            <small>完了ミッション</small>
+          </article>
+          <article class="record-card">
+            <span aria-hidden="true">⏱️</span>
+            <strong id="totalMinutes">0</strong>
+            <small>集中した分数</small>
+          </article>
+          <article class="record-card">
+            <span aria-hidden="true">🔥</span>
+            <strong id="recordStreak">0</strong>
+            <small>連続日数</small>
+          </article>
+          <article class="record-card">
+            <span aria-hidden="true">🏅</span>
+            <strong id="badgeCount">0</strong>
+            <small>獲得した称号</small>
+          </article>
+        </div>
+
+        <article class="weekly-card">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">LAST 7 DAYS</p>
+              <h2>この7日間</h2>
+            </div>
+            <strong id="weeklySummary">0回</strong>
+          </div>
+          <div id="weeklyChart" class="weekly-chart" aria-label="直近7日間の達成回数"></div>
+        </article>
+
+        <article class="badges-card">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">BADGES</p>
+              <h2>称号</h2>
+            </div>
+          </div>
+          <div id="badgeList" class="badge-list"></div>
+        </article>
+
+        <article class="history-card">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">HISTORY</p>
+              <h2>最近の達成</h2>
+            </div>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </article>
+      </section>
+
+      <section id="view-settings" class="view" aria-labelledby="settingsTitle">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">SETTINGS</p>
+            <h1 id="settingsTitle">設定</h1>
+            <p>自分が始めやすい環境に調整します。</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <article class="settings-card">
+            <h2>集中時間</h2>
+            <label for="focusMinutes">1回のタイマー</label>
+            <select id="focusMinutes">
+              <option value="1">1分（試用）</option>
+              <option value="3">3分</option>
+              <option value="5">5分</option>
+              <option value="10">10分</option>
+              <option value="15">15分</option>
+              <option value="25">25分</option>
+            </select>
+            <p class="settings-note">基本は「5分だけ」。試すときは1分にもできます。</p>
+          </article>
+
+          <article class="settings-card">
+            <h2>演出</h2>
+            <label class="switch-row">
+              <span>
+                <strong>効果音</strong>
+                <small>開始・達成時に短い音を鳴らす</small>
+              </span>
+              <input id="soundToggle" type="checkbox" />
+              <span class="switch" aria-hidden="true"></span>
+            </label>
+            <label class="switch-row">
+              <span>
+                <strong>紙吹雪</strong>
+                <small>達成時に小さな演出を表示する</small>
+              </span>
+              <input id="confettiToggle" type="checkbox" />
+              <span class="switch" aria-hidden="true"></span>
+            </label>
+          </article>
+
+          <article class="settings-card danger-zone">
+            <h2>データ</h2>
+            <p>この端末のブラウザに保存されたデータを消去します。</p>
+            <button id="resetData" class="danger-button">すべてのデータを初期化</button>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="メインメニュー">
+      <button class="nav-button active" data-view-target="home">
+        <span aria-hidden="true">⌂</span>
+        <small>ホーム</small>
+      </button>
+      <button class="nav-button" data-view-target="tasks">
+        <span aria-hidden="true">☑</span>
+        <small>タスク</small>
+      </button>
+      <button class="nav-button" data-view-target="records">
+        <span aria-hidden="true">▥</span>
+        <small>記録</small>
+      </button>
+      <button class="nav-button" data-view-target="settings">
+        <span aria-hidden="true">⚙</span>
+        <small>設定</small>
+      </button>
+    </nav>
+  </div>
+
+  <div id="taskDialog" class="modal" role="dialog" aria-modal="true">
+    <form id="taskForm" method="dialog">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">NEW TASK</p>
+          <h2>新しいタスク</h2>
+        </div>
+        <button type="button" class="icon-button" data-close-dialog aria-label="閉じる">×</button>
+      </div>
+
+      <label>
+        タスク名
+        <input id="taskTitle" name="title" required maxlength="60" placeholder="例：英語のレポートを書く" />
+      </label>
+
+      <div class="form-row">
+        <label>
+          期限
+          <input id="taskDue" name="due" type="date" />
+        </label>
+        <label>
+          予想時間
+          <select id="taskEstimate" name="estimate">
+            <option value="5">5分</option>
+            <option value="15">15分</option>
+            <option value="30">30分</option>
+            <option value="60">60分</option>
+            <option value="120">120分以上</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        優先度
+        <select id="taskPriority" name="priority">
+          <option value="medium">ふつう</option>
+          <option value="high">高い</option>
+          <option value="low">低い</option>
+        </select>
+      </label>
+
+      <label class="checkbox-row">
+        <input id="autoBreakdown" type="checkbox" checked />
+        <span>
+          <strong>小さなミッションに自動分解する</strong>
+          <small>ブラウザ内のルールで、5〜15分の行動に分けます。</small>
+        </span>
+      </label>
+
+      <div id="breakdownPreview" class="breakdown-preview"></div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-button" data-close-dialog>キャンセル</button>
+        <button type="submit" class="primary-button">追加する</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="focusDialog" class="modal focus-modal" role="dialog" aria-modal="true">
+    <div class="focus-content">
+      <button id="closeFocus" class="icon-button focus-close" aria-label="集中画面を閉じる">×</button>
+      <p class="eyebrow">FOCUS MODE</p>
+      <h2 id="focusTaskTitle">5分だけ始める</h2>
+      <p id="focusParentTitle" class="focus-parent"></p>
+
+      <div class="timer-ring" role="timer" aria-live="polite">
+        <svg viewBox="0 0 160 160" aria-hidden="true">
+          <circle class="timer-track" cx="80" cy="80" r="68"></circle>
+          <circle id="timerProgress" class="timer-progress" cx="80" cy="80" r="68"></circle>
+        </svg>
+        <div class="timer-text">
+          <strong id="timerDisplay">05:00</strong>
+          <small>残り時間</small>
+        </div>
+      </div>
+
+      <p id="focusMessage">完璧にやらなくていい。始めた時点で前進です。</p>
+
+      <div class="focus-actions">
+        <button id="toggleTimer" class="secondary-button">一時停止</button>
+        <button id="completeFocus" class="primary-button">できた！</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="rewardDialog" class="modal reward-modal" role="dialog" aria-modal="true">
+    <div class="reward-content">
+      <div id="rewardBurst" class="reward-burst" aria-hidden="true">✨</div>
+      <p class="eyebrow">MISSION COMPLETE</p>
+      <h2>小さな一歩、達成！</h2>
+      <div class="reward-points">
+        <span>＋</span>
+        <strong id="rewardPoints">20</strong>
+        <small>ポイント</small>
+      </div>
+      <p id="rewardMessage">Nudgeの芽が少し成長しました。</p>
+      <button id="closeReward" class="primary-button">ホームへ戻る</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  
+<script>
+(() => {
+  "use strict";
+
+  const STORAGE_KEY = "nudge-app-v1";
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const CIRCLE_LENGTH = 2 * Math.PI * 68;
+
+  const defaultState = {
+    points: 0,
+    totalMinutes: 0,
+    history: [],
+    tasks: [],
+    settings: {
+      focusMinutes: 5,
+      sound: false,
+      confetti: true
+    }
+  };
+
+  const dom = {};
+  let state = loadState();
+  let currentFilter = "active";
+  let activeMission = null;
+  let timer = null;
+  let remainingSeconds = 0;
+  let totalTimerSeconds = 0;
+  let timerRunning = false;
+
+  document.addEventListener("DOMContentLoaded", init);
+
+  function init() {
+    cacheDom();
+    bindEvents();
+    ensureStarterTask();
+    renderAll();
+    registerServiceWorker();
+  }
+
+  function cacheDom() {
+    [
+      "headerPoints", "headerStreak", "todayLabel", "characterStage", "characterEmoji",
+      "levelLabel", "characterName", "xpText", "xpBar", "missionList", "taskList",
+      "totalCompleted", "totalMinutes", "recordStreak", "badgeCount", "weeklySummary",
+      "weeklyChart", "badgeList", "historyList", "focusMinutes", "soundToggle",
+      "confettiToggle", "taskDialog", "taskForm", "taskTitle", "taskDue",
+      "taskEstimate", "taskPriority", "autoBreakdown", "breakdownPreview",
+      "focusDialog", "focusTaskTitle", "focusParentTitle", "timerDisplay",
+      "timerProgress", "focusMessage", "toggleTimer", "completeFocus", "rewardDialog",
+      "rewardPoints", "rewardMessage", "toast", "rewardBurst"
+    ].forEach(id => dom[id] = document.getElementById(id));
+  }
+
+  function bindEvents() {
+    document.querySelectorAll("[data-view-target]").forEach(button => {
+      button.addEventListener("click", () => switchView(button.dataset.viewTarget));
+    });
+
+    document.querySelectorAll("#openAddTask, #openAddTaskTasks").forEach(button => {
+      button.addEventListener("click", openTaskDialog);
+    });
+
+    document.querySelectorAll("[data-close-dialog]").forEach(button => {
+      button.addEventListener("click", () => closeModal(button.closest(".modal")));
+    });
+
+    document.querySelectorAll(".filter-tab").forEach(button => {
+      button.addEventListener("click", () => {
+        currentFilter = button.dataset.filter;
+        document.querySelectorAll(".filter-tab").forEach(tab => tab.classList.toggle("active", tab === button));
+        renderTasks();
+      });
+    });
+
+    dom.taskForm.addEventListener("submit", handleTaskSubmit);
+    dom.taskTitle.addEventListener("input", updateBreakdownPreview);
+    dom.taskEstimate.addEventListener("change", updateBreakdownPreview);
+    dom.autoBreakdown.addEventListener("change", updateBreakdownPreview);
+
+    dom.missionList.addEventListener("click", handleMissionListClick);
+    dom.taskList.addEventListener("click", handleTaskListClick);
+
+    document.getElementById("sampleTasksButton").addEventListener("click", addSampleTasks);
+    document.getElementById("closeFocus").addEventListener("click", closeFocusDialog);
+    dom.toggleTimer.addEventListener("click", toggleTimer);
+    dom.completeFocus.addEventListener("click", completeActiveMission);
+    document.getElementById("closeReward").addEventListener("click", () => {
+      closeModal(dom.rewardDialog);
+      switchView("home");
+    });
+
+    dom.focusMinutes.addEventListener("change", () => {
+      state.settings.focusMinutes = Number(dom.focusMinutes.value);
+      saveState();
+      showToast("集中時間を変更しました");
+    });
+
+    dom.soundToggle.addEventListener("change", () => {
+      state.settings.sound = dom.soundToggle.checked;
+      saveState();
+    });
+
+    dom.confettiToggle.addEventListener("change", () => {
+      state.settings.confetti = dom.confettiToggle.checked;
+      saveState();
+    });
+
+    document.getElementById("resetData").addEventListener("click", resetData);
+
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        const open = document.querySelector(".modal.open");
+        if (open) {
+          if (open === dom.focusDialog) closeFocusDialog();
+          else closeModal(open);
+        }
+      }
+    });
+
+    window.addEventListener("beforeunload", () => {
+      if (timer) clearInterval(timer);
+    });
+  }
+
+  function loadState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (!saved) return cloneDefaultState();
+      return {
+        ...cloneDefaultState(),
+        ...saved,
+        settings: {
+          ...defaultState.settings,
+          ...(saved.settings || {})
+        },
+        tasks: Array.isArray(saved.tasks) ? saved.tasks : [],
+        history: Array.isArray(saved.history) ? saved.history : []
+      };
+    } catch {
+      return cloneDefaultState();
+    }
+  }
+
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* memory-only fallback */ }
+  }
+
+  function ensureStarterTask() {
+    if (state.tasks.length > 0) return;
+
+    state.tasks.push({
+      id: uid(),
+      title: "Nudgeを試してみる",
+      due: todayKey(),
+      estimate: 5,
+      priority: "medium",
+      createdAt: new Date().toISOString(),
+      completed: false,
+      subtasks: [
+        {
+          id: uid(),
+          title: "「5分だけ始める」を押してみる",
+          minutes: 5,
+          completed: false
+        }
+      ]
+    });
+
+    saveState();
+  }
+
+  function renderAll() {
+    renderHeader();
+    renderCharacter();
+    renderMissions();
+    renderTasks();
+    renderRecords();
+    renderSettings();
+    renderTodayLabel();
+  }
+
+  function renderTodayLabel() {
+    dom.todayLabel.textContent = new Intl.DateTimeFormat("ja-JP", {
+      month: "long",
+      day: "numeric",
+      weekday: "long"
+    }).format(new Date());
+  }
+
+  function renderHeader() {
+    dom.headerPoints.textContent = state.points;
+    dom.headerStreak.textContent = calculateStreak();
+  }
+
+  function getLevelInfo() {
+    const level = Math.floor(state.points / 100) + 1;
+    const xp = state.points % 100;
+    const stages = [
+      { min: 1, emoji: "🌱", name: "Nudgeの芽" },
+      { min: 2, emoji: "🌿", name: "Nudgeの若葉" },
+      { min: 4, emoji: "🪴", name: "Nudgeの苗" },
+      { min: 7, emoji: "🌳", name: "Nudgeの木" },
+      { min: 10, emoji: "🌸", name: "Nudgeの花" }
+    ];
+    const stage = [...stages].reverse().find(item => level >= item.min) || stages[0];
+    return { level, xp, stage };
+  }
+
+  function renderCharacter() {
+    const { level, xp, stage } = getLevelInfo();
+    dom.levelLabel.textContent = `Lv.${level}`;
+    dom.characterName.textContent = stage.name;
+    dom.characterEmoji.textContent = stage.emoji;
+    dom.xpText.textContent = `${xp} / 100 XP`;
+    dom.xpBar.style.width = `${xp}%`;
+  }
+
+  function getDailyMissions() {
+    const candidates = [];
+
+    state.tasks
+      .filter(task => !task.completed)
+      .forEach(task => {
+        const incomplete = task.subtasks.filter(subtask => !subtask.completed);
+        incomplete.forEach((subtask, index) => {
+          const dueScore = task.due ? Math.max(0, 10 - daysUntil(task.due)) : 0;
+          const priorityScore = task.priority === "high" ? 20 : task.priority === "medium" ? 10 : 0;
+          candidates.push({
+            taskId: task.id,
+            subtaskId: subtask.id,
+            title: subtask.title,
+            parentTitle: task.title,
+            minutes: subtask.minutes || 5,
+            priority: task.priority,
+            due: task.due,
+            score: priorityScore + dueScore - index
+          });
+        });
+      });
+
+    return candidates
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+  }
+
+  function renderMissions() {
+    const missions = getDailyMissions();
+
+    if (missions.length === 0) {
+      dom.missionList.innerHTML = `
+        <div class="empty-state">
+          <span aria-hidden="true">🎉</span>
+          <h3>今日のミッションは完了です</h3>
+          <p>新しいタスクを追加するか、今日はゆっくり休みましょう。</p>
+          <button class="primary-button" data-empty-add>タスクを追加</button>
+        </div>
+      `;
+      dom.missionList.querySelector("[data-empty-add]")?.addEventListener("click", openTaskDialog);
+      return;
+    }
+
+    dom.missionList.innerHTML = missions.map(mission => `
+      <article class="mission-card">
+        <span class="mission-priority priority-${mission.priority}">
+          ${priorityLabel(mission.priority)}
+        </span>
+        <div class="mission-copy">
+          <h3 class="mission-title">${escapeHtml(mission.title)}</h3>
+          <p class="mission-parent">${escapeHtml(mission.parentTitle)}</p>
+          <p class="mission-meta">
+            ${mission.minutes}分
+            ${mission.due ? `・期限 ${formatDate(mission.due)}` : ""}
+          </p>
+        </div>
+        <button
+          class="start-button"
+          data-start-task="${mission.taskId}"
+          data-start-subtask="${mission.subtaskId}"
+        >${state.settings.focusMinutes}分だけ始める</button>
+      </article>
+    `).join("");
+  }
+
+  function renderTasks() {
+    let tasks = state.tasks;
+
+    if (currentFilter === "active") tasks = tasks.filter(task => !task.completed);
+    if (currentFilter === "completed") tasks = tasks.filter(task => task.completed);
+
+    if (tasks.length === 0) {
+      dom.taskList.innerHTML = `
+        <div class="empty-state">
+          <span aria-hidden="true">📝</span>
+          <h3>表示するタスクがありません</h3>
+          <p>小さく始めたいことを登録してみましょう。</p>
+        </div>
+      `;
+      return;
+    }
+
+    dom.taskList.innerHTML = tasks
+      .sort((a, b) => Number(a.completed) - Number(b.completed))
+      .map(task => {
+        const completedCount = task.subtasks.filter(sub => sub.completed).length;
+        return `
+          <article class="task-card ${task.completed ? "completed" : ""}">
+            <span class="task-priority priority-${task.priority}">
+              ${priorityLongLabel(task.priority)}
+            </span>
+            <div class="task-copy">
+              <h3 class="task-card-title">${escapeHtml(task.title)}</h3>
+              <div class="task-card-meta">
+                <span>⏱ ${task.estimate}分</span>
+                <span>${task.due ? `📅 ${formatDate(task.due)}` : "期限なし"}</span>
+                <span>☑ ${completedCount}/${task.subtasks.length}</span>
+              </div>
+              <div class="subtask-list">
+                ${task.subtasks.map(subtask => `
+                  <div class="subtask-row ${subtask.completed ? "completed" : ""}">
+                    <span class="subtask-check">${subtask.completed ? "✓" : "・"}</span>
+                    <span>${escapeHtml(subtask.title)}</span>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+            <div class="task-actions">
+              <button class="icon-button" data-toggle-task="${task.id}" aria-label="${task.completed ? "未完了に戻す" : "完了にする"}">
+                ${task.completed ? "↩" : "✓"}
+              </button>
+              <button class="icon-button" data-delete-task="${task.id}" aria-label="削除">🗑</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+  }
+
+  function renderRecords() {
+    const completedCount = state.history.length;
+    const streak = calculateStreak();
+    const badges = getBadges();
+
+    dom.totalCompleted.textContent = completedCount;
+    dom.totalMinutes.textContent = state.totalMinutes;
+    dom.recordStreak.textContent = streak;
+    dom.badgeCount.textContent = badges.filter(badge => badge.unlocked).length;
+
+    renderWeeklyChart();
+    renderBadges(badges);
+    renderHistory();
+  }
+
+  function renderWeeklyChart() {
+    const days = lastSevenDays();
+    const counts = days.map(day => state.history.filter(item => dateKey(new Date(item.completedAt)) === day.key).length);
+    const max = Math.max(1, ...counts);
+    const total = counts.reduce((sum, count) => sum + count, 0);
+
+    dom.weeklySummary.textContent = `${total}回`;
+    dom.weeklyChart.innerHTML = days.map((day, index) => `
+      <div class="chart-day">
+        <div class="chart-bar-wrap">
+          <div class="chart-bar" style="height:${Math.max(5, (counts[index] / max) * 120)}px"></div>
+        </div>
+        <div class="chart-value">${counts[index]}</div>
+        <div class="chart-label">${day.label}</div>
+      </div>
+    `).join("");
+  }
+
+  function renderBadges(badges) {
+    dom.badgeList.innerHTML = badges.map(badge => `
+      <div class="badge ${badge.unlocked ? "" : "locked"}">
+        <span aria-hidden="true">${badge.icon}</span>
+        <div>
+          <strong>${badge.name}</strong>
+          <small>${badge.description}</small>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function renderHistory() {
+    const history = [...state.history]
+      .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
+      .slice(0, 10);
+
+    if (history.length === 0) {
+      dom.historyList.innerHTML = `<p class="settings-note">達成すると、ここに記録が残ります。</p>`;
+      return;
+    }
+
+    dom.historyList.innerHTML = history.map(item => `
+      <div class="history-item">
+        <span class="history-icon" aria-hidden="true">🌱</span>
+        <div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <small>${formatDateTime(item.completedAt)}・${item.minutes}分</small>
+        </div>
+        <span class="history-points">＋${item.points}pt</span>
+      </div>
+    `).join("");
+  }
+
+  function renderSettings() {
+    dom.focusMinutes.value = String(state.settings.focusMinutes);
+    dom.soundToggle.checked = state.settings.sound;
+    dom.confettiToggle.checked = state.settings.confetti;
+  }
+
+  function getBadges() {
+    return [
+      {
+        icon: "👣",
+        name: "最初の一歩",
+        description: "初めてミッションを達成",
+        unlocked: state.history.length >= 1
+      },
+      {
+        icon: "🔥",
+        name: "3日連続",
+        description: "3日続けて行動",
+        unlocked: calculateStreak() >= 3
+      },
+      {
+        icon: "🌟",
+        name: "10ミッション",
+        description: "10回の小さな達成",
+        unlocked: state.history.length >= 10
+      },
+      {
+        icon: "⏱️",
+        name: "集中60分",
+        description: "合計60分に到達",
+        unlocked: state.totalMinutes >= 60
+      },
+      {
+        icon: "🌳",
+        name: "育てる人",
+        description: "レベル7に到達",
+        unlocked: getLevelInfo().level >= 7
+      },
+      {
+        icon: "🏆",
+        name: "100の一歩",
+        description: "100ミッション達成",
+        unlocked: state.history.length >= 100
+      }
+    ];
+  }
+
+  function cloneDefaultState() {
+    return {
+      points: 0,
+      totalMinutes: 0,
+      history: [],
+      tasks: [],
+      settings: { focusMinutes: 5, sound: false, confetti: true }
+    };
+  }
+
+  function openModal(element) {
+    if (!element) return;
+    element.classList.add("open");
+    document.body.classList.add("modal-open");
+  }
+
+  function closeModal(element) {
+    if (!element) return;
+    element.classList.remove("open");
+    if (!document.querySelector(".modal.open")) {
+      document.body.classList.remove("modal-open");
+    }
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll(".view").forEach(view => {
+      view.classList.toggle("active", view.id === `view-${viewName}`);
+    });
+
+    document.querySelectorAll(".nav-button").forEach(button => {
+      button.classList.toggle("active", button.dataset.viewTarget === viewName);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (viewName === "records") renderRecords();
+    if (viewName === "tasks") renderTasks();
+  }
+
+  function openTaskDialog() {
+    dom.taskForm.reset();
+    dom.autoBreakdown.checked = true;
+    dom.taskEstimate.value = "15";
+    dom.taskPriority.value = "medium";
+    dom.taskDue.value = "";
+    updateBreakdownPreview();
+    openModal(dom.taskDialog);
+    setTimeout(() => dom.taskTitle.focus(), 50);
+  }
+
+  function handleTaskSubmit(event) {
+    event.preventDefault();
+
+    const title = dom.taskTitle.value.trim();
+    if (!title) return;
+
+    const estimate = Number(dom.taskEstimate.value);
+    const subtasks = dom.autoBreakdown.checked
+      ? createBreakdown(title, estimate)
+      : [{ id: uid(), title: `5分だけ「${title}」を始める`, minutes: Math.min(estimate, 5), completed: false }];
+
+    state.tasks.push({
+      id: uid(),
+      title,
+      due: dom.taskDue.value || "",
+      estimate,
+      priority: dom.taskPriority.value,
+      createdAt: new Date().toISOString(),
+      completed: false,
+      subtasks
+    });
+
+    saveState();
+    closeModal(dom.taskDialog);
+    renderAll();
+    showToast("タスクを追加しました");
+  }
+
+  function createBreakdown(title, estimate) {
+    const normalized = title.replace(/[。！!？?]$/, "");
+    const count = Math.max(1, Math.min(5, Math.ceil(estimate / 15)));
+
+    const patterns = [];
+    const lower = normalized.toLowerCase();
+
+    if (/(レポート|論文|作文|文章|原稿|書く)/.test(normalized)) {
+      patterns.push(
+        "テーマと条件を確認する",
+        "使う資料を1つ決める",
+        "見出しを3つ作る",
+        "最初の100字を書く",
+        "読み直して1か所直す"
+      );
+    } else if (/(勉強|覚える|暗記|単語|試験|テスト)/.test(normalized)) {
+      patterns.push(
+        "教材を開いて範囲を確認する",
+        "最初の5問だけ取り組む",
+        "分からない所に印をつける",
+        "もう5問だけ取り組む",
+        "今日できた所を確認する"
+      );
+    } else if (/(掃除|片付け|整理)/.test(normalized)) {
+      patterns.push(
+        "片付ける場所を1か所決める",
+        "捨てる物を3つ選ぶ",
+        "元の場所に5つ戻す",
+        "机の上だけ整える",
+        "終わった状態を写真で確認する"
+      );
+    } else if (/(メール|連絡|返信|電話)/.test(normalized)) {
+      patterns.push(
+        "宛先と目的を確認する",
+        "伝えたいことを3点メモする",
+        "最初の1文を書く",
+        "本文を短くまとめる",
+        "読み直して送る"
+      );
+    } else if (/(練習|運動|筋トレ|走る)/.test(normalized)) {
+      patterns.push(
+        "道具を準備する",
+        "1分だけ体を動かす",
+        "基本動作を5回行う",
+        "もう1セットだけ行う",
+        "終わった回数を記録する"
+      );
+    } else {
+      patterns.push(
+        `必要なものを1つ準備する`,
+        `「${normalized}」の最初の作業を5分だけ行う`,
+        "次にやることを1つ決める",
+        "もう5分だけ続ける",
+        "できた所を記録する"
+      );
+    }
+
+    return patterns.slice(0, count).map((step, index) => ({
+      id: uid(),
+      title: step,
+      minutes: index === 0 ? 5 : Math.min(15, Math.max(5, Math.ceil(estimate / count))),
+      completed: false
+    }));
+  }
+
+  function updateBreakdownPreview() {
+    if (!dom.autoBreakdown.checked) {
+      dom.breakdownPreview.classList.remove("visible");
+      dom.breakdownPreview.innerHTML = "";
+      return;
+    }
+
+    const title = dom.taskTitle.value.trim() || "このタスク";
+    const estimate = Number(dom.taskEstimate.value || 15);
+    const breakdown = createBreakdown(title, estimate);
+
+    dom.breakdownPreview.classList.add("visible");
+    dom.breakdownPreview.innerHTML = `
+      <strong>自動分解の例</strong>
+      <ol>${breakdown.map(step => `<li>${escapeHtml(step.title)}</li>`).join("")}</ol>
+    `;
+  }
+
+  function handleMissionListClick(event) {
+    const button = event.target.closest("[data-start-task]");
+    if (!button) return;
+
+    const task = state.tasks.find(item => item.id === button.dataset.startTask);
+    const subtask = task?.subtasks.find(item => item.id === button.dataset.startSubtask);
+    if (!task || !subtask) return;
+
+    startFocus(task, subtask);
+  }
+
+  function handleTaskListClick(event) {
+    const toggleButton = event.target.closest("[data-toggle-task]");
+    const deleteButton = event.target.closest("[data-delete-task]");
+
+    if (toggleButton) {
+      const task = state.tasks.find(item => item.id === toggleButton.dataset.toggleTask);
+      if (!task) return;
+
+      task.completed = !task.completed;
+      if (task.completed) {
+        task.subtasks.forEach(subtask => subtask.completed = true);
+      }
+      saveState();
+      renderAll();
+      return;
+    }
+
+    if (deleteButton) {
+      const task = state.tasks.find(item => item.id === deleteButton.dataset.deleteTask);
+      if (!task) return;
+      if (!confirm(`「${task.title}」を削除しますか？`)) return;
+
+      state.tasks = state.tasks.filter(item => item.id !== task.id);
+      saveState();
+      renderAll();
+      showToast("タスクを削除しました");
+    }
+  }
+
+  function startFocus(task, subtask) {
+    activeMission = { taskId: task.id, subtaskId: subtask.id };
+    totalTimerSeconds = state.settings.focusMinutes * 60;
+    remainingSeconds = totalTimerSeconds;
+    timerRunning = true;
+
+    dom.focusTaskTitle.textContent = subtask.title;
+    dom.focusParentTitle.textContent = task.title;
+    dom.focusMessage.textContent = "完璧にやらなくていい。始めた時点で前進です。";
+    dom.toggleTimer.textContent = "一時停止";
+    updateTimerDisplay();
+    openModal(dom.focusDialog);
+    playTone(520, 0.08);
+
+    timer = setInterval(() => {
+      if (!timerRunning) return;
+      remainingSeconds -= 1;
+      updateTimerDisplay();
+
+      if (remainingSeconds <= 0) {
+        clearInterval(timer);
+        timer = null;
+        timerRunning = false;
+        dom.focusMessage.textContent = "時間になりました。ここで止めても、もう少し続けても大丈夫。";
+        dom.toggleTimer.textContent = "もう1分";
+        playTone(700, 0.12);
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(Math.max(0, remainingSeconds) / 60);
+    const seconds = Math.max(0, remainingSeconds) % 60;
+    dom.timerDisplay.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+    const progress = totalTimerSeconds === 0 ? 1 : remainingSeconds / totalTimerSeconds;
+    dom.timerProgress.style.strokeDasharray = String(CIRCLE_LENGTH);
+    dom.timerProgress.style.strokeDashoffset = String(CIRCLE_LENGTH * (1 - progress));
+  }
+
+  function toggleTimer() {
+    if (remainingSeconds <= 0) {
+      totalTimerSeconds = 60;
+      remainingSeconds = 60;
+      timerRunning = true;
+      dom.toggleTimer.textContent = "一時停止";
+      updateTimerDisplay();
+
+      timer = setInterval(() => {
+        if (!timerRunning) return;
+        remainingSeconds -= 1;
+        updateTimerDisplay();
+        if (remainingSeconds <= 0) {
+          clearInterval(timer);
+          timer = null;
+          timerRunning = false;
+          dom.focusMessage.textContent = "もう1分、完了。小さな積み重ねです。";
+          dom.toggleTimer.textContent = "もう1分";
+          playTone(700, 0.12);
+        }
+      }, 1000);
+      return;
+    }
+
+    timerRunning = !timerRunning;
+    dom.toggleTimer.textContent = timerRunning ? "一時停止" : "再開する";
+  }
+
+  function closeFocusDialog() {
+    if (timer) clearInterval(timer);
+    timer = null;
+    timerRunning = false;
+    activeMission = null;
+    closeModal(dom.focusDialog);
+  }
+
+  function completeActiveMission() {
+    if (!activeMission) return;
+
+    const task = state.tasks.find(item => item.id === activeMission.taskId);
+    const subtask = task?.subtasks.find(item => item.id === activeMission.subtaskId);
+    if (!task || !subtask) return;
+
+    if (timer) clearInterval(timer);
+    timer = null;
+    timerRunning = false;
+
+    subtask.completed = true;
+    task.completed = task.subtasks.every(item => item.completed);
+
+    const elapsedSeconds = Math.max(1, totalTimerSeconds - Math.max(remainingSeconds, 0));
+    const elapsedMinutes = Math.max(1, Math.round(elapsedSeconds / 60));
+    const basePoints = 20;
+    const streakBonus = calculateStreak() >= 2 ? 5 : 0;
+    const priorityBonus = task.priority === "high" ? 5 : 0;
+    const earned = basePoints + streakBonus + priorityBonus;
+
+    state.points += earned;
+    state.totalMinutes += elapsedMinutes;
+    state.history.push({
+      id: uid(),
+      title: subtask.title,
+      parentTitle: task.title,
+      completedAt: new Date().toISOString(),
+      minutes: elapsedMinutes,
+      points: earned
+    });
+
+    saveState();
+    closeModal(dom.focusDialog);
+
+    dom.rewardPoints.textContent = earned;
+    dom.rewardMessage.textContent = rewardMessage();
+    openModal(dom.rewardDialog);
+
+    playSuccessSound();
+    if (state.settings.confetti) launchConfetti();
+
+    activeMission = null;
+    renderAll();
+  }
+
+  function rewardMessage() {
+    const { level, stage } = getLevelInfo();
+    if (state.points % 100 < 30) {
+      return `${stage.name}が成長しました。現在レベル${level}です。`;
+    }
+    return "始めることに成功しました。次も小さな一歩で大丈夫。";
+  }
+
+  function calculateStreak() {
+    const uniqueDates = [...new Set(state.history.map(item => dateKey(new Date(item.completedAt))))].sort().reverse();
+    if (uniqueDates.length === 0) return 0;
+
+    const today = new Date();
+    const todayString = dateKey(today);
+    const yesterdayString = dateKey(new Date(today.getTime() - DAY_MS));
+
+    if (uniqueDates[0] !== todayString && uniqueDates[0] !== yesterdayString) return 0;
+
+    let streak = 1;
+    let cursor = new Date(`${uniqueDates[0]}T12:00:00`);
+
+    for (let i = 1; i < uniqueDates.length; i += 1) {
+      cursor = new Date(cursor.getTime() - DAY_MS);
+      if (uniqueDates[i] === dateKey(cursor)) streak += 1;
+      else break;
+    }
+
+    return streak;
+  }
+
+  function addSampleTasks() {
+    const samples = [
+      {
+        title: "英語レポートを書く",
+        estimate: 60,
+        priority: "high",
+        due: offsetDateKey(2)
+      },
+      {
+        title: "机の上を片付ける",
+        estimate: 15,
+        priority: "low",
+        due: todayKey()
+      }
+    ];
+
+    samples.forEach(sample => {
+      state.tasks.push({
+        id: uid(),
+        ...sample,
+        createdAt: new Date().toISOString(),
+        completed: false,
+        subtasks: createBreakdown(sample.title, sample.estimate)
+      });
+    });
+
+    saveState();
+    renderAll();
+    showToast("サンプルタスクを追加しました");
+  }
+
+  function resetData() {
+    if (!confirm("ポイント、記録、タスクをすべて初期化します。よろしいですか？")) return;
+
+    state = cloneDefaultState();
+    saveState();
+    ensureStarterTask();
+    renderAll();
+    switchView("home");
+    showToast("データを初期化しました");
+  }
+
+  function launchConfetti() {
+    const colors = ["#4f8f63", "#e6a33d", "#9bbf81", "#f1c85b", "#76a6d8"];
+    for (let i = 0; i < 34; i += 1) {
+      const piece = document.createElement("span");
+      piece.className = "confetti-piece";
+      piece.style.left = `${Math.random() * 100}vw`;
+      piece.style.color = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 240}px`);
+      piece.style.animationDelay = `${Math.random() * 0.35}s`;
+      piece.style.transform = `rotate(${Math.random() * 180}deg)`;
+      document.body.appendChild(piece);
+      setTimeout(() => piece.remove(), 2100);
+    }
+  }
+
+  function playTone(frequency, duration) {
+    if (!state.settings.sound) return;
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const context = new AudioContext();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.frequency.value = frequency;
+      oscillator.type = "sine";
+      gain.gain.setValueAtTime(0.08, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + duration);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + duration);
+    } catch {
+      // 音声APIが利用できない環境では無音のまま動作する。
+    }
+  }
+
+  function playSuccessSound() {
+    if (!state.settings.sound) return;
+    playTone(660, 0.10);
+    setTimeout(() => playTone(880, 0.12), 100);
+  }
+
+  function showToast(message) {
+    dom.toast.textContent = message;
+    dom.toast.classList.add("show");
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => dom.toast.classList.remove("show"), 1800);
+  }
+
+  function registerServiceWorker() {
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    }
+  }
+
+  function priorityLabel(priority) {
+    return priority === "high" ? "急" : priority === "low" ? "低" : "今";
+  }
+
+  function priorityLongLabel(priority) {
+    return priority === "high" ? "優先度 高" : priority === "low" ? "優先度 低" : "優先度 中";
+  }
+
+  function uid() {
+    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
+  }
+
+  function todayKey() {
+    return dateKey(new Date());
+  }
+
+  function dateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function offsetDateKey(offsetDays) {
+    return dateKey(new Date(Date.now() + offsetDays * DAY_MS));
+  }
+
+  function daysUntil(dateString) {
+    const target = new Date(`${dateString}T12:00:00`);
+    const today = new Date(`${todayKey()}T12:00:00`);
+    return Math.ceil((target - today) / DAY_MS);
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(`${dateString}T12:00:00`);
+    return new Intl.DateTimeFormat("ja-JP", {
+      month: "numeric",
+      day: "numeric",
+      weekday: "short"
+    }).format(date);
+  }
+
+  function formatDateTime(dateString) {
+    return new Intl.DateTimeFormat("ja-JP", {
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date(dateString));
+  }
+
+  function lastSevenDays() {
+    const formatter = new Intl.DateTimeFormat("ja-JP", { weekday: "short" });
+    return Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(Date.now() - (6 - index) * DAY_MS);
+      return { key: dateKey(date), label: formatter.format(date) };
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+})();
+
+</script>
+</body>
+</html>
