@@ -4,8 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#4f8f63" />
+  <meta name="version" content="Nudge Ver.2.2" />
   <meta name="description" content="5分だけ始めることで、今日の一歩を後押しするブラウザアプリ Nudge" />
-  <title>Nudge｜5分だけ始める</title>
+  <title>Nudge Ver.2.2｜5分だけ始める</title>
   
   
 <style>
@@ -324,9 +325,9 @@ main {
 
 .primary-button {
   border: 1px solid var(--primary);
-  background: var(--primary);
+  background: var(--primary-dark);
   color: #fff;
-  box-shadow: 0 10px 25px rgba(79, 143, 99, 0.24);
+  box-shadow: 0 10px 25px rgba(52, 111, 73, 0.24);
 }
 
 .primary-button:hover {
@@ -439,7 +440,7 @@ main {
   border: 0;
   border-radius: 15px;
   padding: 13px 16px;
-  background: var(--primary);
+  background: var(--primary-dark);
   color: #fff;
   font-weight: 900;
   cursor: pointer;
@@ -1348,6 +1349,38 @@ main {
   backdrop-filter: blur(5px);
   z-index: -1;
 }
+
+.plan-editor-list{display:grid;gap:10px;margin-top:16px}.plan-editor-row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:14px;background:var(--surface-soft)}.plan-editor-row input{min-width:0}.plan-editor-actions{display:flex;gap:4px}.plan-editor-actions button{min-width:34px;height:34px;border:1px solid var(--border);border-radius:9px;background:var(--surface);cursor:pointer}.plan-add-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}.step-progress{margin-top:12px}.step-progress-head{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px;font-weight:800}.step-progress-track{height:8px;margin-top:6px;background:#dfe7dd;border-radius:999px;overflow:hidden}.step-progress-fill{height:100%;background:var(--primary);border-radius:inherit;transition:width .3s}.subtask-row{display:flex;align-items:center;gap:8px}.subtask-row button{margin-left:auto;border:0;background:transparent;color:var(--primary-dark);font-weight:800;cursor:pointer}.resume-note{margin-top:8px;padding:9px 11px;border-radius:11px;background:#fff8e8;color:#765522;font-size:12px;font-weight:700}.ver2-note{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 10px;border-radius:999px;background:var(--surface-soft);color:var(--primary-dark);font-size:11px;font-weight:800}
+@media(max-width:620px){.plan-editor-row{grid-template-columns:auto 1fr}.plan-editor-actions{grid-column:2}.plan-add-row{grid-template-columns:1fr}.plan-add-row button{width:100%}}
+
+
+/* Ver.2.2 UX refinements */
+.task-fast-note{margin:8px 0 0;color:var(--muted);font-size:12px;line-height:1.6}
+.quick-start-row{display:grid;grid-template-columns:1.35fr 1fr;gap:10px;margin-top:18px}
+.task-details{margin-top:16px;padding-top:2px;border-top:1px solid var(--border)}
+.task-details[hidden]{display:none!important}
+.details-hint{margin:14px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface-soft);color:var(--muted);font-size:12px;line-height:1.6}
+.plan-editor-row-v21{display:grid;grid-template-columns:auto minmax(0,1fr) 82px auto;gap:8px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:14px;background:var(--surface-soft)}
+.plan-editor-row-v21 input[type="text"]{min-width:0}
+.plan-minutes{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px;color:var(--muted);font-size:12px}
+.plan-minutes input{width:58px;padding:8px 6px;text-align:center}
+.focus-success{display:block;margin:14px auto 0;max-width:420px;padding:12px 14px;border-radius:14px;background:var(--surface-soft);color:var(--primary-dark);font-weight:900;line-height:1.55}
+.focus-actions{grid-template-columns:1fr 1.35fr 1fr}
+.reward-actions{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;margin-top:16px}
+.reward-actions .primary-button,.reward-actions .secondary-button{width:100%;margin:0}
+.comparison-card{margin-top:16px;padding:20px;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:0 8px 28px rgba(44,73,52,.05)}
+.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.comparison-item{padding:14px;border-radius:14px;background:var(--surface-soft)}
+.comparison-item strong,.comparison-item span{display:block}.comparison-item strong{font-size:24px}.comparison-item span{margin-top:4px;color:var(--muted);font-size:12px}
+.comparison-message{margin:14px 0 0;color:var(--primary-dark);font-weight:800}
+.profile-later{margin-top:8px;width:100%}
+.activity-tag{display:inline-flex;align-items:center;margin-left:6px;padding:3px 7px;border-radius:999px;background:var(--surface-soft);color:var(--primary-dark);font-size:10px;font-weight:900}
+.goal-pulse{animation:goalPulse .55s ease}
+@keyframes goalPulse{0%{transform:scale(.96)}55%{transform:scale(1.025)}100%{transform:scale(1)}}
+@media(max-width:620px){.quick-start-row{grid-template-columns:1fr}.plan-editor-row-v21{grid-template-columns:auto minmax(0,1fr);}.plan-minutes,.plan-editor-row-v21 .plan-editor-actions{grid-column:2}.focus-actions{grid-template-columns:1fr}.reward-actions{grid-template-columns:1fr}.comparison-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.hero-card{padding:20px}.character-panel{grid-template-columns:88px 1fr;padding:14px}.character-stage{min-height:88px}.character-emoji{font-size:48px}.hero-copy{margin-top:12px}.section-heading{margin-top:24px}.comparison-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+
 </style></head>
 <body>
   <div class="app-shell">
@@ -1356,7 +1389,7 @@ main {
         <span class="brand-mark" aria-hidden="true">🌱</span>
         <span>
           <strong>Nudge</strong>
-          <small>5分だけ始める</small>
+          <small>5分だけ始める ・ Ver.2.2</small>
         </span>
       </button>
 
@@ -1416,7 +1449,7 @@ main {
           <div class="insight-icon" aria-hidden="true">💡</div>
           <div>
             <strong>今日のNudge</strong>
-            <p>「全部やる」ではなく、「始める」に成功しよう。5分で止めても達成です。</p>
+            <p>「全部やる」ではなく、「始める」に成功しよう。5分できたら、それだけで今日の達成です。</p>
           </div>
         </article>
       </section>
@@ -1454,9 +1487,9 @@ main {
 
         <div class="record-grid">
           <article class="record-card">
-            <span aria-hidden="true">✅</span>
-            <strong id="totalCompleted">0</strong>
-            <small>完了ミッション</small>
+            <span aria-hidden="true">👣</span>
+            <strong id="totalStarted">0</strong>
+            <small>始めた回数</small>
           </article>
           <article class="record-card">
             <span aria-hidden="true">⏱️</span>
@@ -1466,14 +1499,23 @@ main {
           <article class="record-card">
             <span aria-hidden="true">🔥</span>
             <strong id="recordStreak">0</strong>
-            <small>連続日数</small>
+            <small>行動した連続日数</small>
           </article>
           <article class="record-card">
-            <span aria-hidden="true">🏅</span>
-            <strong id="badgeCount">0</strong>
-            <small>獲得した称号</small>
+            <span aria-hidden="true">✅</span>
+            <strong id="totalCompleted">0</strong>
+            <small>完了したステップ</small>
           </article>
         </div>
+
+        <article class="comparison-card">
+          <div class="section-heading compact"><div><p class="eyebrow">PAST ME</p><h2>先週の自分と比べる</h2></div></div>
+          <div class="comparison-grid">
+            <div class="comparison-item"><strong id="thisWeekStarts">0回</strong><span>今週の「始めた」</span></div>
+            <div class="comparison-item"><strong id="lastWeekStarts">0回</strong><span>先週の「始めた」</span></div>
+          </div>
+          <p id="comparisonMessage" class="comparison-message">小さな一歩を記録していきましょう。</p>
+        </article>
 
         <article class="weekly-card">
           <div class="section-heading compact">
@@ -1483,7 +1525,7 @@ main {
             </div>
             <strong id="weeklySummary">0回</strong>
           </div>
-          <div id="weeklyChart" class="weekly-chart" aria-label="直近7日間の達成回数"></div>
+          <div id="weeklyChart" class="weekly-chart" aria-label="直近7日間の開始回数"></div>
         </article>
 
         <article class="badges-card">
@@ -1500,7 +1542,7 @@ main {
           <div class="section-heading compact">
             <div>
               <p class="eyebrow">HISTORY</p>
-              <h2>最近の達成</h2>
+              <h2>最近の一歩</h2>
             </div>
           </div>
           <div id="historyList" class="history-list"></div>
@@ -1551,6 +1593,12 @@ main {
             </label>
           </article>
 
+          <article class="settings-card">
+            <h2>プロフィール</h2>
+            <p class="settings-note">年代・立場・匿名集計への協力設定を変更できます。試作版では外部送信しません。</p>
+            <button id="editProfile" class="secondary-button">プロフィールを編集</button>
+          </article>
+
           <article class="settings-card danger-zone">
             <h2>データ</h2>
             <p>この端末のブラウザに保存されたデータを消去します。</p>
@@ -1580,60 +1628,50 @@ main {
     </nav>
   </div>
 
-  <div id="taskDialog" class="modal" role="dialog" aria-modal="true">
+  <div id="taskDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="taskDialogTitle">
     <form id="taskForm" method="dialog">
       <div class="modal-header">
         <div>
           <p class="eyebrow">NEW TASK</p>
-          <h2>新しいタスク</h2>
+          <h2 id="taskDialogTitle">まず、やることだけ</h2>
         </div>
         <button type="button" class="icon-button" data-close-dialog aria-label="閉じる">×</button>
       </div>
 
       <label>
-        タスク名
-        <input id="taskTitle" name="title" required maxlength="60" placeholder="例：英語のレポートを書く" />
+        何をやりますか？
+        <input id="taskTitle" name="title" required maxlength="60" placeholder="例：英語のレポートを書く" autocomplete="off" />
       </label>
+      <p class="task-fast-note">細かく決めなくても大丈夫。名前だけ入力して、そのまま5分を始められます。</p>
 
-      <div class="form-row">
-        <label>
-          期限
-          <input id="taskDue" name="due" type="date" />
-        </label>
-        <label>
-          予想時間
-          <select id="taskEstimate" name="estimate">
-            <option value="5">5分</option>
-            <option value="15">15分</option>
-            <option value="30">30分</option>
-            <option value="60">60分</option>
-            <option value="120">120分以上</option>
-          </select>
-        </label>
+      <div class="quick-start-row">
+        <button id="quickStartTask" type="button" class="primary-button">▶ 5分だけ始める</button>
+        <button id="toggleTaskDetails" type="button" class="secondary-button" aria-expanded="false">詳しく計画する</button>
       </div>
 
-      <label>
-        優先度
-        <select id="taskPriority" name="priority">
-          <option value="medium">ふつう</option>
-          <option value="high">高い</option>
-          <option value="low">低い</option>
-        </select>
-      </label>
-
-      <label class="checkbox-row">
-        <input id="autoBreakdown" type="checkbox" checked />
-        <span>
-          <strong>小さなミッションに自動分解する</strong>
-          <small>ブラウザ内のルールで、5〜15分の行動に分けます。</small>
-        </span>
-      </label>
-
-      <div id="breakdownPreview" class="breakdown-preview"></div>
-
-      <div class="modal-actions">
-        <button type="button" class="secondary-button" data-close-dialog>キャンセル</button>
-        <button type="submit" class="primary-button">追加する</button>
+      <div id="taskDetails" class="task-details" hidden>
+        <p class="details-hint">期限や予想時間が分かる場合だけ設定してください。Nudgeのプラン案は後から自由に直せます。</p>
+        <div class="form-row">
+          <label>期限<input id="taskDue" name="due" type="date" /></label>
+          <label>予想時間
+            <select id="taskEstimate" name="estimate">
+              <option value="5">5分</option><option value="15">15分</option><option value="30">30分</option><option value="60">60分</option><option value="120">120分以上</option>
+            </select>
+          </label>
+        </div>
+        <label>優先度
+          <select id="taskPriority" name="priority"><option value="medium">ふつう</option><option value="high">高い</option><option value="low">低い</option></select>
+        </label>
+        <label class="checkbox-row">
+          <input id="autoBreakdown" type="checkbox" checked />
+          <span><strong>Nudgeのプラン案を自動作成する</strong><small>入力した予想時間を参考に、5〜15分程度の行動ステップ案を端末内で作ります。作成後に編集できます。</small></span>
+        </label>
+        <div id="breakdownPreview" class="breakdown-preview"></div>
+        <button id="openPlanEditor" type="button" class="secondary-button" style="width:100%;margin-top:10px">ステップを編集する</button>
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" data-close-dialog>キャンセル</button>
+          <button type="submit" class="primary-button">この計画で追加</button>
+        </div>
       </div>
     </form>
   </div>
@@ -1660,57 +1698,107 @@ main {
 
       <div class="focus-actions">
         <button id="toggleTimer" class="secondary-button">一時停止</button>
-        <button id="completeFocus" class="primary-button">できた！</button>
+        <button id="completeFocus" class="primary-button">ステップ完了</button>
+        <button id="stopFocus" class="secondary-button">ここまで保存</button>
       </div>
     </div>
   </div>
 
-  <div id="rewardDialog" class="modal reward-modal" role="dialog" aria-modal="true">
+  <div id="rewardDialog" class="modal reward-modal" role="dialog" aria-modal="true" aria-labelledby="rewardTitle">
     <div class="reward-content">
       <div id="rewardBurst" class="reward-burst" aria-hidden="true">✨</div>
-      <p class="eyebrow">MISSION COMPLETE</p>
-      <h2>小さな一歩、達成！</h2>
-      <div class="reward-points">
-        <span>＋</span>
-        <strong id="rewardPoints">20</strong>
-        <small>ポイント</small>
+      <p class="eyebrow">STEP COMPLETE</p>
+      <h2 id="rewardTitle">ステップ完了！</h2>
+      <div class="reward-points"><span>＋</span><strong id="rewardPoints">10</strong><small>pt</small></div>
+      <p id="rewardMessage">小さな一歩を完了しました。</p>
+      <div class="reward-actions">
+        <button id="rewardStop" class="secondary-button">今日はここまで</button>
+        <button id="rewardNext" class="primary-button">次の5分へ</button>
       </div>
-      <p id="rewardMessage">Nudgeの芽が少し成長しました。</p>
-      <button id="closeReward" class="primary-button">ホームへ戻る</button>
+    </div>
+  </div>
+
+  <div id="profileDialog" class="modal" role="dialog" aria-modal="true">
+    <form id="profileForm">
+      <div class="modal-header">
+        <div><p class="eyebrow">OPTIONAL PROFILE</p><h2>よければ少しだけ教えてください</h2></div>
+      </div>
+      <p class="settings-note">名前・学校名・住所などは入力しません。回答はこのブラウザ内に保存され、試作版では外部へ送信しません。</p>
+      <label>年代
+        <select id="profileAge"><option value="">回答しない</option><option>10代</option><option>20代</option><option>30代</option><option>40代</option><option>50代以上</option></select>
+      </label>
+      <label>立場
+        <select id="profileRole"><option value="">回答しない</option><option>中学生</option><option>高校生</option><option>大学・専門学校生</option><option>社会人</option><option>その他</option></select>
+      </label>
+      <label class="checkbox-row"><input id="profileAnalytics" type="checkbox" /><span><strong>匿名・集計された利用データの分析に協力する</strong><small>年代・立場、5分開始・達成などの匿名イベントをNudge改善用サーバーへ送信します。名前・学校名・住所・タスク本文は送信しません。いつでもOFFにできます。</small></span></label>
+      <div class="modal-actions"><button id="profileLater" type="button" class="secondary-button">あとで</button><button type="submit" class="primary-button">保存する</button></div>
+    </form>
+  </div>
+
+  <div id="planDialog" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header" style="padding:26px 26px 0"><div><p class="eyebrow">PLAN EDITOR</p><h2 id="planDialogTitle">計画を編集</h2></div><button type="button" class="icon-button" data-plan-close aria-label="閉じる">×</button></div>
+    <div style="padding:0 26px 26px">
+      <p class="settings-note">Nudgeの自動プランは「たたき台」です。順番・内容・数を自由に直してから保存できます。</p>
+      <div id="planEditorList" class="plan-editor-list"></div>
+      <div class="plan-add-row"><input id="planNewStep" maxlength="80" placeholder="追加するステップ" /><button id="planAddStep" type="button" class="secondary-button">＋追加</button></div>
+      <div class="modal-actions"><button type="button" class="secondary-button" data-plan-close>キャンセル</button><button id="planSave" type="button" class="primary-button">この計画で保存</button></div>
     </div>
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "nudge-app-v1";
-  const DAY_MS = 24 * 60 * 60 * 1000;
+  const STORAGE_KEY = "nudge-app-v2-2";
+  const V21_KEY = "nudge-app-v2-1";
+  const V2_KEY = "nudge-app-v2";
+  const LEGACY_KEY = "nudge-app-v1";
+  const LEGACY_META_KEY = "nudge-v2-meta";
+  const DAY_MS = 86400000;
   const CIRCLE_LENGTH = 2 * Math.PI * 68;
 
-  const defaultState = {
+  // Supabase接続設定：Dashboard → Project Settings / API の値を入れてください。
+  // Publishable key（または旧anon key）のみ使用し、secret/service_role keyは絶対に入れないでください。
+  const SUPABASE_URL = "https://jwvoplyvvoetbwqpjyme.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_k_ZjejnFqcYasMQGXt_Rsg_Z_klh0O3";
+  const TELEMETRY_ENABLED = !SUPABASE_URL.includes("YOUR_") && !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_");
+  let supabaseClient = null;
+
+  const defaultState = () => ({
+    version: "2.2",
     points: 0,
+    totalSeconds: 0,
     totalMinutes: 0,
     history: [],
+    sessions: [],
     tasks: [],
-    settings: {
-      focusMinutes: 5,
-      sound: false,
-      confetti: true
-    }
-  };
+    activeTimer: null,
+    settings: { focusMinutes: 5, sound: false, confetti: true },
+    profile: { setup: false, age: "", role: "", analytics: false, dismissed: false },
+    analytics: { focusStarts: 0, focusGoals: 0, focusCompletions: 0, partialSaves: 0, planEdits: 0, activeDays: [] },
+    telemetry: { lastError: "", connectedOnce: false }
+  });
 
   const dom = {};
   let state = loadState();
   let currentFilter = "active";
+  let draftSteps = [];
+  let draftDirty = false;
+  let editingTaskId = null;
   let activeMission = null;
+  let pendingNextMission = null;
   let timer = null;
   let remainingSeconds = 0;
   let totalTimerSeconds = 0;
+  let sessionWorkSeconds = 0;
   let timerRunning = false;
+  let sessionStartedAt = null;
+  let sessionGoalReached = false;
+  let persistTick = 0;
 
   document.addEventListener("DOMContentLoaded", init);
 
@@ -1719,938 +1807,362 @@ main {
     bindEvents();
     ensureStarterTask();
     renderAll();
-    registerServiceWorker();
+    restoreSavedFocus();
+    initTelemetry();
   }
 
   function cacheDom() {
     [
-      "headerPoints", "headerStreak", "todayLabel", "characterStage", "characterEmoji",
-      "levelLabel", "characterName", "xpText", "xpBar", "missionList", "taskList",
-      "totalCompleted", "totalMinutes", "recordStreak", "badgeCount", "weeklySummary",
-      "weeklyChart", "badgeList", "historyList", "focusMinutes", "soundToggle",
-      "confettiToggle", "taskDialog", "taskForm", "taskTitle", "taskDue",
-      "taskEstimate", "taskPriority", "autoBreakdown", "breakdownPreview",
-      "focusDialog", "focusTaskTitle", "focusParentTitle", "timerDisplay",
-      "timerProgress", "focusMessage", "toggleTimer", "completeFocus", "rewardDialog",
-      "rewardPoints", "rewardMessage", "toast", "rewardBurst"
+      "headerPoints","headerStreak","todayLabel","characterStage","characterEmoji","levelLabel","characterName","xpText","xpBar",
+      "missionList","taskList","totalStarted","totalCompleted","totalMinutes","recordStreak","weeklySummary","weeklyChart","badgeList","historyList",
+      "thisWeekStarts","lastWeekStarts","comparisonMessage","focusMinutes","soundToggle","confettiToggle","taskDialog","taskForm","taskTitle",
+      "taskDue","taskEstimate","taskPriority","autoBreakdown","taskDetails","toggleTaskDetails","quickStartTask","breakdownPreview","openPlanEditor",
+      "focusDialog","focusTaskTitle","focusParentTitle","timerDisplay","timerProgress","focusMessage","toggleTimer","completeFocus","stopFocus",
+      "rewardDialog","rewardPoints","rewardMessage","rewardStop","rewardNext","toast","profileDialog","profileForm","profileAge","profileRole",
+      "profileAnalytics","profileLater","planDialog","planDialogTitle","planEditorList","planNewStep","planAddStep","planSave","editProfile"
     ].forEach(id => dom[id] = document.getElementById(id));
   }
 
   function bindEvents() {
-    document.querySelectorAll("[data-view-target]").forEach(button => {
-      button.addEventListener("click", () => switchView(button.dataset.viewTarget));
-    });
+    document.querySelectorAll("[data-view-target]").forEach(button => button.addEventListener("click", () => switchView(button.dataset.viewTarget)));
+    document.querySelectorAll("#openAddTask,#openAddTaskTasks").forEach(button => button.addEventListener("click", openTaskDialog));
+    document.querySelectorAll("[data-close-dialog]").forEach(button => button.addEventListener("click", () => closeModal(button.closest(".modal"))));
+    document.querySelectorAll("[data-plan-close]").forEach(button => button.addEventListener("click", closePlanEditor));
 
-    document.querySelectorAll("#openAddTask, #openAddTaskTasks").forEach(button => {
-      button.addEventListener("click", openTaskDialog);
-    });
-
-    document.querySelectorAll("[data-close-dialog]").forEach(button => {
-      button.addEventListener("click", () => closeModal(button.closest(".modal")));
-    });
-
-    document.querySelectorAll(".filter-tab").forEach(button => {
-      button.addEventListener("click", () => {
-        currentFilter = button.dataset.filter;
-        document.querySelectorAll(".filter-tab").forEach(tab => tab.classList.toggle("active", tab === button));
-        renderTasks();
-      });
-    });
+    document.querySelectorAll(".filter-tab").forEach(button => button.addEventListener("click", () => {
+      currentFilter = button.dataset.filter;
+      document.querySelectorAll(".filter-tab").forEach(tab => tab.classList.toggle("active", tab === button));
+      renderTasks();
+    }));
 
     dom.taskForm.addEventListener("submit", handleTaskSubmit);
-    dom.taskTitle.addEventListener("input", updateBreakdownPreview);
-    dom.taskEstimate.addEventListener("change", updateBreakdownPreview);
-    dom.autoBreakdown.addEventListener("change", updateBreakdownPreview);
+    dom.taskTitle.addEventListener("input", refreshDraftIfClean);
+    dom.taskEstimate.addEventListener("change", refreshDraftIfClean);
+    dom.autoBreakdown.addEventListener("change", () => { draftDirty = false; refreshDraft(true); });
+    dom.toggleTaskDetails.addEventListener("click", toggleTaskDetails);
+    dom.quickStartTask.addEventListener("click", quickStartFromTitle);
+    dom.openPlanEditor.addEventListener("click", () => openPlanEditor(null, draftSteps, dom.taskTitle.value.trim() || "新しいタスク"));
+    dom.planAddStep.addEventListener("click", addPlanStep);
+    dom.planSave.addEventListener("click", commitPlan);
+    dom.planEditorList.addEventListener("input", handlePlanInput);
+    dom.planEditorList.addEventListener("click", handlePlanAction);
 
     dom.missionList.addEventListener("click", handleMissionListClick);
     dom.taskList.addEventListener("click", handleTaskListClick);
-
     document.getElementById("sampleTasksButton").addEventListener("click", addSampleTasks);
-    document.getElementById("closeFocus").addEventListener("click", closeFocusDialog);
+
+    document.getElementById("closeFocus").addEventListener("click", () => closeFocusDialog(true));
     dom.toggleTimer.addEventListener("click", toggleTimer);
     dom.completeFocus.addEventListener("click", completeActiveMission);
-    document.getElementById("closeReward").addEventListener("click", () => {
-      closeModal(dom.rewardDialog);
-      switchView("home");
-    });
+    dom.stopFocus.addEventListener("click", savePartialAndClose);
+    dom.rewardStop.addEventListener("click", stopAfterReward);
+    dom.rewardNext.addEventListener("click", continueAfterReward);
 
     dom.focusMinutes.addEventListener("change", () => {
-      state.settings.focusMinutes = Number(dom.focusMinutes.value);
-      saveState();
-      showToast("集中時間を変更しました");
+      state.settings.focusMinutes = Number(dom.focusMinutes.value || 5);
+      persist(); renderSettings(); showToast("集中時間を変更しました");
     });
-
-    dom.soundToggle.addEventListener("change", () => {
-      state.settings.sound = dom.soundToggle.checked;
-      saveState();
-    });
-
-    dom.confettiToggle.addEventListener("change", () => {
-      state.settings.confetti = dom.confettiToggle.checked;
-      saveState();
-    });
-
+    dom.soundToggle.addEventListener("change", () => { state.settings.sound = dom.soundToggle.checked; persist(); });
+    dom.confettiToggle.addEventListener("change", () => { state.settings.confetti = dom.confettiToggle.checked; persist(); });
     document.getElementById("resetData").addEventListener("click", resetData);
-
+    dom.editProfile?.addEventListener("click", openProfile);
+    dom.profileForm.addEventListener("submit", saveProfile);
+    dom.profileLater.addEventListener("click", dismissProfile);
 
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") {
-        const open = document.querySelector(".modal.open");
-        if (open) {
-          if (open === dom.focusDialog) closeFocusDialog();
-          else closeModal(open);
-        }
-      }
+      if (event.key !== "Escape") return;
+      const open = [...document.querySelectorAll(".modal.open")].pop();
+      if (!open) return;
+      if (open === dom.focusDialog) closeFocusDialog(true);
+      else if (open === dom.planDialog) closePlanEditor();
+      else closeModal(open);
     });
-
-    window.addEventListener("beforeunload", () => {
-      if (timer) clearInterval(timer);
-    });
+    document.addEventListener("visibilitychange", () => { if (document.hidden) checkpointTimer(); });
+    window.addEventListener("beforeunload", checkpointTimer);
   }
 
   function loadState() {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-      if (!saved) return cloneDefaultState();
-      return {
-        ...cloneDefaultState(),
-        ...saved,
-        settings: {
-          ...defaultState.settings,
-          ...(saved.settings || {})
-        },
-        tasks: Array.isArray(saved.tasks) ? saved.tasks : [],
-        history: Array.isArray(saved.history) ? saved.history : []
-      };
-    } catch {
-      return cloneDefaultState();
-    }
-  }
-
-  function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* memory-only fallback */ }
-  }
-
-  function ensureStarterTask() {
-    if (state.tasks.length > 0) return;
-
-    state.tasks.push({
-      id: uid(),
-      title: "Nudgeを試してみる",
-      due: todayKey(),
-      estimate: 5,
-      priority: "medium",
-      createdAt: new Date().toISOString(),
-      completed: false,
-      subtasks: [
-        {
-          id: uid(),
-          title: "「5分だけ始める」を押してみる",
-          minutes: 5,
-          completed: false
-        }
-      ]
-    });
-
-    saveState();
-  }
-
-  function renderAll() {
-    renderHeader();
-    renderCharacter();
-    renderMissions();
-    renderTasks();
-    renderRecords();
-    renderSettings();
-    renderTodayLabel();
-  }
-
-  function renderTodayLabel() {
-    dom.todayLabel.textContent = new Intl.DateTimeFormat("ja-JP", {
-      month: "long",
-      day: "numeric",
-      weekday: "long"
-    }).format(new Date());
-  }
-
-  function renderHeader() {
-    dom.headerPoints.textContent = state.points;
-    dom.headerStreak.textContent = calculateStreak();
-  }
-
-  function getLevelInfo() {
-    const level = Math.floor(state.points / 100) + 1;
-    const xp = state.points % 100;
-    const stages = [
-      { min: 1, emoji: "🌱", name: "Nudgeの芽" },
-      { min: 2, emoji: "🌿", name: "Nudgeの若葉" },
-      { min: 4, emoji: "🪴", name: "Nudgeの苗" },
-      { min: 7, emoji: "🌳", name: "Nudgeの木" },
-      { min: 10, emoji: "🌸", name: "Nudgeの花" }
-    ];
-    const stage = [...stages].reverse().find(item => level >= item.min) || stages[0];
-    return { level, xp, stage };
-  }
-
-  function renderCharacter() {
-    const { level, xp, stage } = getLevelInfo();
-    dom.levelLabel.textContent = `Lv.${level}`;
-    dom.characterName.textContent = stage.name;
-    dom.characterEmoji.textContent = stage.emoji;
-    dom.xpText.textContent = `${xp} / 100 XP`;
-    dom.xpBar.style.width = `${xp}%`;
-  }
-
-  function getDailyMissions() {
-    const candidates = [];
-
-    state.tasks
-      .filter(task => !task.completed)
-      .forEach(task => {
-        const incomplete = task.subtasks.filter(subtask => !subtask.completed);
-        incomplete.forEach((subtask, index) => {
-          const dueScore = task.due ? Math.max(0, 10 - daysUntil(task.due)) : 0;
-          const priorityScore = task.priority === "high" ? 20 : task.priority === "medium" ? 10 : 0;
-          candidates.push({
-            taskId: task.id,
-            subtaskId: subtask.id,
-            title: subtask.title,
-            parentTitle: task.title,
-            minutes: subtask.minutes || 5,
-            priority: task.priority,
-            due: task.due,
-            score: priorityScore + dueScore - index
-          });
-        });
-      });
-
-    return candidates
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3);
-  }
-
-  function renderMissions() {
-    const missions = getDailyMissions();
-
-    if (missions.length === 0) {
-      dom.missionList.innerHTML = `
-        <div class="empty-state">
-          <span aria-hidden="true">🎉</span>
-          <h3>今日のミッションは完了です</h3>
-          <p>新しいタスクを追加するか、今日はゆっくり休みましょう。</p>
-          <button class="primary-button" data-empty-add>タスクを追加</button>
-        </div>
-      `;
-      dom.missionList.querySelector("[data-empty-add]")?.addEventListener("click", openTaskDialog);
-      return;
-    }
-
-    dom.missionList.innerHTML = missions.map(mission => `
-      <article class="mission-card">
-        <span class="mission-priority priority-${mission.priority}">
-          ${priorityLabel(mission.priority)}
-        </span>
-        <div class="mission-copy">
-          <h3 class="mission-title">${escapeHtml(mission.title)}</h3>
-          <p class="mission-parent">${escapeHtml(mission.parentTitle)}</p>
-          <p class="mission-meta">
-            ${mission.minutes}分
-            ${mission.due ? `・期限 ${formatDate(mission.due)}` : ""}
-          </p>
-        </div>
-        <button
-          class="start-button"
-          data-start-task="${mission.taskId}"
-          data-start-subtask="${mission.subtaskId}"
-        >${state.settings.focusMinutes}分だけ始める</button>
-      </article>
-    `).join("");
-  }
-
-  function renderTasks() {
-    let tasks = state.tasks;
-
-    if (currentFilter === "active") tasks = tasks.filter(task => !task.completed);
-    if (currentFilter === "completed") tasks = tasks.filter(task => task.completed);
-
-    if (tasks.length === 0) {
-      dom.taskList.innerHTML = `
-        <div class="empty-state">
-          <span aria-hidden="true">📝</span>
-          <h3>表示するタスクがありません</h3>
-          <p>小さく始めたいことを登録してみましょう。</p>
-        </div>
-      `;
-      return;
-    }
-
-    dom.taskList.innerHTML = tasks
-      .sort((a, b) => Number(a.completed) - Number(b.completed))
-      .map(task => {
-        const completedCount = task.subtasks.filter(sub => sub.completed).length;
-        return `
-          <article class="task-card ${task.completed ? "completed" : ""}">
-            <span class="task-priority priority-${task.priority}">
-              ${priorityLongLabel(task.priority)}
-            </span>
-            <div class="task-copy">
-              <h3 class="task-card-title">${escapeHtml(task.title)}</h3>
-              <div class="task-card-meta">
-                <span>⏱ ${task.estimate}分</span>
-                <span>${task.due ? `📅 ${formatDate(task.due)}` : "期限なし"}</span>
-                <span>☑ ${completedCount}/${task.subtasks.length}</span>
-              </div>
-              <div class="subtask-list">
-                ${task.subtasks.map(subtask => `
-                  <div class="subtask-row ${subtask.completed ? "completed" : ""}">
-                    <span class="subtask-check">${subtask.completed ? "✓" : "・"}</span>
-                    <span>${escapeHtml(subtask.title)}</span>
-                  </div>
-                `).join("")}
-              </div>
-            </div>
-            <div class="task-actions">
-              <button class="icon-button" data-toggle-task="${task.id}" aria-label="${task.completed ? "未完了に戻す" : "完了にする"}">
-                ${task.completed ? "↩" : "✓"}
-              </button>
-              <button class="icon-button" data-delete-task="${task.id}" aria-label="削除">🗑</button>
-            </div>
-          </article>
-        `;
-      }).join("");
-  }
-
-  function renderRecords() {
-    const completedCount = state.history.length;
-    const streak = calculateStreak();
-    const badges = getBadges();
-
-    dom.totalCompleted.textContent = completedCount;
-    dom.totalMinutes.textContent = state.totalMinutes;
-    dom.recordStreak.textContent = streak;
-    dom.badgeCount.textContent = badges.filter(badge => badge.unlocked).length;
-
-    renderWeeklyChart();
-    renderBadges(badges);
-    renderHistory();
-  }
-
-  function renderWeeklyChart() {
-    const days = lastSevenDays();
-    const counts = days.map(day => state.history.filter(item => dateKey(new Date(item.completedAt)) === day.key).length);
-    const max = Math.max(1, ...counts);
-    const total = counts.reduce((sum, count) => sum + count, 0);
-
-    dom.weeklySummary.textContent = `${total}回`;
-    dom.weeklyChart.innerHTML = days.map((day, index) => `
-      <div class="chart-day">
-        <div class="chart-bar-wrap">
-          <div class="chart-bar" style="height:${Math.max(5, (counts[index] / max) * 120)}px"></div>
-        </div>
-        <div class="chart-value">${counts[index]}</div>
-        <div class="chart-label">${day.label}</div>
-      </div>
-    `).join("");
-  }
-
-  function renderBadges(badges) {
-    dom.badgeList.innerHTML = badges.map(badge => `
-      <div class="badge ${badge.unlocked ? "" : "locked"}">
-        <span aria-hidden="true">${badge.icon}</span>
-        <div>
-          <strong>${badge.name}</strong>
-          <small>${badge.description}</small>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  function renderHistory() {
-    const history = [...state.history]
-      .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
-      .slice(0, 10);
-
-    if (history.length === 0) {
-      dom.historyList.innerHTML = `<p class="settings-note">達成すると、ここに記録が残ります。</p>`;
-      return;
-    }
-
-    dom.historyList.innerHTML = history.map(item => `
-      <div class="history-item">
-        <span class="history-icon" aria-hidden="true">🌱</span>
-        <div>
-          <strong>${escapeHtml(item.title)}</strong>
-          <small>${formatDateTime(item.completedAt)}・${item.minutes}分</small>
-        </div>
-        <span class="history-points">＋${item.points}pt</span>
-      </div>
-    `).join("");
-  }
-
-  function renderSettings() {
-    dom.focusMinutes.value = String(state.settings.focusMinutes);
-    dom.soundToggle.checked = state.settings.sound;
-    dom.confettiToggle.checked = state.settings.confetti;
-  }
-
-  function getBadges() {
-    return [
-      {
-        icon: "👣",
-        name: "最初の一歩",
-        description: "初めてミッションを達成",
-        unlocked: state.history.length >= 1
-      },
-      {
-        icon: "🔥",
-        name: "3日連続",
-        description: "3日続けて行動",
-        unlocked: calculateStreak() >= 3
-      },
-      {
-        icon: "🌟",
-        name: "10ミッション",
-        description: "10回の小さな達成",
-        unlocked: state.history.length >= 10
-      },
-      {
-        icon: "⏱️",
-        name: "集中60分",
-        description: "合計60分に到達",
-        unlocked: state.totalMinutes >= 60
-      },
-      {
-        icon: "🌳",
-        name: "育てる人",
-        description: "レベル7に到達",
-        unlocked: getLevelInfo().level >= 7
-      },
-      {
-        icon: "🏆",
-        name: "100の一歩",
-        description: "100ミッション達成",
-        unlocked: state.history.length >= 100
+      let raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) raw = localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
+      const saved = raw ? JSON.parse(raw) : null;
+      const base = defaultState();
+      if (!saved) return base;
+      const history = Array.isArray(saved.history) ? saved.history : [];
+      let sessions = Array.isArray(saved.sessions) ? saved.sessions : [];
+      if (!sessions.length && history.length) {
+        sessions = history.map(h => ({
+          id: `legacy-${h.id || uid()}`, taskId: "", subtaskId: "", title: h.title || "過去の一歩", parentTitle: h.parentTitle || "",
+          startedAt: h.completedAt || new Date().toISOString(), endedAt: h.completedAt || new Date().toISOString(), seconds: Math.max(60, Number(h.minutes || 1) * 60), reachedGoal: true, stepCompleted: true, points: Number(h.points || 0), legacy: true
+        }));
       }
-    ];
+      const totalSeconds = Number(saved.totalSeconds ?? (Number(saved.totalMinutes || 0) * 60));
+      const merged = {
+        ...base, ...saved, version: "2.2", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
+        settings: { ...base.settings, ...(saved.settings || {}) },
+        profile: { ...base.profile, ...(saved.profile || {}) },
+        analytics: { ...base.analytics, ...(saved.analytics || saved.v2Analytics || {}) },
+        tasks: Array.isArray(saved.tasks) ? saved.tasks.map(normalizeTask) : [], history, sessions,
+        activeTimer: saved.version === "2.1" ? (saved.activeTimer || null) : null
+      };
+      if (!merged.profile.setup) {
+        try {
+          const meta = JSON.parse(localStorage.getItem(LEGACY_META_KEY) || "null");
+          if (meta?.profile) merged.profile = { ...merged.profile, setup: true, age: meta.profile.age || "", role: meta.profile.role || "", analytics: !!meta.profile.analytics };
+        } catch {}
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      return merged;
+    } catch { return defaultState(); }
   }
 
-  function cloneDefaultState() {
+  function normalizeTask(task) {
+    const subtasks = Array.isArray(task.subtasks) ? task.subtasks : Array.isArray(task.steps) ? task.steps.map(s => ({
+      id: s.id || uid(), title: s.title || s.text || "5分だけ始める", minutes: s.minutes || 5, completed: !!(s.completed || s.done), progressSeconds: (s.progressMinutes || 0) * 60
+    })) : [];
     return {
-      points: 0,
-      totalMinutes: 0,
-      history: [],
-      tasks: [],
-      settings: { focusMinutes: 5, sound: false, confetti: true }
+      id: task.id || uid(), title: task.title || "タスク", due: task.due || "", estimate: Number(task.estimate || 15), priority: task.priority || "medium",
+      createdAt: task.createdAt || new Date().toISOString(), completed: !!task.completed,
+      subtasks: subtasks.map(s => ({ id: s.id || uid(), title: s.title || s.text || "5分だけ始める", minutes: Number(s.minutes || 5), completed: !!(s.completed || s.done), completedAt: s.completedAt || null, progressSeconds: Number(s.progressSeconds || (s.progressMinutes || 0) * 60), lastSessionSeconds: Number(s.lastSessionSeconds || 0) }))
     };
   }
 
-  function openModal(element) {
-    if (!element) return;
-    element.classList.add("open");
-    document.body.classList.add("modal-open");
-  }
+  function persist() { state.totalMinutes = Math.round(Number(state.totalSeconds || 0) / 60); try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {} }
 
-  function closeModal(element) {
-    if (!element) return;
-    element.classList.remove("open");
-    if (!document.querySelector(".modal.open")) {
-      document.body.classList.remove("modal-open");
-    }
-  }
-
-  function switchView(viewName) {
-    document.querySelectorAll(".view").forEach(view => {
-      view.classList.toggle("active", view.id === `view-${viewName}`);
-    });
-
-    document.querySelectorAll(".nav-button").forEach(button => {
-      button.classList.toggle("active", button.dataset.viewTarget === viewName);
-    });
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    if (viewName === "records") renderRecords();
-    if (viewName === "tasks") renderTasks();
-  }
-
-  function openTaskDialog() {
-    dom.taskForm.reset();
-    dom.autoBreakdown.checked = true;
-    dom.taskEstimate.value = "15";
-    dom.taskPriority.value = "medium";
-    dom.taskDue.value = "";
-    updateBreakdownPreview();
-    openModal(dom.taskDialog);
-    setTimeout(() => dom.taskTitle.focus(), 50);
-  }
-
-  function handleTaskSubmit(event) {
-    event.preventDefault();
-
-    const title = dom.taskTitle.value.trim();
-    if (!title) return;
-
-    const estimate = Number(dom.taskEstimate.value);
-    const subtasks = dom.autoBreakdown.checked
-      ? createBreakdown(title, estimate)
-      : [{ id: uid(), title: `5分だけ「${title}」を始める`, minutes: Math.min(estimate, 5), completed: false }];
-
+  function ensureStarterTask() {
+    if (state.tasks.length) return;
     state.tasks.push({
-      id: uid(),
-      title,
-      due: dom.taskDue.value || "",
-      estimate,
-      priority: dom.taskPriority.value,
-      createdAt: new Date().toISOString(),
-      completed: false,
-      subtasks
+      id: uid(), title: "Nudgeを試してみる", due: todayKey(), estimate: 5, priority: "medium", createdAt: new Date().toISOString(), completed: false,
+      subtasks: [{ id: uid(), title: "「5分だけ始める」を押してみる", minutes: 5, completed: false, progressSeconds: 0, lastSessionSeconds: 0 }]
     });
-
-    saveState();
-    closeModal(dom.taskDialog);
-    renderAll();
-    showToast("タスクを追加しました");
+    persist();
   }
 
-  function createBreakdown(title, estimate) {
-    const normalized = title.replace(/[。！!？?]$/, "");
-    const count = Math.max(1, Math.min(5, Math.ceil(estimate / 15)));
+  function renderAll() { renderHeader(); renderCharacter(); renderMissions(); renderTasks(); renderRecords(); renderSettings(); renderTodayLabel(); }
+  function renderTodayLabel() { dom.todayLabel.textContent = new Intl.DateTimeFormat("ja-JP", { month:"long", day:"numeric", weekday:"long" }).format(new Date()); }
+  function renderHeader() { dom.headerPoints.textContent = state.points; dom.headerStreak.textContent = calculateStreak(); }
 
-    const patterns = [];
-    const lower = normalized.toLowerCase();
+  function getLevelInfo() {
+    const level = Math.floor(state.points / 100) + 1, xp = state.points % 100;
+    const stages = [{min:1,emoji:"🌱",name:"Nudgeの芽"},{min:2,emoji:"🌿",name:"Nudgeの若葉"},{min:4,emoji:"🪴",name:"Nudgeの苗"},{min:7,emoji:"🌳",name:"Nudgeの木"},{min:10,emoji:"🌸",name:"Nudgeの花"}];
+    const stage = [...stages].reverse().find(x => level >= x.min) || stages[0]; return { level, xp, stage };
+  }
+  function renderCharacter() { const {level,xp,stage}=getLevelInfo(); dom.levelLabel.textContent=`Lv.${level}`; dom.characterName.textContent=stage.name; dom.characterEmoji.textContent=stage.emoji; dom.xpText.textContent=`${xp} / 100 XP`; dom.xpBar.style.width=`${xp}%`; }
 
-    if (/(レポート|論文|作文|文章|原稿|書く)/.test(normalized)) {
-      patterns.push(
-        "テーマと条件を確認する",
-        "使う資料を1つ決める",
-        "見出しを3つ作る",
-        "最初の100字を書く",
-        "読み直して1か所直す"
-      );
-    } else if (/(勉強|覚える|暗記|単語|試験|テスト)/.test(normalized)) {
-      patterns.push(
-        "教材を開いて範囲を確認する",
-        "最初の5問だけ取り組む",
-        "分からない所に印をつける",
-        "もう5問だけ取り組む",
-        "今日できた所を確認する"
-      );
-    } else if (/(掃除|片付け|整理)/.test(normalized)) {
-      patterns.push(
-        "片付ける場所を1か所決める",
-        "捨てる物を3つ選ぶ",
-        "元の場所に5つ戻す",
-        "机の上だけ整える",
-        "終わった状態を写真で確認する"
-      );
-    } else if (/(メール|連絡|返信|電話)/.test(normalized)) {
-      patterns.push(
-        "宛先と目的を確認する",
-        "伝えたいことを3点メモする",
-        "最初の1文を書く",
-        "本文を短くまとめる",
-        "読み直して送る"
-      );
-    } else if (/(練習|運動|筋トレ|走る)/.test(normalized)) {
-      patterns.push(
-        "道具を準備する",
-        "1分だけ体を動かす",
-        "基本動作を5回行う",
-        "もう1セットだけ行う",
-        "終わった回数を記録する"
-      );
-    } else {
-      patterns.push(
-        `必要なものを1つ準備する`,
-        `「${normalized}」の最初の作業を5分だけ行う`,
-        "次にやることを1つ決める",
-        "もう5分だけ続ける",
-        "できた所を記録する"
-      );
-    }
-
-    return patterns.slice(0, count).map((step, index) => ({
-      id: uid(),
-      title: step,
-      minutes: index === 0 ? 5 : Math.min(15, Math.max(5, Math.ceil(estimate / count))),
-      completed: false
+  function getDailyMissions() {
+    const c=[];
+    state.tasks.filter(t=>!t.completed).forEach(task => task.subtasks.filter(s=>!s.completed).forEach((sub,index)=>{
+      const dueScore=task.due?Math.max(0,10-daysUntil(task.due)):0, priorityScore=task.priority==="high"?20:task.priority==="medium"?10:0, resumeScore=sub.progressSeconds?40:0;
+      c.push({taskId:task.id,subtaskId:sub.id,title:sub.title,parentTitle:task.title,minutes:sub.minutes||5,priority:task.priority,due:task.due,score:resumeScore+priorityScore+dueScore-index,progressSeconds:sub.progressSeconds||0,lastSessionSeconds:sub.lastSessionSeconds||0});
     }));
+    return c.sort((a,b)=>b.score-a.score).slice(0,3);
   }
 
-  function updateBreakdownPreview() {
-    if (!dom.autoBreakdown.checked) {
-      dom.breakdownPreview.classList.remove("visible");
-      dom.breakdownPreview.innerHTML = "";
-      return;
-    }
-
-    const title = dom.taskTitle.value.trim() || "このタスク";
-    const estimate = Number(dom.taskEstimate.value || 15);
-    const breakdown = createBreakdown(title, estimate);
-
-    dom.breakdownPreview.classList.add("visible");
-    dom.breakdownPreview.innerHTML = `
-      <strong>自動分解の例</strong>
-      <ol>${breakdown.map(step => `<li>${escapeHtml(step.title)}</li>`).join("")}</ol>
-    `;
+  function renderMissions() {
+    const missions=getDailyMissions();
+    if(!missions.length){dom.missionList.innerHTML=`<div class="empty-state"><span aria-hidden="true">🎉</span><h3>今日のミッションは完了です</h3><p>新しいタスクを追加するか、今日はここまでにしましょう。</p><button class="primary-button" data-empty-add>タスクを追加</button></div>`;dom.missionList.querySelector("[data-empty-add]")?.addEventListener("click",openTaskDialog);return;}
+    dom.missionList.innerHTML=missions.map(m=>`<article class="mission-card"><span class="mission-priority priority-${m.priority}">${priorityLabel(m.priority)}</span><div class="mission-copy"><h3 class="mission-title">${escapeHtml(m.title)}</h3><p class="mission-parent">${escapeHtml(m.parentTitle)}</p><p class="mission-meta">${m.minutes}分${m.due?`・期限 ${formatDate(m.due)}`:""}</p>${m.progressSeconds?`<div class="resume-note">${progressText(m.progressSeconds,m.lastSessionSeconds)} → 続きから${state.settings.focusMinutes}分だけ</div>`:""}</div><button class="start-button" data-start-task="${m.taskId}" data-start-subtask="${m.subtaskId}">${m.progressSeconds?"続きから":""}${state.settings.focusMinutes}分だけ始める</button></article>`).join("");
   }
 
-  function handleMissionListClick(event) {
-    const button = event.target.closest("[data-start-task]");
-    if (!button) return;
-
-    const task = state.tasks.find(item => item.id === button.dataset.startTask);
-    const subtask = task?.subtasks.find(item => item.id === button.dataset.startSubtask);
-    if (!task || !subtask) return;
-
-    startFocus(task, subtask);
+  function renderTasks() {
+    let tasks=[...state.tasks]; if(currentFilter==="active")tasks=tasks.filter(t=>!t.completed);if(currentFilter==="completed")tasks=tasks.filter(t=>t.completed);
+    if(!tasks.length){dom.taskList.innerHTML=`<div class="empty-state"><span aria-hidden="true">📝</span><h3>表示するタスクがありません</h3><p>大きなタスクを登録し、小さなステップにしてみましょう。</p></div>`;return;}
+    dom.taskList.innerHTML=tasks.sort((a,b)=>Number(a.completed)-Number(b.completed)).map(task=>{
+      const done=task.subtasks.filter(s=>s.completed).length,pct=task.subtasks.length?Math.round(done/task.subtasks.length*100):0;
+      return `<article class="task-card ${task.completed?"completed":""}"><span class="task-priority priority-${task.priority}">${priorityLongLabel(task.priority)}</span><div class="task-copy"><h3 class="task-card-title">${escapeHtml(task.title)}</h3><div class="task-card-meta"><span>⏱ 予想${task.estimate}分</span><span>${task.due?`📅 ${formatDate(task.due)}`:"期限なし"}</span><span>☑ ${done}/${task.subtasks.length}</span></div><div class="step-progress"><div class="step-progress-head"><span>ステップ進捗</span><span>${done}/${task.subtasks.length}</span></div><div class="step-progress-track"><div class="step-progress-fill" style="width:${pct}%"></div></div></div><div class="subtask-list">${task.subtasks.map((sub,i)=>`<div class="subtask-row ${sub.completed?"completed":""}"><span class="subtask-check">${sub.completed?"✓":"・"}</span><span><b>${i+1}.</b> ${escapeHtml(sub.title)} <small class="muted">・${sub.minutes}分目安</small>${sub.progressSeconds&&!sub.completed?`<small class="muted"> ・ ${progressText(sub.progressSeconds,sub.lastSessionSeconds)}</small>`:""}</span>${!sub.completed?`<button data-start-step="${task.id}" data-subtask="${sub.id}">開始</button>`:""}</div>`).join("")}</div></div><div class="task-actions"><button class="icon-button" data-edit-plan="${task.id}" aria-label="計画を編集">✎</button><button class="icon-button" data-toggle-task="${task.id}" aria-label="${task.completed?"未完了に戻す":"完了にする"}">${task.completed?"↩":"✓"}</button><button class="icon-button" data-delete-task="${task.id}" aria-label="削除">🗑</button></div></article>`;
+    }).join("");
   }
 
-  function handleTaskListClick(event) {
-    const toggleButton = event.target.closest("[data-toggle-task]");
-    const deleteButton = event.target.closest("[data-delete-task]");
+  function renderRecords(){
+    dom.totalStarted.textContent=state.sessions.length;
+    dom.totalCompleted.textContent=state.history.length;
+    dom.totalMinutes.textContent=Math.round((state.totalSeconds||0)/60);
+    dom.recordStreak.textContent=calculateStreak();
+    renderComparison(); renderWeeklyChart(); renderBadges(getBadges()); renderHistory();
+  }
+  function renderComparison(){
+    const today=new Date(); const dow=(today.getDay()+6)%7; const thisMonday=new Date(today);thisMonday.setHours(0,0,0,0);thisMonday.setDate(today.getDate()-dow);
+    const lastMonday=new Date(thisMonday.getTime()-7*DAY_MS), lastSunday=new Date(thisMonday.getTime()-1);
+    const thisCount=state.sessions.filter(s=>new Date(s.endedAt||s.startedAt)>=thisMonday).length;
+    const lastCount=state.sessions.filter(s=>{const d=new Date(s.endedAt||s.startedAt);return d>=lastMonday&&d<=lastSunday}).length;
+    dom.thisWeekStarts.textContent=`${thisCount}回`;dom.lastWeekStarts.textContent=`${lastCount}回`;
+    const diff=thisCount-lastCount;
+    dom.comparisonMessage.textContent=lastCount===0&&thisCount===0?"最初の一歩から記録していきましょう。":diff>0?`先週より${diff}回多く始められています。`:diff===0?"先週と同じペースです。小さく続けられています。":`先週より${Math.abs(diff)}回少なめ。今日は1回だけでも十分です。`;
+  }
+  function renderWeeklyChart(){const days=lastSevenDays();const counts=days.map(d=>state.sessions.filter(x=>dateKey(new Date(x.endedAt||x.startedAt))===d.key).length),max=Math.max(1,...counts),total=counts.reduce((a,b)=>a+b,0);dom.weeklySummary.textContent=`${total}回`;dom.weeklyChart.innerHTML=days.map((d,i)=>`<div class="chart-day"><div class="chart-bar-wrap"><div class="chart-bar" style="height:${Math.max(5,(counts[i]/max)*120)}px"></div></div><div class="chart-value">${counts[i]}</div><div class="chart-label">${d.label}</div></div>`).join("");}
+  function renderBadges(badges){dom.badgeList.innerHTML=badges.map(b=>`<div class="badge ${b.unlocked?"":"locked"}"><span aria-hidden="true">${b.icon}</span><div><strong>${b.name}</strong><small>${b.description}</small></div></div>`).join("");}
+  function renderHistory(){const h=[...state.sessions].sort((a,b)=>new Date(b.endedAt||b.startedAt)-new Date(a.endedAt||a.startedAt)).slice(0,10);dom.historyList.innerHTML=h.length?h.map(x=>`<div class="history-item"><span class="history-icon" aria-hidden="true">${x.reachedGoal?"👣":"🌱"}</span><div><strong>${escapeHtml(x.title)}</strong><small>${formatDateTime(x.endedAt||x.startedAt)}・${formatDuration(x.seconds)} <span class="activity-tag">${x.reachedGoal?"目標達成":"途中まで"}</span></small></div><span class="history-points">${x.points?`＋${x.points}pt`:"記録"}</span></div>`).join(""):`<p class="settings-note">始めると、ここに「小さな一歩」が残ります。</p>`;}
+  function renderSettings(){dom.focusMinutes.value=String(state.settings.focusMinutes);dom.soundToggle.checked=state.settings.sound;dom.confettiToggle.checked=state.settings.confetti;}
+  function getBadges(){return [{icon:"👣",name:"最初の一歩",description:"初めて集中を記録",unlocked:state.sessions.length>=1},{icon:"🔥",name:"3日連続",description:"3日続けて始めた",unlocked:calculateStreak()>=3},{icon:"🌟",name:"10回スタート",description:"10回の小さな開始",unlocked:state.sessions.length>=10},{icon:"⏱️",name:"集中60分",description:"合計60分に到達",unlocked:(state.totalSeconds||0)>=3600},{icon:"🌳",name:"育てる人",description:"レベル7に到達",unlocked:getLevelInfo().level>=7},{icon:"🏆",name:"100の一歩",description:"100回始めた",unlocked:state.sessions.length>=100}];}
 
-    if (toggleButton) {
-      const task = state.tasks.find(item => item.id === toggleButton.dataset.toggleTask);
-      if (!task) return;
+  function openTaskDialog(){dom.taskForm.reset();dom.autoBreakdown.checked=true;dom.taskEstimate.value="30";dom.taskPriority.value="medium";dom.taskDue.value="";dom.taskDetails.hidden=true;dom.toggleTaskDetails.setAttribute("aria-expanded","false");dom.toggleTaskDetails.textContent="詳しく計画する";editingTaskId=null;draftDirty=false;refreshDraft(true);openModal(dom.taskDialog);setTimeout(()=>dom.taskTitle.focus(),60);}
+  function toggleTaskDetails(){const willOpen=dom.taskDetails.hidden;dom.taskDetails.hidden=!willOpen;dom.toggleTaskDetails.setAttribute("aria-expanded",String(willOpen));dom.toggleTaskDetails.textContent=willOpen?"詳細を閉じる":"詳しく計画する";if(willOpen)refreshDraft(true);}
+  function quickStartFromTitle(){const title=dom.taskTitle.value.trim();if(!title){showToast("まず、やることを入力してください");dom.taskTitle.focus();return;}const task={id:uid(),title,due:"",estimate:5,priority:"medium",createdAt:new Date().toISOString(),completed:false,subtasks:[{id:uid(),title:`まず5分だけ：${title}`,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0}]};state.tasks.unshift(task);persist();closeModal(dom.taskDialog);renderAll();startFocus(task,task.subtasks[0]);}
+  function refreshDraftIfClean(){if(!draftDirty)refreshDraft(true);else renderDraftPreview();}
+  function refreshDraft(force=false){if(draftDirty&&!force)return;const title=dom.taskTitle.value.trim()||"このタスク",estimate=Number(dom.taskEstimate.value||30);draftSteps=dom.autoBreakdown.checked?createBreakdown(title,estimate):[{id:uid(),title:`5分だけ「${title}」を始める`,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0}];renderDraftPreview();}
+  function renderDraftPreview(){const estimate=Number(dom.taskEstimate.value||30),sum=draftSteps.reduce((a,s)=>a+Number(s.minutes||0),0);dom.breakdownPreview.classList.add("visible");dom.breakdownPreview.innerHTML=`<strong>プラン案</strong><p style="margin:0 0 8px;color:var(--muted)">予想${estimate}分 → ${draftSteps.length}ステップ（目安合計${sum}分）。集中タイマーは${state.settings.focusMinutes}分です。</p><ol>${draftSteps.map(s=>`<li>${escapeHtml(s.title)} <small>・${s.minutes}分</small></li>`).join("")}</ol><span class="ver2-note">✦ Ver.2.2：端末内ルールで案を作成・外部AI通信なし</span>`;}
 
-      task.completed = !task.completed;
-      if (task.completed) {
-        task.subtasks.forEach(subtask => subtask.completed = true);
+  function createBreakdown(title,estimate){
+    const t=(title||"このタスク").replace(/[。！!？?]$/,"");let p;
+    if(/レポート|論文|作文|文章|原稿|書く|志望理由|願書/.test(t))p=["条件・提出形式を確認する","必要な資料を1つ集める","見出し・要点を3つ作る","最初の部分を書く","読み直して1か所直す","提出前の確認をする"];
+    else if(/勉強|覚える|暗記|単語|試験|テスト|問題集|宿題|課題/.test(t))p=["範囲とゴールを確認する","教材を開いて最初の5問だけ進める","分からない所に印をつける","次の5問だけ進める","間違いを見直す","次回の開始位置を決める"];
+    else if(/掃除|片付け|整理/.test(t))p=["対象の場所を1か所決める","不要な物を3つ分ける","元の場所に5つ戻す","一角だけ整える","残りをもう5分だけ進める","終わった場所を確認する"];
+    else if(/メール|連絡|返信|電話|申込|出願/.test(t))p=["期限と必要事項を確認する","必要な情報を3点メモする","最初の入力・1文を進める","残りの内容を埋める","誤りがないか確認する","送信・提出前の最終確認をする"];
+    else if(/練習|運動|筋トレ|走る/.test(t))p=["必要なものを準備する","軽く始める","基本動作を少し進める","もう1セットだけ続ける","記録を残す"];
+    else p=["ゴールと条件を確認する","必要なものを1つ準備する",`「${t}」の最初の作業を5分だけ行う`,"次にやることを1つ決める","もう5分だけ続ける","できた所と次の開始位置を記録する"];
+    const n=Math.max(1,Math.min(p.length,Math.ceil(Number(estimate||30)/12)));const each=Math.max(5,Math.min(15,Math.ceil(Number(estimate||30)/n)));
+    return p.slice(0,n).map((x,i)=>({id:uid(),title:i===0&&n===1?`まず5分だけ：${x}`:x,minutes:i===0?5:each,completed:false,progressSeconds:0,lastSessionSeconds:0}));
+  }
+
+  function handleTaskSubmit(event){event.preventDefault();const title=dom.taskTitle.value.trim();if(!title){showToast("タスク名を入力してください");return;}let steps=normalizeDraft();if(!steps.length)steps=createBreakdown(title,Number(dom.taskEstimate.value||30));state.tasks.unshift({id:uid(),title,due:dom.taskDue.value||"",estimate:Number(dom.taskEstimate.value||30),priority:dom.taskPriority.value,createdAt:new Date().toISOString(),completed:false,subtasks:steps});persist();sendTelemetry("task_created", {taskCategory: classifyTask(title)});closeModal(dom.taskDialog);renderAll();showToast("計画を保存しました。好きなステップから5分だけ！");}
+
+  function openPlanEditor(taskId,steps,title){editingTaskId=taskId;draftSteps=(steps||[]).map(s=>({...s,id:s.id||uid(),minutes:Number(s.minutes||5),progressSeconds:Number(s.progressSeconds||0),lastSessionSeconds:Number(s.lastSessionSeconds||0)}));dom.planDialogTitle.textContent=title?`「${title}」の計画`:`ステップを編集`;dom.planNewStep.value="";renderPlanEditor();openModal(dom.planDialog);}
+  function renderPlanEditor(){dom.planEditorList.innerHTML=draftSteps.length?draftSteps.map((s,i)=>`<div class="plan-editor-row-v21"><strong>${i+1}</strong><input type="text" data-step-input="${s.id}" value="${escapeAttr(s.title)}" maxlength="80" aria-label="ステップ${i+1}"><label class="plan-minutes"><input type="number" data-step-minutes="${s.id}" value="${Number(s.minutes||5)}" min="1" max="120" aria-label="ステップ${i+1}の予想分数"><span>分</span></label><div class="plan-editor-actions"><button type="button" data-up="${s.id}" ${i===0?"disabled":""}>↑</button><button type="button" data-down="${s.id}" ${i===draftSteps.length-1?"disabled":""}>↓</button><button type="button" data-del="${s.id}" aria-label="削除">×</button></div></div>`).join(""):`<p class="settings-note">ステップがありません。「＋追加」で1つ作ってください。</p>`;}
+  function addPlanStep(){const v=dom.planNewStep.value.trim();if(!v)return;draftSteps.push({id:uid(),title:v,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0});dom.planNewStep.value="";draftDirty=true;renderPlanEditor();}
+  function handlePlanInput(event){const id=event.target.dataset.stepInput||event.target.dataset.stepMinutes;if(!id)return;const s=draftSteps.find(x=>x.id===id);if(!s)return;if(event.target.dataset.stepInput)s.title=event.target.value;else s.minutes=Math.max(1,Math.min(120,Number(event.target.value||5)));draftDirty=true;}
+  function handlePlanAction(event){const b=event.target.closest("button");if(!b)return;const id=b.dataset.up||b.dataset.down||b.dataset.del;if(!id)return;const i=draftSteps.findIndex(x=>x.id===id);if(i<0)return;if(b.dataset.up&&i>0)[draftSteps[i-1],draftSteps[i]]=[draftSteps[i],draftSteps[i-1]];if(b.dataset.down&&i<draftSteps.length-1)[draftSteps[i+1],draftSteps[i]]=[draftSteps[i],draftSteps[i+1]];if(b.dataset.del)draftSteps.splice(i,1);draftDirty=true;renderPlanEditor();}
+  function normalizeDraft(){return draftSteps.map(s=>({...s,title:String(s.title||"").trim(),minutes:Math.max(1,Number(s.minutes||5)),completed:!!s.completed,progressSeconds:Number(s.progressSeconds||0),lastSessionSeconds:Number(s.lastSessionSeconds||0)})).filter(s=>s.title);}
+  function commitPlan(){const steps=normalizeDraft();if(!steps.length){showToast("ステップを1つ以上残してください");return;}draftSteps=steps;draftDirty=true;if(editingTaskId){const task=state.tasks.find(t=>t.id===editingTaskId);if(task){task.subtasks=steps;task.completed=steps.every(s=>s.completed);analytics("planEdits");sendTelemetry("plan_edit", {taskCategory: classifyTask(task.title)});persist();renderAll();showToast("計画を更新しました");}}else{renderDraftPreview();showToast("このプランでタスクを追加できます");}closePlanEditor();}
+  function closePlanEditor(){closeModal(dom.planDialog);}
+
+  function handleMissionListClick(event){const b=event.target.closest("[data-start-task]");if(!b)return;const task=state.tasks.find(t=>t.id===b.dataset.startTask),sub=task?.subtasks.find(s=>s.id===b.dataset.startSubtask);if(task&&sub)startFocus(task,sub);}
+  function handleTaskListClick(event){
+    const start=event.target.closest("[data-start-step]"),edit=event.target.closest("[data-edit-plan]"),toggle=event.target.closest("[data-toggle-task]"),del=event.target.closest("[data-delete-task]");
+    if(start){const task=state.tasks.find(t=>t.id===start.dataset.startStep),sub=task?.subtasks.find(s=>s.id===start.dataset.subtask);if(task&&sub)startFocus(task,sub);return;}
+    if(edit){const task=state.tasks.find(t=>t.id===edit.dataset.editPlan);if(task)openPlanEditor(task.id,task.subtasks,task.title);return;}
+    if(toggle){const task=state.tasks.find(t=>t.id===toggle.dataset.toggleTask);if(!task)return;task.completed=!task.completed;task.subtasks.forEach(s=>s.completed=task.completed);persist();renderAll();return;}
+    if(del){const task=state.tasks.find(t=>t.id===del.dataset.deleteTask);if(!task)return;if(!confirm(`「${task.title}」を削除しますか？`))return;state.tasks=state.tasks.filter(t=>t.id!==task.id);persist();renderAll();showToast("タスクを削除しました");}
+  }
+
+  function startFocus(task,sub){
+    if(timer)clearInterval(timer);activeMission={taskId:task.id,subtaskId:sub.id};pendingNextMission=null;sessionWorkSeconds=0;sessionGoalReached=false;sessionStartedAt=new Date().toISOString();totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;persistTick=0;
+    dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=`${task.title} ・ ステップ ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`;dom.focusMessage.textContent=sub.progressSeconds?"前回の続きから。今日も小さく始めます。":"完璧にやらなくていい。始めた時点で前進です。";dom.toggleTimer.textContent="一時停止";dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";dom.focusDialog.classList.remove("goal-pulse");updateTimerDisplay();openModal(dom.focusDialog);analytics("focusStarts");sendTelemetry("focus_start", {taskCategory: classifyTask(task.title)});checkpointTimer();playTone(520,.08);startTicker();
+  }
+  function startTicker(){if(timer)clearInterval(timer);timer=setInterval(()=>{if(!timerRunning)return;remainingSeconds=Math.max(0,remainingSeconds-1);sessionWorkSeconds+=1;persistTick+=1;updateTimerDisplay();if(persistTick>=5){persistTick=0;checkpointTimer();}if(remainingSeconds<=0)handleGoalReached();},1000);}
+  function updateTimerDisplay(){const r=Math.max(0,remainingSeconds),m=Math.floor(r/60),s=r%60;dom.timerDisplay.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;const progress=totalTimerSeconds?Math.max(0,Math.min(1,r/totalTimerSeconds)):0;dom.timerProgress.style.strokeDasharray=String(CIRCLE_LENGTH);dom.timerProgress.style.strokeDashoffset=String(CIRCLE_LENGTH*(1-progress));}
+  function toggleTimer(){if(!activeMission)return;if(remainingSeconds<=0){beginAnotherBlock();return;}timerRunning=!timerRunning;dom.toggleTimer.textContent=timerRunning?"一時停止":"再開する";checkpointTimer();}
+  function beginAnotherBlock(){sessionGoalReached=false;sessionStartedAt=new Date().toISOString();sessionWorkSeconds=0;totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;dom.toggleTimer.textContent="一時停止";dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";dom.focusMessage.textContent=`もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;updateTimerDisplay();checkpointTimer();startTicker();}
+  function handleGoalReached(){
+    if(timer){clearInterval(timer);timer=null;}timerRunning=false;remainingSeconds=0;sessionGoalReached=true;
+    const saved=commitSessionSegment(true);
+    analytics("focusGoals");
+    sendTelemetry("focus_goal", {focusSeconds: saved.seconds, taskCategory: classifyTask(taskTitleForActiveMission())});
+    dom.focusMessage.innerHTML=`<span class="focus-success">🎉 ${state.settings.focusMinutes}分達成！<br>ここで止めても、今日の成功です。</span>`;
+    dom.toggleTimer.textContent=`もう${state.settings.focusMinutes}分`;
+    dom.completeFocus.textContent="ステップも完了";
+    dom.stopFocus.textContent="今日はここまで";
+    dom.focusDialog.classList.remove("goal-pulse");void dom.focusDialog.offsetWidth;dom.focusDialog.classList.add("goal-pulse");
+    showToast(saved.points?`${state.settings.focusMinutes}分達成！ ＋${saved.points}pt`: `${state.settings.focusMinutes}分達成！`);playSuccessSound();if(state.settings.confetti)launchConfetti();checkpointTimer(true);renderAll();
+  }
+  function commitSessionSegment(reachedGoal=false,stepCompleted=false){
+    if(!activeMission||sessionWorkSeconds<=0)return {seconds:0,points:0};
+    const task=state.tasks.find(t=>t.id===activeMission.taskId),sub=task?.subtasks.find(s=>s.id===activeMission.subtaskId);if(!task||!sub)return {seconds:0,points:0};
+    const seconds=sessionWorkSeconds;sub.progressSeconds=Number(sub.progressSeconds||0)+seconds;sub.lastSessionSeconds=seconds;
+    const points=reachedGoal?10:0;state.points+=points;state.totalSeconds=Number(state.totalSeconds||0)+seconds;
+    state.sessions.push({id:uid(),taskId:task.id,subtaskId:sub.id,title:sub.title,parentTitle:task.title,startedAt:sessionStartedAt||new Date(Date.now()-seconds*1000).toISOString(),endedAt:new Date().toISOString(),seconds,reachedGoal,stepCompleted,points});
+    sessionWorkSeconds=0;sessionStartedAt=new Date().toISOString();persist();return {seconds,points};
+  }
+  function savePartialAndClose(){const hadGoal=sessionGoalReached;if(sessionWorkSeconds>0){const seg=commitSessionSegment(false,false);analytics("partialSaves");sendTelemetry("partial_save", {focusSeconds: seg.seconds, taskCategory: classifyTask(taskTitleForActiveMission())});}clearActiveTimer();closeModal(dom.focusDialog);activeMission=null;renderAll();showToast(hadGoal?"5分達成を保存しました。今日はここまで！":"途中まで保存しました。次回は続きから5分だけ。");maybeOfferProfile(hadGoal);}
+  function closeFocusDialog(savePartial){const hadGoal=sessionGoalReached;if(savePartial&&sessionWorkSeconds>0){const seg=commitSessionSegment(false,false);analytics("partialSaves");sendTelemetry("partial_save", {focusSeconds: seg.seconds, taskCategory: classifyTask(taskTitleForActiveMission())});}clearActiveTimer();activeMission=null;closeModal(dom.focusDialog);renderAll();maybeOfferProfile(hadGoal);}
+
+  function completeActiveMission(){
+    if(!activeMission)return;const task=state.tasks.find(t=>t.id===activeMission.taskId),sub=task?.subtasks.find(s=>s.id===activeMission.subtaskId);if(!task||!sub)return;
+    if(timer){clearInterval(timer);timer=null;}timerRunning=false;if(sessionWorkSeconds>0)commitSessionSegment(false,true);
+    const currentIndex=task.subtasks.findIndex(s=>s.id===sub.id);sub.completed=true;sub.completedAt=new Date().toISOString();task.completed=task.subtasks.every(s=>s.completed);
+    const completionBonus=10+(task.priority==="high"?5:0);state.points+=completionBonus;state.history.push({id:uid(),title:sub.title,parentTitle:task.title,completedAt:new Date().toISOString(),minutes:Math.max(1,Math.round((sub.lastSessionSeconds||60)/60)),points:completionBonus});analytics("focusCompletions");sendTelemetry("step_complete", {taskCategory: classifyTask(task.title)});persist();clearActiveTimer();closeModal(dom.focusDialog);
+    const next=task.subtasks.find((s,i)=>i>currentIndex&&!s.completed)||task.subtasks.find(s=>!s.completed);pendingNextMission=next?{taskId:task.id,subtaskId:next.id}:null;dom.rewardPoints.textContent=completionBonus;dom.rewardMessage.textContent=pendingNextMission?`ステップを完了しました。続けるなら次も${state.settings.focusMinutes}分だけ。止めても十分です。`:"タスクのステップを完了しました。今日の一歩は記録されています。";dom.rewardNext.hidden=!pendingNextMission;dom.rewardStop.textContent=pendingNextMission?"今日はここまで":"ホームへ戻る";openModal(dom.rewardDialog);playSuccessSound();if(state.settings.confetti)launchConfetti();activeMission=null;sessionWorkSeconds=0;renderAll();
+  }
+  function stopAfterReward(){closeModal(dom.rewardDialog);pendingNextMission=null;switchView("home");maybeOfferProfile(true);}
+  function continueAfterReward(){const next=pendingNextMission;pendingNextMission=null;closeModal(dom.rewardDialog);if(next){const task=state.tasks.find(t=>t.id===next.taskId),sub=task?.subtasks.find(s=>s.id===next.subtaskId);if(task&&sub&&!sub.completed){startFocus(task,sub);return;}}switchView("home");}
+
+  function checkpointTimer(clear=false){
+    if(clear||!activeMission){state.activeTimer=null;persist();return;}
+    state.activeTimer={...activeMission,remainingSeconds,totalTimerSeconds,sessionWorkSeconds,timerRunning:false,sessionStartedAt,sessionGoalReached,savedAt:new Date().toISOString()};
+    persist();
+  }
+  function clearActiveTimer(){if(timer)clearInterval(timer);timer=null;timerRunning=false;state.activeTimer=null;persist();}
+  function restoreSavedFocus(){
+    const a=state.activeTimer;if(!a)return;const task=state.tasks.find(t=>t.id===a.taskId),sub=task?.subtasks.find(s=>s.id===a.subtaskId);if(!task||!sub||sub.completed){state.activeTimer=null;persist();return;}
+    activeMission={taskId:task.id,subtaskId:sub.id};remainingSeconds=Math.max(0,Number(a.remainingSeconds||0));totalTimerSeconds=Math.max(60,Number(a.totalTimerSeconds||state.settings.focusMinutes*60));sessionWorkSeconds=Math.max(0,Number(a.sessionWorkSeconds||0));sessionStartedAt=a.sessionStartedAt||new Date().toISOString();sessionGoalReached=!!a.sessionGoalReached;timerRunning=false;
+    dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=`${task.title} ・ 前回の途中から`;dom.focusMessage.textContent="前回の集中を途中保存しています。再開すると、残り時間から続けられます。";dom.toggleTimer.textContent=remainingSeconds>0?"再開する":`もう${state.settings.focusMinutes}分`;dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";updateTimerDisplay();openModal(dom.focusDialog);showToast("前回の集中を復元しました");
+  }
+
+  function openProfile(){dom.profileAge.value=state.profile.age||"";dom.profileRole.value=state.profile.role||"";dom.profileAnalytics.checked=!!state.profile.analytics;openModal(dom.profileDialog);}
+  function saveProfile(event){event.preventDefault();state.profile={...state.profile,setup:true,dismissed:false,age:dom.profileAge.value,role:dom.profileRole.value,analytics:dom.profileAnalytics.checked};persist();if(state.profile.analytics){initTelemetry().then(()=>sendTelemetry("profile_saved"));}closeModal(dom.profileDialog);showToast(state.profile.analytics?"プロフィールを保存しました。匿名分析への協力がONです":"プロフィールを保存しました");}
+  function dismissProfile(){state.profile.dismissed=true;persist();closeModal(dom.profileDialog);showToast("いつでも設定から変更できます");}
+  function maybeOfferProfile(success){if(!success||state.profile?.setup||state.profile?.dismissed)return;setTimeout(openProfile,350);}
+  function analytics(key){if(!state.profile?.analytics)return;if(typeof state.analytics[key]==="number")state.analytics[key]+=1;const today=todayKey();if(!state.analytics.activeDays.includes(today))state.analytics.activeDays.push(today);persist();}
+
+  async function initTelemetry(){
+    if(!TELEMETRY_ENABLED || !state.profile?.analytics || !window.supabase?.createClient) return false;
+    try{
+      if(!supabaseClient) supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+      const {data:{session}}=await supabaseClient.auth.getSession();
+      if(!session){
+        const {error}=await supabaseClient.auth.signInAnonymously();
+        if(error) throw error;
       }
-      saveState();
-      renderAll();
-      return;
-    }
-
-    if (deleteButton) {
-      const task = state.tasks.find(item => item.id === deleteButton.dataset.deleteTask);
-      if (!task) return;
-      if (!confirm(`「${task.title}」を削除しますか？`)) return;
-
-      state.tasks = state.tasks.filter(item => item.id !== task.id);
-      saveState();
-      renderAll();
-      showToast("タスクを削除しました");
+      state.telemetry={...(state.telemetry||{}),connectedOnce:true,lastError:""};persist();return true;
+    }catch(error){
+      state.telemetry={...(state.telemetry||{}),lastError:String(error?.message||error)};persist();console.warn("Nudge telemetry init failed",error);return false;
     }
   }
 
-  function startFocus(task, subtask) {
-    activeMission = { taskId: task.id, subtaskId: subtask.id };
-    totalTimerSeconds = state.settings.focusMinutes * 60;
-    remainingSeconds = totalTimerSeconds;
-    timerRunning = true;
-
-    dom.focusTaskTitle.textContent = subtask.title;
-    dom.focusParentTitle.textContent = task.title;
-    dom.focusMessage.textContent = "完璧にやらなくていい。始めた時点で前進です。";
-    dom.toggleTimer.textContent = "一時停止";
-    updateTimerDisplay();
-    openModal(dom.focusDialog);
-    playTone(520, 0.08);
-
-    timer = setInterval(() => {
-      if (!timerRunning) return;
-      remainingSeconds -= 1;
-      updateTimerDisplay();
-
-      if (remainingSeconds <= 0) {
-        clearInterval(timer);
-        timer = null;
-        timerRunning = false;
-        dom.focusMessage.textContent = "時間になりました。ここで止めても、もう少し続けても大丈夫。";
-        dom.toggleTimer.textContent = "もう1分";
-        playTone(700, 0.12);
-      }
-    }, 1000);
-  }
-
-  function updateTimerDisplay() {
-    const minutes = Math.floor(Math.max(0, remainingSeconds) / 60);
-    const seconds = Math.max(0, remainingSeconds) % 60;
-    dom.timerDisplay.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-
-    const progress = totalTimerSeconds === 0 ? 1 : remainingSeconds / totalTimerSeconds;
-    dom.timerProgress.style.strokeDasharray = String(CIRCLE_LENGTH);
-    dom.timerProgress.style.strokeDashoffset = String(CIRCLE_LENGTH * (1 - progress));
-  }
-
-  function toggleTimer() {
-    if (remainingSeconds <= 0) {
-      totalTimerSeconds = 60;
-      remainingSeconds = 60;
-      timerRunning = true;
-      dom.toggleTimer.textContent = "一時停止";
-      updateTimerDisplay();
-
-      timer = setInterval(() => {
-        if (!timerRunning) return;
-        remainingSeconds -= 1;
-        updateTimerDisplay();
-        if (remainingSeconds <= 0) {
-          clearInterval(timer);
-          timer = null;
-          timerRunning = false;
-          dom.focusMessage.textContent = "もう1分、完了。小さな積み重ねです。";
-          dom.toggleTimer.textContent = "もう1分";
-          playTone(700, 0.12);
-        }
-      }, 1000);
-      return;
-    }
-
-    timerRunning = !timerRunning;
-    dom.toggleTimer.textContent = timerRunning ? "一時停止" : "再開する";
-  }
-
-  function closeFocusDialog() {
-    if (timer) clearInterval(timer);
-    timer = null;
-    timerRunning = false;
-    activeMission = null;
-    closeModal(dom.focusDialog);
-  }
-
-  function completeActiveMission() {
-    if (!activeMission) return;
-
-    const task = state.tasks.find(item => item.id === activeMission.taskId);
-    const subtask = task?.subtasks.find(item => item.id === activeMission.subtaskId);
-    if (!task || !subtask) return;
-
-    if (timer) clearInterval(timer);
-    timer = null;
-    timerRunning = false;
-
-    subtask.completed = true;
-    task.completed = task.subtasks.every(item => item.completed);
-
-    const elapsedSeconds = Math.max(1, totalTimerSeconds - Math.max(remainingSeconds, 0));
-    const elapsedMinutes = Math.max(1, Math.round(elapsedSeconds / 60));
-    const basePoints = 20;
-    const streakBonus = calculateStreak() >= 2 ? 5 : 0;
-    const priorityBonus = task.priority === "high" ? 5 : 0;
-    const earned = basePoints + streakBonus + priorityBonus;
-
-    state.points += earned;
-    state.totalMinutes += elapsedMinutes;
-    state.history.push({
-      id: uid(),
-      title: subtask.title,
-      parentTitle: task.title,
-      completedAt: new Date().toISOString(),
-      minutes: elapsedMinutes,
-      points: earned
-    });
-
-    saveState();
-    closeModal(dom.focusDialog);
-
-    dom.rewardPoints.textContent = earned;
-    dom.rewardMessage.textContent = rewardMessage();
-    openModal(dom.rewardDialog);
-
-    playSuccessSound();
-    if (state.settings.confetti) launchConfetti();
-
-    activeMission = null;
-    renderAll();
-  }
-
-  function rewardMessage() {
-    const { level, stage } = getLevelInfo();
-    if (state.points % 100 < 30) {
-      return `${stage.name}が成長しました。現在レベル${level}です。`;
-    }
-    return "始めることに成功しました。次も小さな一歩で大丈夫。";
-  }
-
-  function calculateStreak() {
-    const uniqueDates = [...new Set(state.history.map(item => dateKey(new Date(item.completedAt))))].sort().reverse();
-    if (uniqueDates.length === 0) return 0;
-
-    const today = new Date();
-    const todayString = dateKey(today);
-    const yesterdayString = dateKey(new Date(today.getTime() - DAY_MS));
-
-    if (uniqueDates[0] !== todayString && uniqueDates[0] !== yesterdayString) return 0;
-
-    let streak = 1;
-    let cursor = new Date(`${uniqueDates[0]}T12:00:00`);
-
-    for (let i = 1; i < uniqueDates.length; i += 1) {
-      cursor = new Date(cursor.getTime() - DAY_MS);
-      if (uniqueDates[i] === dateKey(cursor)) streak += 1;
-      else break;
-    }
-
-    return streak;
-  }
-
-  function addSampleTasks() {
-    const samples = [
-      {
-        title: "英語レポートを書く",
-        estimate: 60,
-        priority: "high",
-        due: offsetDateKey(2)
-      },
-      {
-        title: "机の上を片付ける",
-        estimate: 15,
-        priority: "low",
-        due: todayKey()
-      }
-    ];
-
-    samples.forEach(sample => {
-      state.tasks.push({
-        id: uid(),
-        ...sample,
-        createdAt: new Date().toISOString(),
-        completed: false,
-        subtasks: createBreakdown(sample.title, sample.estimate)
-      });
-    });
-
-    saveState();
-    renderAll();
-    showToast("サンプルタスクを追加しました");
-  }
-
-  function resetData() {
-    if (!confirm("ポイント、記録、タスクをすべて初期化します。よろしいですか？")) return;
-
-    state = cloneDefaultState();
-    saveState();
-    ensureStarterTask();
-    renderAll();
-    switchView("home");
-    showToast("データを初期化しました");
-  }
-
-  function launchConfetti() {
-    const colors = ["#4f8f63", "#e6a33d", "#9bbf81", "#f1c85b", "#76a6d8"];
-    for (let i = 0; i < 34; i += 1) {
-      const piece = document.createElement("span");
-      piece.className = "confetti-piece";
-      piece.style.left = `${Math.random() * 100}vw`;
-      piece.style.color = colors[Math.floor(Math.random() * colors.length)];
-      piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 240}px`);
-      piece.style.animationDelay = `${Math.random() * 0.35}s`;
-      piece.style.transform = `rotate(${Math.random() * 180}deg)`;
-      document.body.appendChild(piece);
-      setTimeout(() => piece.remove(), 2100);
+  async function sendTelemetry(eventType,{focusSeconds=0,taskCategory="other"}={}){
+    if(!state.profile?.analytics || !TELEMETRY_ENABLED) return;
+    try{
+      const ok=await initTelemetry();if(!ok)return;
+      const {data:{user}}=await supabaseClient.auth.getUser();if(!user)return;
+      const payload={
+        user_id:user.id,
+        event_type:eventType,
+        age_group:normalizeAgeGroup(state.profile.age),
+        role_group:normalizeRoleGroup(state.profile.role),
+        focus_seconds:Math.max(0,Math.min(86400,Number(focusSeconds||0))),
+        task_category:taskCategory||"other",
+        app_version:"2.2"
+      };
+      const {error}=await supabaseClient.from("nudge_events").insert(payload);
+      if(error) throw error;
+      state.telemetry={...(state.telemetry||{}),connectedOnce:true,lastError:""};persist();
+    }catch(error){
+      state.telemetry={...(state.telemetry||{}),lastError:String(error?.message||error)};persist();console.warn("Nudge telemetry send failed",error);
     }
   }
 
-  function playTone(frequency, duration) {
-    if (!state.settings.sound) return;
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      const context = new AudioContext();
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.frequency.value = frequency;
-      oscillator.type = "sine";
-      gain.gain.setValueAtTime(0.08, context.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + duration);
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-      oscillator.start();
-      oscillator.stop(context.currentTime + duration);
-    } catch {
-      // 音声APIが利用できない環境では無音のまま動作する。
-    }
-  }
+  function taskTitleForActiveMission(){const task=state.tasks.find(t=>t.id===activeMission?.taskId);return task?.title||"";}
+  function classifyTask(title){const t=String(title||"");if(/勉強|暗記|単語|試験|テスト|問題集|宿題|課題/.test(t))return"study";if(/レポート|論文|作文|文章|原稿|書く|志望理由|願書/.test(t))return"writing";if(/掃除|片付け|整理/.test(t))return"cleaning";if(/練習|運動|筋トレ|走る/.test(t))return"exercise";if(/メール|連絡|返信|電話|申込|出願/.test(t))return"communication";return"other";}
+  function normalizeAgeGroup(v){return ["10代","20代","30代","40代","50代以上"].includes(v)?v:"回答しない";}
+  function normalizeRoleGroup(v){return ["中学生","高校生","大学・専門学校生","社会人","その他"].includes(v)?v:"回答しない";}
 
-  function playSuccessSound() {
-    if (!state.settings.sound) return;
-    playTone(660, 0.10);
-    setTimeout(() => playTone(880, 0.12), 100);
-  }
+  function calculateStreak(){const unique=[...new Set(state.sessions.map(x=>dateKey(new Date(x.endedAt||x.startedAt))))].sort().reverse();if(!unique.length)return 0;const today=todayKey(),yesterday=dateKey(new Date(Date.now()-DAY_MS));if(unique[0]!==today&&unique[0]!==yesterday)return 0;let streak=1,cursor=new Date(`${unique[0]}T12:00:00`);for(let i=1;i<unique.length;i++){cursor=new Date(cursor.getTime()-DAY_MS);if(unique[i]===dateKey(cursor))streak++;else break;}return streak;}
+  function addSampleTasks(){[{title:"英語レポートを書く",estimate:60,priority:"high",due:offsetDateKey(2)},{title:"机の上を片付ける",estimate:15,priority:"low",due:todayKey()}].forEach(x=>state.tasks.push({id:uid(),...x,createdAt:new Date().toISOString(),completed:false,subtasks:createBreakdown(x.title,x.estimate)}));persist();renderAll();showToast("サンプルタスクを追加しました");}
+  function resetData(){if(!confirm("ポイント、記録、タスク、プロフィールをすべて初期化します。よろしいですか？"))return;state=defaultState();persist();ensureStarterTask();renderAll();switchView("home");showToast("データを初期化しました");}
 
-  function showToast(message) {
-    dom.toast.textContent = message;
-    dom.toast.classList.add("show");
-    clearTimeout(showToast.timer);
-    showToast.timer = setTimeout(() => dom.toast.classList.remove("show"), 1800);
-  }
+  function switchView(name){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===`view-${name}`));document.querySelectorAll(".nav-button").forEach(b=>b.classList.toggle("active",b.dataset.viewTarget===name));window.scrollTo({top:0,behavior:"smooth"});if(name==="records")renderRecords();if(name==="tasks")renderTasks();}
+  function openModal(el){if(!el)return;el.classList.add("open");document.body.classList.add("modal-open");}
+  function closeModal(el){if(!el)return;el.classList.remove("open");if(!document.querySelector(".modal.open"))document.body.classList.remove("modal-open");}
+  function showToast(message){dom.toast.textContent=message;dom.toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>dom.toast.classList.remove("show"),2200);}
 
-  function registerServiceWorker() {
-    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-    }
-  }
+  function launchConfetti(){const colors=["#346f49","#e6a33d","#9bbf81","#f1c85b","#76a6d8"];for(let i=0;i<30;i++){const p=document.createElement("span");p.className="confetti-piece";p.style.left=`${Math.random()*100}vw`;p.style.color=colors[Math.floor(Math.random()*colors.length)];p.style.setProperty("--drift",`${(Math.random()-.5)*240}px`);p.style.animationDelay=`${Math.random()*.35}s`;document.body.appendChild(p);setTimeout(()=>p.remove(),2100);}}
+  function playTone(f,d){if(!state.settings.sound)return;try{const A=window.AudioContext||window.webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.08,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d);}catch{}}
+  function playSuccessSound(){if(!state.settings.sound)return;playTone(660,.10);setTimeout(()=>playTone(880,.12),100);}
 
-  function priorityLabel(priority) {
-    return priority === "high" ? "急" : priority === "low" ? "低" : "今";
-  }
-
-  function priorityLongLabel(priority) {
-    return priority === "high" ? "優先度 高" : priority === "low" ? "優先度 低" : "優先度 中";
-  }
-
-  function uid() {
-    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
-  }
-
-  function todayKey() {
-    return dateKey(new Date());
-  }
-
-  function dateKey(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function offsetDateKey(offsetDays) {
-    return dateKey(new Date(Date.now() + offsetDays * DAY_MS));
-  }
-
-  function daysUntil(dateString) {
-    const target = new Date(`${dateString}T12:00:00`);
-    const today = new Date(`${todayKey()}T12:00:00`);
-    return Math.ceil((target - today) / DAY_MS);
-  }
-
-  function formatDate(dateString) {
-    const date = new Date(`${dateString}T12:00:00`);
-    return new Intl.DateTimeFormat("ja-JP", {
-      month: "numeric",
-      day: "numeric",
-      weekday: "short"
-    }).format(date);
-  }
-
-  function formatDateTime(dateString) {
-    return new Intl.DateTimeFormat("ja-JP", {
-      month: "numeric",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    }).format(new Date(dateString));
-  }
-
-  function lastSevenDays() {
-    const formatter = new Intl.DateTimeFormat("ja-JP", { weekday: "short" });
-    return Array.from({ length: 7 }, (_, index) => {
-      const date = new Date(Date.now() - (6 - index) * DAY_MS);
-      return { key: dateKey(date), label: formatter.format(date) };
-    });
-  }
-
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+  function progressText(total,last){const s=Number(last||total||0);if(s<60)return "前回1分未満進みました";return `前回${Math.max(1,Math.round(s/60))}分進みました`;}
+  function formatDuration(seconds){const s=Math.max(0,Number(seconds||0));if(s<60)return `${Math.max(1,s)}秒`;return `${Math.max(1,Math.round(s/60))}分`;}
+  function priorityLabel(p){return p==="high"?"急":p==="low"?"低":"今";}
+  function priorityLongLabel(p){return p==="high"?"優先度 高":p==="low"?"優先度 低":"優先度 中";}
+  function uid(){return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,9)}`;}
+  function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+  function todayKey(){return dateKey(new Date());}
+  function offsetDateKey(n){return dateKey(new Date(Date.now()+n*DAY_MS));}
+  function daysUntil(k){const t=new Date(`${k}T12:00:00`).getTime(),n=new Date(`${todayKey()}T12:00:00`).getTime();return Math.ceil((t-n)/DAY_MS);}
+  function lastSevenDays(){const f=new Intl.DateTimeFormat("ja-JP",{weekday:"short"});return Array.from({length:7},(_,i)=>{const d=new Date(Date.now()-(6-i)*DAY_MS);return{key:dateKey(d),label:f.format(d)}});}
+  function formatDate(k){if(!k)return"";const d=new Date(`${k}T12:00:00`);return new Intl.DateTimeFormat("ja-JP",{month:"numeric",day:"numeric"}).format(d);}
+  function formatDateTime(v){return new Intl.DateTimeFormat("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(v));}
+  function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+  function escapeAttr(v){return escapeHtml(v).replace(/`/g,"&#096;");}
 })();
-
 </script>
 </body>
 </html>
