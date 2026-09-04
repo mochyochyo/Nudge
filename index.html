@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#4f8f63" />
-  <meta name="version" content="Nudge Ver.2.3" />
+  <meta name="version" content="Nudge Ver.2.2" />
   <meta name="description" content="5分だけ始めることで、今日の一歩を後押しするブラウザアプリ Nudge" />
   <title>Nudge Ver.2.3｜5分だけ始める</title>
   
@@ -1345,8 +1345,8 @@ main {
   width: 100vw;
   height: 100vh;
   transform: translate(-50%, -50%);
-  background: rgba(25, 36, 28, 0.50);
-  backdrop-filter: blur(5px);
+  background: rgba(25, 36, 28, 0.28);
+  backdrop-filter: blur(3px);
   z-index: -1;
 }
 
@@ -1392,6 +1392,111 @@ main {
 @media (min-width:640px){ .reward-actions.three-way { grid-template-columns:1fr 1fr; } .reward-actions.three-way #rewardStop { grid-column:1 / -1; } }
 @media (max-width:560px){ #profileDialog .modal-header, #profileDialog form { min-width:0; } #profileDialog h2 { font-size:clamp(1.35rem,7vw,1.8rem); } }
 
+/* ===== Mobile checkbox / modal fix ===== */
+
+.modal {
+  overflow-x: hidden;
+}
+
+.modal form,
+.modal .focus-content,
+.modal .reward-content,
+.modal-header,
+.modal label,
+.modal div {
+  min-width: 0;
+}
+
+/* 普通の入力欄 */
+.modal input:not([type="checkbox"]),
+.modal select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* チェックボックスだけ通常サイズに戻す */
+.modal input[type="checkbox"] {
+  width: 20px !important;
+  min-width: 20px !important;
+  max-width: 20px !important;
+
+  height: 20px !important;
+  min-height: 20px !important;
+  max-height: 20px !important;
+
+  padding: 0 !important;
+  margin: 2px 0 0 !important;
+
+  flex: 0 0 20px;
+  accent-color: var(--primary-dark);
+}
+
+/* チェックボックス＋説明文 */
+.checkbox-row {
+  display: grid !important;
+  grid-template-columns: 20px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: start !important;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.checkbox-row > span {
+  min-width: 0;
+  width: auto;
+  max-width: 100%;
+
+  writing-mode: horizontal-tb !important;
+  word-break: normal !important;
+  overflow-wrap: break-word;
+}
+
+.checkbox-row strong,
+.checkbox-row small {
+  writing-mode: horizontal-tb !important;
+  white-space: normal;
+}
+
+/* iPhoneでフォームが横にはみ出す対策 */
+@media (max-width: 620px) {
+  .modal {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+
+  .modal form,
+  .focus-content,
+  .reward-content {
+    padding: 22px 18px;
+  }
+
+  #planDialog .modal-header {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  #planDialog > div:last-child {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .modal-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .modal-actions button {
+    max-width: 100%;
+  }
+
+  input[type="date"] {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
 </style></head>
 <body>
   <div class="app-shell">
@@ -1787,10 +1892,11 @@ main {
 
   // Supabase接続設定：Dashboard → Project Settings / API の値を入れてください。
   // Publishable key（または旧anon key）のみ使用し、secret/service_role keyは絶対に入れないでください。
-  const SUPABASE_URL = "YOUR_SUPABASE_URL";
-  const SUPABASE_PUBLISHABLE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+  const SUPABASE_URL = "https://jwvoplyvvoetbwqpjyme.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_k_ZjejnFqcYasMQGXt_Rsg_Z_klh0O3";
   const TELEMETRY_ENABLED = !SUPABASE_URL.includes("YOUR_") && !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_");
   let supabaseClient = null;
+  let currentSessionId = null;
 
   const defaultState = () => ({
     version: "2.3",
@@ -1834,11 +1940,16 @@ main {
     bindEvents();
     ensureStarterTask();
     renderAll();
-    if (state.profile?.setup) {
+    const profileComplete =
+     state.profile?.setup &&
+     Boolean(state.profile?.role);
+
+    if (profileComplete) {
       restoreSavedFocus();
       initTelemetry();
     } else {
-      // Ver.2.3 trial onboarding: 最初に所属を回答してからNudgeを開始する。
+      state.profile.setup = false;
+      persist();
       openProfile(true);
     }
   }
@@ -1913,7 +2024,8 @@ main {
       else closeModal(open);
     });
     document.addEventListener("visibilitychange", () => { if (document.hidden) checkpointTimer(); else syncTimerFromClock(); });
-    window.addEventListener("beforeunload", checkpointTimer);
+    window.addEventListener("beforeunload", () => checkpointTimer());
+    window.addEventListener("pagehide", () => checkpointTimer());
   }
 
   function loadState() {
@@ -1938,7 +2050,7 @@ main {
         profile: { ...base.profile, ...(saved.profile || {}) },
         analytics: { ...base.analytics, ...(saved.analytics || saved.v2Analytics || {}) },
         tasks: Array.isArray(saved.tasks) ? saved.tasks.map(normalizeTask) : [], history, sessions,
-        activeTimer: saved.version === "2.1" ? (saved.activeTimer || null) : null
+        activeTimer: saved.activeTimer || null
       };
       if (!merged.profile.setup) {
         try {
@@ -2070,15 +2182,41 @@ main {
   }
 
   function startFocus(task,sub){
-    if(timer)clearInterval(timer);activeMission={taskId:task.id,subtaskId:sub.id};pendingNextMission=null;sessionWorkSeconds=0;sessionGoalReached=false;sessionStartedAt=new Date().toISOString();totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;persistTick=0;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();
+    if(timer)clearInterval(timer);activeMission={taskId:task.id,subtaskId:sub.id};currentSessionId = createSessionId();pendingNextMission=null;sessionWorkSeconds=0;sessionGoalReached=false;sessionStartedAt=new Date().toISOString();totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;persistTick=0;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();
     dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=`${task.title} ・ ステップ ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`;dom.focusMessage.textContent=sub.progressSeconds?"前回の続きから。今日も小さく始めます。":"完璧にやらなくていい。始めた時点で前進です。";dom.toggleTimer.textContent="一時停止";dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";dom.focusDialog.classList.remove("goal-pulse");updateTimerDisplay();openModal(dom.focusDialog);analytics("focusStarts");sendTelemetry("focus_start", {taskCategory: classifyTask(task.title)});checkpointTimer();playTone(520,.08);startTicker();
   }
   function startTicker(){if(timer)clearInterval(timer);if(timerRunning&&!timerDeadlineMs)timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();timer=setInterval(syncTimerFromClock,500);}
   function syncTimerFromClock(){if(!timerRunning||!activeMission)return;const now=Date.now();if(!timerDeadlineMs)timerDeadlineMs=now+remainingSeconds*1000;const previous=remainingSeconds;remainingSeconds=Math.max(0,Math.ceil((timerDeadlineMs-now)/1000));const elapsed=Math.max(0,previous-remainingSeconds);if(elapsed>0){sessionWorkSeconds+=elapsed;persistTick+=elapsed;}lastTimerSyncMs=now;updateTimerDisplay();if(persistTick>=5){persistTick=0;checkpointTimer();}if(remainingSeconds<=0)handleGoalReached();}
   function updateTimerDisplay(){const r=Math.max(0,remainingSeconds),m=Math.floor(r/60),s=r%60;dom.timerDisplay.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;const progress=totalTimerSeconds?Math.max(0,Math.min(1,r/totalTimerSeconds)):0;dom.timerProgress.style.strokeDasharray=String(CIRCLE_LENGTH);dom.timerProgress.style.strokeDashoffset=String(CIRCLE_LENGTH*(1-progress));}
   function toggleTimer(){if(!activeMission)return;if(remainingSeconds<=0){beginAnotherBlock();return;}if(timerRunning){syncTimerFromClock();timerRunning=false;timerDeadlineMs=null;}else{timerRunning=true;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();startTicker();}dom.toggleTimer.textContent=timerRunning?"一時停止":"再開する";checkpointTimer();}
-  function beginAnotherBlock(){sessionGoalReached=false;sessionStartedAt=new Date().toISOString();sessionWorkSeconds=0;totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();dom.toggleTimer.textContent="一時停止";dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";dom.focusMessage.textContent=`もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;updateTimerDisplay();checkpointTimer();startTicker();}
-  function handleGoalReached(){
+  function beginAnotherBlock(){
+  sessionGoalReached = false;
+  sessionStartedAt = new Date().toISOString();
+  sessionWorkSeconds = 0;
+
+  currentSessionId = createSessionId();
+
+  totalTimerSeconds = state.settings.focusMinutes * 60;
+  remainingSeconds = totalTimerSeconds;
+  timerRunning = true;
+  timerDeadlineMs = Date.now() + remainingSeconds * 1000;
+  lastTimerSyncMs = Date.now();
+
+  analytics("focusStarts");
+  sendTelemetry("focus_start", {
+    taskCategory: classifyTask(taskTitleForActiveMission())
+  });
+
+  dom.toggleTimer.textContent = "一時停止";
+  dom.completeFocus.textContent = "ステップ完了";
+  dom.stopFocus.textContent = "ここまで保存";
+  dom.focusMessage.textContent =
+    `もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;
+
+  updateTimerDisplay();
+  checkpointTimer();
+  startTicker();
+}  function handleGoalReached(){
     if(timer){clearInterval(timer);timer=null;}timerRunning=false;remainingSeconds=0;sessionGoalReached=true;
     const saved=commitSessionSegment(true);
     analytics("focusGoals");
@@ -2111,24 +2249,111 @@ main {
   function stopAfterReward(){closeModal(dom.rewardDialog);pendingNextMission=null;pendingSameMission=null;switchView("home");maybeOfferProfile(true);}
   function continueAfterReward(){const next=pendingNextMission;pendingNextMission=null;closeModal(dom.rewardDialog);if(next){const task=state.tasks.find(t=>t.id===next.taskId),sub=task?.subtasks.find(s=>s.id===next.subtaskId);if(task&&sub&&!sub.completed){startFocus(task,sub);return;}}switchView("home");}
   function continueSameTaskAfterReward(){const next=pendingSameMission;pendingSameMission=null;pendingNextMission=null;closeModal(dom.rewardDialog);if(next){const task=state.tasks.find(t=>t.id===next.taskId),sub=task?.subtasks.find(s=>s.id===next.subtaskId);if(task&&sub&&!sub.completed){startFocus(task,sub);return;}}switchView("home");}
-  function openReflection(){
-    const opened = window.open(REFLECTION_FORM_URL, "_blank", "noopener,noreferrer");
-    sendTelemetry("reflection_opened");
-    if(!opened) showToast("別画面を開けませんでした。ブラウザのポップアップ設定を確認してください");
+  async function openReflection(){
+  const newTab = window.open("", "_blank");
+
+  if(!newTab){
+    showToast("別画面を開けませんでした。ブラウザのポップアップ設定を確認してください");
+    return;
   }
+
+  newTab.opener = null;
+
+  await sendTelemetry("reflection_opened");
+
+  newTab.location.replace(REFLECTION_FORM_URL);
+}
 
   function checkpointTimer(clear=false){
     if(clear||!activeMission){state.activeTimer=null;persist();return;}
-    state.activeTimer={...activeMission,remainingSeconds,totalTimerSeconds,sessionWorkSeconds,timerRunning,sessionStartedAt,sessionGoalReached,timerDeadlineMs:timerRunning?timerDeadlineMs:null,savedAt:new Date().toISOString()};
+    state.activeTimer={...activeMission,sessionId: currentSessionId,remainingSeconds,totalTimerSeconds,sessionWorkSeconds,timerRunning,sessionStartedAt,sessionGoalReached,timerDeadlineMs:timerRunning?timerDeadlineMs:null,savedAt:new Date().toISOString()};
     persist();
   }
   function clearActiveTimer(){if(timer)clearInterval(timer);timer=null;timerRunning=false;timerDeadlineMs=null;lastTimerSyncMs=null;state.activeTimer=null;persist();}
   function restoreSavedFocus(){
-    const a=state.activeTimer;if(!a)return;const task=state.tasks.find(t=>t.id===a.taskId),sub=task?.subtasks.find(s=>s.id===a.subtaskId);if(!task||!sub||sub.completed){state.activeTimer=null;persist();return;}
-    activeMission={taskId:task.id,subtaskId:sub.id};remainingSeconds=Math.max(0,Number(a.remainingSeconds||0));totalTimerSeconds=Math.max(60,Number(a.totalTimerSeconds||state.settings.focusMinutes*60));sessionWorkSeconds=Math.max(0,Number(a.sessionWorkSeconds||0));sessionStartedAt=a.sessionStartedAt||new Date().toISOString();sessionGoalReached=!!a.sessionGoalReached;timerRunning=false;timerDeadlineMs=null;if(a.timerRunning&&a.timerDeadlineMs){const now=Date.now(),deadline=Number(a.timerDeadlineMs);const elapsed=Math.max(0,remainingSeconds-Math.max(0,Math.ceil((deadline-now)/1000)));sessionWorkSeconds+=elapsed;remainingSeconds=Math.max(0,Math.ceil((deadline-now)/1000));}
-    dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=`${task.title} ・ 前回の途中から`;dom.focusMessage.textContent="前回の集中を途中保存しています。再開すると、残り時間から続けられます。";dom.toggleTimer.textContent=remainingSeconds>0?"再開する":`もう${state.settings.focusMinutes}分`;dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";updateTimerDisplay();openModal(dom.focusDialog);showToast("前回の集中を復元しました");
+  const a = state.activeTimer;
+  if(!a) return;
+
+  const task = state.tasks.find(t => t.id === a.taskId);
+  const sub = task?.subtasks.find(s => s.id === a.subtaskId);
+
+  if(!task || !sub || sub.completed){
+    state.activeTimer = null;
+    persist();
+    return;
   }
 
+  activeMission = {
+    taskId: task.id,
+    subtaskId: sub.id
+  };
+currentSessionId = a.sessionId || createSessionId();
+
+  remainingSeconds = Math.max(0, Number(a.remainingSeconds || 0));
+  totalTimerSeconds = Math.max(
+    60,
+    Number(a.totalTimerSeconds || state.settings.focusMinutes * 60)
+  );
+  sessionWorkSeconds = Math.max(0, Number(a.sessionWorkSeconds || 0));
+  sessionStartedAt = a.sessionStartedAt || new Date().toISOString();
+  sessionGoalReached = !!a.sessionGoalReached;
+  timerRunning = false;
+  timerDeadlineMs = null;
+
+  if(a.timerRunning && a.timerDeadlineMs){
+    const now = Date.now();
+    const deadline = Number(a.timerDeadlineMs);
+
+    const restoredRemaining = Math.max(
+      0,
+      Math.ceil((deadline - now) / 1000)
+    );
+
+    const elapsed = Math.max(
+      0,
+      remainingSeconds - restoredRemaining
+    );
+
+    sessionWorkSeconds += elapsed;
+    remainingSeconds = restoredRemaining;
+
+    if(now >= deadline){
+      remainingSeconds = 0;
+      sessionGoalReached = true;
+
+      dom.focusTaskTitle.textContent = sub.title;
+      dom.focusParentTitle.textContent =
+        `${task.title} ・ 前回の集中から復元`;
+
+      updateTimerDisplay();
+
+      openModal(dom.focusDialog);
+
+      handleGoalReached();
+      return;
+    }
+  }
+
+  dom.focusTaskTitle.textContent = sub.title;
+  dom.focusParentTitle.textContent =
+    `${task.title} ・ 前回の途中から`;
+
+  dom.focusMessage.textContent =
+    "前回の集中を途中保存しています。再開すると、残り時間から続けられます。";
+
+  dom.toggleTimer.textContent =
+    remainingSeconds > 0
+      ? "再開する"
+      : `もう${state.settings.focusMinutes}分`;
+
+  dom.completeFocus.textContent = "ステップ完了";
+  dom.stopFocus.textContent = "ここまで保存";
+
+  updateTimerDisplay();
+  openModal(dom.focusDialog);
+
+  showToast("前回の集中を復元しました");
+}
   function openProfile(firstLaunch=false){
     const isFirst = firstLaunch || !state.profile?.setup;
     dom.profileAge.value=state.profile.age||"";
@@ -2189,6 +2414,7 @@ main {
         role_group:normalizeRoleGroup(state.profile.role),
         focus_seconds:Math.max(0,Math.min(86400,Number(focusSeconds||0))),
         task_category:taskCategory||"other",
+        session_id:currentSessionId,
         app_version:"2.3"
       };
       const {error}=await supabaseClient.from("nudge_events").insert(payload);
@@ -2222,6 +2448,7 @@ main {
   function priorityLabel(p){return p==="high"?"急":p==="low"?"低":"今";}
   function priorityLongLabel(p){return p==="high"?"優先度 高":p==="low"?"優先度 低":"優先度 中";}
   function uid(){return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,9)}`;}
+  function createSessionId(){return uid();}
   function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
   function todayKey(){return dateKey(new Date());}
   function offsetDateKey(n){return dateKey(new Date(Date.now()+n*DAY_MS));}
