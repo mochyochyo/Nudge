@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#4f8f63" />
   <meta name="version" content="Nudge Ver.2.2" />
   <meta name="description" content="5分だけ始めることで、今日の一歩を後押しするブラウザアプリ Nudge" />
-  <title>Nudge Ver.2.2｜5分だけ始める</title>
+  <title>Nudge Ver.2.3｜5分だけ始める</title>
   
   
 <style>
@@ -1381,6 +1381,17 @@ main {
 @media(max-width:560px){.hero-card{padding:20px}.character-panel{grid-template-columns:88px 1fr;padding:14px}.character-stage{min-height:88px}.character-emoji{font-size:48px}.hero-copy{margin-top:12px}.section-heading{margin-top:24px}.comparison-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
 
+
+/* Ver.2.3: mobile profile + reflection */
+#profileDialog form { width:min(560px, calc(100vw - 24px)); max-width:100%; overflow-wrap:anywhere; }
+#profileDialog label:not(.checkbox-row) { display:grid; grid-template-columns:1fr; gap:8px; min-width:0; writing-mode:horizontal-tb; }
+#profileDialog select { min-width:0; max-width:100%; writing-mode:horizontal-tb; }
+#profileDialog .checkbox-row, #profileDialog .checkbox-row span { min-width:0; writing-mode:horizontal-tb; }
+.reflection-card { grid-column:1 / -1; }
+.reward-actions.three-way { display:grid; grid-template-columns:1fr; gap:10px; }
+@media (min-width:640px){ .reward-actions.three-way { grid-template-columns:1fr 1fr; } .reward-actions.three-way #rewardStop { grid-column:1 / -1; } }
+@media (max-width:560px){ #profileDialog .modal-header, #profileDialog form { min-width:0; } #profileDialog h2 { font-size:clamp(1.35rem,7vw,1.8rem); } }
+
 </style></head>
 <body>
   <div class="app-shell">
@@ -1389,7 +1400,7 @@ main {
         <span class="brand-mark" aria-hidden="true">🌱</span>
         <span>
           <strong>Nudge</strong>
-          <small>5分だけ始める ・ Ver.2.2</small>
+          <small>5分だけ始める ・ Ver.2.3</small>
         </span>
       </button>
 
@@ -1595,8 +1606,14 @@ main {
 
           <article class="settings-card">
             <h2>プロフィール</h2>
-            <p class="settings-note">年代・立場・匿名集計への協力設定を変更できます。試作版では外部送信しません。</p>
+            <p class="settings-note">年代・立場と、匿名利用データの送信設定を変更できます。</p>
             <button id="editProfile" class="secondary-button">プロフィールを編集</button>
+          </article>
+
+          <article class="settings-card reflection-card">
+            <h2>3日間の振り返り</h2>
+            <p class="settings-note">回答フォームはNudgeとは別のタブ／ウィンドウで開きます。</p>
+            <button id="openReflection" class="primary-button" type="button">📝 振り返りフォームを別画面で開く</button>
           </article>
 
           <article class="settings-card danger-zone">
@@ -1711,27 +1728,31 @@ main {
       <h2 id="rewardTitle">ステップ完了！</h2>
       <div class="reward-points"><span>＋</span><strong id="rewardPoints">10</strong><small>pt</small></div>
       <p id="rewardMessage">小さな一歩を完了しました。</p>
-      <div class="reward-actions">
+      <div class="reward-actions three-way">
+        <button id="rewardSame" class="primary-button">同じタスクでもう5分</button>
+        <button id="rewardNext" class="secondary-button">次のタスクへ</button>
         <button id="rewardStop" class="secondary-button">今日はここまで</button>
-        <button id="rewardNext" class="primary-button">次の5分へ</button>
       </div>
     </div>
   </div>
 
-  <div id="profileDialog" class="modal" role="dialog" aria-modal="true">
+  <div id="profileDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
     <form id="profileForm">
       <div class="modal-header">
-        <div><p class="eyebrow">OPTIONAL PROFILE</p><h2>よければ少しだけ教えてください</h2></div>
+        <div><p id="profileEyebrow" class="eyebrow">PROFILE</p><h2 id="profileTitle">プロフィール</h2></div>
       </div>
-      <p class="settings-note">名前・学校名・住所などは入力しません。回答はこのブラウザ内に保存され、試作版では外部へ送信しません。</p>
+      <p id="profileNote" class="settings-note">名前・学校名・住所などは入力しません。匿名分析をONにした場合のみ、年代・立場と利用イベントをNudge改善用サーバーへ送信します。</p>
+      <label>所属・立場
+        <select id="profileRole">
+          <option value="" disabled>選択してください</option>
+          <option value="中学生">中学生</option><option value="高校生">高校生</option><option value="大学・専門学校生">大学・専門学校生</option><option value="社会人">社会人</option><option value="その他">その他</option><option value="回答しない">回答しない</option>
+        </select>
+      </label>
       <label>年代
         <select id="profileAge"><option value="">回答しない</option><option>10代</option><option>20代</option><option>30代</option><option>40代</option><option>50代以上</option></select>
       </label>
-      <label>立場
-        <select id="profileRole"><option value="">回答しない</option><option>中学生</option><option>高校生</option><option>大学・専門学校生</option><option>社会人</option><option>その他</option></select>
-      </label>
       <label class="checkbox-row"><input id="profileAnalytics" type="checkbox" /><span><strong>匿名・集計された利用データの分析に協力する</strong><small>年代・立場、5分開始・達成などの匿名イベントをNudge改善用サーバーへ送信します。名前・学校名・住所・タスク本文は送信しません。いつでもOFFにできます。</small></span></label>
-      <div class="modal-actions"><button id="profileLater" type="button" class="secondary-button">あとで</button><button type="submit" class="primary-button">保存する</button></div>
+      <div class="modal-actions"><button id="profileLater" type="button" class="secondary-button">あとで</button><button type="submit" class="primary-button">保存してはじめる</button></div>
     </form>
   </div>
 
@@ -1745,6 +1766,7 @@ main {
     </div>
   </div>
 
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   
@@ -1753,23 +1775,25 @@ main {
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "nudge-app-v2-2";
+  const STORAGE_KEY = "nudge-app-v2-3";
+  const V22_KEY = "nudge-app-v2-2";
   const V21_KEY = "nudge-app-v2-1";
   const V2_KEY = "nudge-app-v2";
   const LEGACY_KEY = "nudge-app-v1";
   const LEGACY_META_KEY = "nudge-v2-meta";
   const DAY_MS = 86400000;
   const CIRCLE_LENGTH = 2 * Math.PI * 68;
+  const REFLECTION_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfylieuOh1wZwzI6bmD-BS4Grp5YsU7nTUXpE2EmtzL6owg8g/viewform?usp=publish-editor";
 
   // Supabase接続設定：Dashboard → Project Settings / API の値を入れてください。
   // Publishable key（または旧anon key）のみ使用し、secret/service_role keyは絶対に入れないでください。
-  const SUPABASE_URL = "https://jwvoplyvvoetbwqpjyme.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_k_ZjejnFqcYasMQGXt_Rsg_Z_klh0O3";
+  const SUPABASE_URL = "YOUR_SUPABASE_URL";
+  const SUPABASE_PUBLISHABLE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
   const TELEMETRY_ENABLED = !SUPABASE_URL.includes("YOUR_") && !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_");
   let supabaseClient = null;
 
   const defaultState = () => ({
-    version: "2.2",
+    version: "2.3",
     points: 0,
     totalSeconds: 0,
     totalMinutes: 0,
@@ -1791,6 +1815,9 @@ main {
   let editingTaskId = null;
   let activeMission = null;
   let pendingNextMission = null;
+  let pendingSameMission = null;
+  let timerDeadlineMs = null;
+  let lastTimerSyncMs = null;
   let timer = null;
   let remainingSeconds = 0;
   let totalTimerSeconds = 0;
@@ -1807,8 +1834,13 @@ main {
     bindEvents();
     ensureStarterTask();
     renderAll();
-    restoreSavedFocus();
-    initTelemetry();
+    if (state.profile?.setup) {
+      restoreSavedFocus();
+      initTelemetry();
+    } else {
+      // Ver.2.3 trial onboarding: 最初に所属を回答してからNudgeを開始する。
+      openProfile(true);
+    }
   }
 
   function cacheDom() {
@@ -1818,8 +1850,8 @@ main {
       "thisWeekStarts","lastWeekStarts","comparisonMessage","focusMinutes","soundToggle","confettiToggle","taskDialog","taskForm","taskTitle",
       "taskDue","taskEstimate","taskPriority","autoBreakdown","taskDetails","toggleTaskDetails","quickStartTask","breakdownPreview","openPlanEditor",
       "focusDialog","focusTaskTitle","focusParentTitle","timerDisplay","timerProgress","focusMessage","toggleTimer","completeFocus","stopFocus",
-      "rewardDialog","rewardPoints","rewardMessage","rewardStop","rewardNext","toast","profileDialog","profileForm","profileAge","profileRole",
-      "profileAnalytics","profileLater","planDialog","planDialogTitle","planEditorList","planNewStep","planAddStep","planSave","editProfile"
+      "rewardDialog","rewardPoints","rewardMessage","rewardStop","rewardSame","rewardNext","toast","profileDialog","profileForm","profileAge","profileRole",
+      "profileAnalytics","profileLater","profileEyebrow","profileTitle","profileNote","openReflection","planDialog","planDialogTitle","planEditorList","planNewStep","planAddStep","planSave","editProfile"
     ].forEach(id => dom[id] = document.getElementById(id));
   }
 
@@ -1856,7 +1888,9 @@ main {
     dom.completeFocus.addEventListener("click", completeActiveMission);
     dom.stopFocus.addEventListener("click", savePartialAndClose);
     dom.rewardStop.addEventListener("click", stopAfterReward);
+    dom.rewardSame.addEventListener("click", continueSameTaskAfterReward);
     dom.rewardNext.addEventListener("click", continueAfterReward);
+    dom.openReflection?.addEventListener("click", openReflection);
 
     dom.focusMinutes.addEventListener("change", () => {
       state.settings.focusMinutes = Number(dom.focusMinutes.value || 5);
@@ -1873,18 +1907,19 @@ main {
       if (event.key !== "Escape") return;
       const open = [...document.querySelectorAll(".modal.open")].pop();
       if (!open) return;
+      if (open === dom.profileDialog && !state.profile?.setup) return;
       if (open === dom.focusDialog) closeFocusDialog(true);
       else if (open === dom.planDialog) closePlanEditor();
       else closeModal(open);
     });
-    document.addEventListener("visibilitychange", () => { if (document.hidden) checkpointTimer(); });
+    document.addEventListener("visibilitychange", () => { if (document.hidden) checkpointTimer(); else syncTimerFromClock(); });
     window.addEventListener("beforeunload", checkpointTimer);
   }
 
   function loadState() {
     try {
       let raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) raw = localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
+      if (!raw) raw = localStorage.getItem(V22_KEY) || localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
       const saved = raw ? JSON.parse(raw) : null;
       const base = defaultState();
       if (!saved) return base;
@@ -1898,7 +1933,7 @@ main {
       }
       const totalSeconds = Number(saved.totalSeconds ?? (Number(saved.totalMinutes || 0) * 60));
       const merged = {
-        ...base, ...saved, version: "2.2", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
+        ...base, ...saved, version: "2.3", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
         settings: { ...base.settings, ...(saved.settings || {}) },
         profile: { ...base.profile, ...(saved.profile || {}) },
         analytics: { ...base.analytics, ...(saved.analytics || saved.v2Analytics || {}) },
@@ -2035,13 +2070,14 @@ main {
   }
 
   function startFocus(task,sub){
-    if(timer)clearInterval(timer);activeMission={taskId:task.id,subtaskId:sub.id};pendingNextMission=null;sessionWorkSeconds=0;sessionGoalReached=false;sessionStartedAt=new Date().toISOString();totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;persistTick=0;
+    if(timer)clearInterval(timer);activeMission={taskId:task.id,subtaskId:sub.id};pendingNextMission=null;sessionWorkSeconds=0;sessionGoalReached=false;sessionStartedAt=new Date().toISOString();totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;persistTick=0;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();
     dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=`${task.title} ・ ステップ ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`;dom.focusMessage.textContent=sub.progressSeconds?"前回の続きから。今日も小さく始めます。":"完璧にやらなくていい。始めた時点で前進です。";dom.toggleTimer.textContent="一時停止";dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";dom.focusDialog.classList.remove("goal-pulse");updateTimerDisplay();openModal(dom.focusDialog);analytics("focusStarts");sendTelemetry("focus_start", {taskCategory: classifyTask(task.title)});checkpointTimer();playTone(520,.08);startTicker();
   }
-  function startTicker(){if(timer)clearInterval(timer);timer=setInterval(()=>{if(!timerRunning)return;remainingSeconds=Math.max(0,remainingSeconds-1);sessionWorkSeconds+=1;persistTick+=1;updateTimerDisplay();if(persistTick>=5){persistTick=0;checkpointTimer();}if(remainingSeconds<=0)handleGoalReached();},1000);}
+  function startTicker(){if(timer)clearInterval(timer);if(timerRunning&&!timerDeadlineMs)timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();timer=setInterval(syncTimerFromClock,500);}
+  function syncTimerFromClock(){if(!timerRunning||!activeMission)return;const now=Date.now();if(!timerDeadlineMs)timerDeadlineMs=now+remainingSeconds*1000;const previous=remainingSeconds;remainingSeconds=Math.max(0,Math.ceil((timerDeadlineMs-now)/1000));const elapsed=Math.max(0,previous-remainingSeconds);if(elapsed>0){sessionWorkSeconds+=elapsed;persistTick+=elapsed;}lastTimerSyncMs=now;updateTimerDisplay();if(persistTick>=5){persistTick=0;checkpointTimer();}if(remainingSeconds<=0)handleGoalReached();}
   function updateTimerDisplay(){const r=Math.max(0,remainingSeconds),m=Math.floor(r/60),s=r%60;dom.timerDisplay.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;const progress=totalTimerSeconds?Math.max(0,Math.min(1,r/totalTimerSeconds)):0;dom.timerProgress.style.strokeDasharray=String(CIRCLE_LENGTH);dom.timerProgress.style.strokeDashoffset=String(CIRCLE_LENGTH*(1-progress));}
-  function toggleTimer(){if(!activeMission)return;if(remainingSeconds<=0){beginAnotherBlock();return;}timerRunning=!timerRunning;dom.toggleTimer.textContent=timerRunning?"一時停止":"再開する";checkpointTimer();}
-  function beginAnotherBlock(){sessionGoalReached=false;sessionStartedAt=new Date().toISOString();sessionWorkSeconds=0;totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;dom.toggleTimer.textContent="一時停止";dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";dom.focusMessage.textContent=`もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;updateTimerDisplay();checkpointTimer();startTicker();}
+  function toggleTimer(){if(!activeMission)return;if(remainingSeconds<=0){beginAnotherBlock();return;}if(timerRunning){syncTimerFromClock();timerRunning=false;timerDeadlineMs=null;}else{timerRunning=true;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();startTicker();}dom.toggleTimer.textContent=timerRunning?"一時停止":"再開する";checkpointTimer();}
+  function beginAnotherBlock(){sessionGoalReached=false;sessionStartedAt=new Date().toISOString();sessionWorkSeconds=0;totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();dom.toggleTimer.textContent="一時停止";dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";dom.focusMessage.textContent=`もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;updateTimerDisplay();checkpointTimer();startTicker();}
   function handleGoalReached(){
     if(timer){clearInterval(timer);timer=null;}timerRunning=false;remainingSeconds=0;sessionGoalReached=true;
     const saved=commitSessionSegment(true);
@@ -2070,27 +2106,60 @@ main {
     if(timer){clearInterval(timer);timer=null;}timerRunning=false;if(sessionWorkSeconds>0)commitSessionSegment(false,true);
     const currentIndex=task.subtasks.findIndex(s=>s.id===sub.id);sub.completed=true;sub.completedAt=new Date().toISOString();task.completed=task.subtasks.every(s=>s.completed);
     const completionBonus=10+(task.priority==="high"?5:0);state.points+=completionBonus;state.history.push({id:uid(),title:sub.title,parentTitle:task.title,completedAt:new Date().toISOString(),minutes:Math.max(1,Math.round((sub.lastSessionSeconds||60)/60)),points:completionBonus});analytics("focusCompletions");sendTelemetry("step_complete", {taskCategory: classifyTask(task.title)});persist();clearActiveTimer();closeModal(dom.focusDialog);
-    const next=task.subtasks.find((s,i)=>i>currentIndex&&!s.completed)||task.subtasks.find(s=>!s.completed);pendingNextMission=next?{taskId:task.id,subtaskId:next.id}:null;dom.rewardPoints.textContent=completionBonus;dom.rewardMessage.textContent=pendingNextMission?`ステップを完了しました。続けるなら次も${state.settings.focusMinutes}分だけ。止めても十分です。`:"タスクのステップを完了しました。今日の一歩は記録されています。";dom.rewardNext.hidden=!pendingNextMission;dom.rewardStop.textContent=pendingNextMission?"今日はここまで":"ホームへ戻る";openModal(dom.rewardDialog);playSuccessSound();if(state.settings.confetti)launchConfetti();activeMission=null;sessionWorkSeconds=0;renderAll();
+    const sameNext=task.subtasks.find((s,i)=>i>currentIndex&&!s.completed)||task.subtasks.find(s=>!s.completed);pendingSameMission=sameNext?{taskId:task.id,subtaskId:sameNext.id}:null;const otherTask=state.tasks.find(t=>t.id!==task.id&&!t.completed&&t.subtasks.some(x=>!x.completed));const otherSub=otherTask?.subtasks.find(x=>!x.completed);pendingNextMission=otherTask&&otherSub?{taskId:otherTask.id,subtaskId:otherSub.id}:null;dom.rewardPoints.textContent=completionBonus;dom.rewardMessage.textContent="次にどうするか選べます。ここで終えても、今日の一歩は記録されています。";dom.rewardSame.hidden=!pendingSameMission;dom.rewardNext.hidden=!pendingNextMission;dom.rewardStop.textContent=(!pendingSameMission&&!pendingNextMission)?"ホームへ戻る":"今日はここまで";openModal(dom.rewardDialog);playSuccessSound();if(state.settings.confetti)launchConfetti();activeMission=null;sessionWorkSeconds=0;renderAll();
   }
-  function stopAfterReward(){closeModal(dom.rewardDialog);pendingNextMission=null;switchView("home");maybeOfferProfile(true);}
+  function stopAfterReward(){closeModal(dom.rewardDialog);pendingNextMission=null;pendingSameMission=null;switchView("home");maybeOfferProfile(true);}
   function continueAfterReward(){const next=pendingNextMission;pendingNextMission=null;closeModal(dom.rewardDialog);if(next){const task=state.tasks.find(t=>t.id===next.taskId),sub=task?.subtasks.find(s=>s.id===next.subtaskId);if(task&&sub&&!sub.completed){startFocus(task,sub);return;}}switchView("home");}
+  function continueSameTaskAfterReward(){const next=pendingSameMission;pendingSameMission=null;pendingNextMission=null;closeModal(dom.rewardDialog);if(next){const task=state.tasks.find(t=>t.id===next.taskId),sub=task?.subtasks.find(s=>s.id===next.subtaskId);if(task&&sub&&!sub.completed){startFocus(task,sub);return;}}switchView("home");}
+  function openReflection(){
+    const opened = window.open(REFLECTION_FORM_URL, "_blank", "noopener,noreferrer");
+    sendTelemetry("reflection_opened");
+    if(!opened) showToast("別画面を開けませんでした。ブラウザのポップアップ設定を確認してください");
+  }
 
   function checkpointTimer(clear=false){
     if(clear||!activeMission){state.activeTimer=null;persist();return;}
-    state.activeTimer={...activeMission,remainingSeconds,totalTimerSeconds,sessionWorkSeconds,timerRunning:false,sessionStartedAt,sessionGoalReached,savedAt:new Date().toISOString()};
+    state.activeTimer={...activeMission,remainingSeconds,totalTimerSeconds,sessionWorkSeconds,timerRunning,sessionStartedAt,sessionGoalReached,timerDeadlineMs:timerRunning?timerDeadlineMs:null,savedAt:new Date().toISOString()};
     persist();
   }
-  function clearActiveTimer(){if(timer)clearInterval(timer);timer=null;timerRunning=false;state.activeTimer=null;persist();}
+  function clearActiveTimer(){if(timer)clearInterval(timer);timer=null;timerRunning=false;timerDeadlineMs=null;lastTimerSyncMs=null;state.activeTimer=null;persist();}
   function restoreSavedFocus(){
     const a=state.activeTimer;if(!a)return;const task=state.tasks.find(t=>t.id===a.taskId),sub=task?.subtasks.find(s=>s.id===a.subtaskId);if(!task||!sub||sub.completed){state.activeTimer=null;persist();return;}
-    activeMission={taskId:task.id,subtaskId:sub.id};remainingSeconds=Math.max(0,Number(a.remainingSeconds||0));totalTimerSeconds=Math.max(60,Number(a.totalTimerSeconds||state.settings.focusMinutes*60));sessionWorkSeconds=Math.max(0,Number(a.sessionWorkSeconds||0));sessionStartedAt=a.sessionStartedAt||new Date().toISOString();sessionGoalReached=!!a.sessionGoalReached;timerRunning=false;
+    activeMission={taskId:task.id,subtaskId:sub.id};remainingSeconds=Math.max(0,Number(a.remainingSeconds||0));totalTimerSeconds=Math.max(60,Number(a.totalTimerSeconds||state.settings.focusMinutes*60));sessionWorkSeconds=Math.max(0,Number(a.sessionWorkSeconds||0));sessionStartedAt=a.sessionStartedAt||new Date().toISOString();sessionGoalReached=!!a.sessionGoalReached;timerRunning=false;timerDeadlineMs=null;if(a.timerRunning&&a.timerDeadlineMs){const now=Date.now(),deadline=Number(a.timerDeadlineMs);const elapsed=Math.max(0,remainingSeconds-Math.max(0,Math.ceil((deadline-now)/1000)));sessionWorkSeconds+=elapsed;remainingSeconds=Math.max(0,Math.ceil((deadline-now)/1000));}
     dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=`${task.title} ・ 前回の途中から`;dom.focusMessage.textContent="前回の集中を途中保存しています。再開すると、残り時間から続けられます。";dom.toggleTimer.textContent=remainingSeconds>0?"再開する":`もう${state.settings.focusMinutes}分`;dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";updateTimerDisplay();openModal(dom.focusDialog);showToast("前回の集中を復元しました");
   }
 
-  function openProfile(){dom.profileAge.value=state.profile.age||"";dom.profileRole.value=state.profile.role||"";dom.profileAnalytics.checked=!!state.profile.analytics;openModal(dom.profileDialog);}
-  function saveProfile(event){event.preventDefault();state.profile={...state.profile,setup:true,dismissed:false,age:dom.profileAge.value,role:dom.profileRole.value,analytics:dom.profileAnalytics.checked};persist();if(state.profile.analytics){initTelemetry().then(()=>sendTelemetry("profile_saved"));}closeModal(dom.profileDialog);showToast(state.profile.analytics?"プロフィールを保存しました。匿名分析への協力がONです":"プロフィールを保存しました");}
-  function dismissProfile(){state.profile.dismissed=true;persist();closeModal(dom.profileDialog);showToast("いつでも設定から変更できます");}
-  function maybeOfferProfile(success){if(!success||state.profile?.setup||state.profile?.dismissed)return;setTimeout(openProfile,350);}
+  function openProfile(firstLaunch=false){
+    const isFirst = firstLaunch || !state.profile?.setup;
+    dom.profileAge.value=state.profile.age||"";
+    dom.profileRole.value=state.profile.role||"";
+    dom.profileAnalytics.checked=!!state.profile.analytics;
+    dom.profileRole.required=isFirst;
+    dom.profileLater.hidden=isFirst;
+    if(dom.profileEyebrow) dom.profileEyebrow.textContent=isFirst?"START HERE":"PROFILE";
+    if(dom.profileTitle) dom.profileTitle.textContent=isFirst?"最初に所属を教えてください":"プロフィール";
+    if(dom.profileNote) dom.profileNote.textContent=isFirst
+      ? "試作版の利用傾向を振り返るため、まず所属を選んでください。「回答しない」も選べます。匿名分析をONにした場合のみ、所属・年代と利用イベントをNudge改善用サーバーへ送信します。"
+      : "名前・学校名・住所などは入力しません。匿名分析をONにした場合のみ、年代・立場と利用イベントをNudge改善用サーバーへ送信します。";
+    const submit=dom.profileForm.querySelector('button[type="submit"]');
+    if(submit) submit.textContent=isFirst?"保存してNudgeをはじめる":"保存する";
+    openModal(dom.profileDialog);
+    if(isFirst) setTimeout(()=>dom.profileRole.focus(),50);
+  }
+  function saveProfile(event){
+    event.preventDefault();
+    const firstSetup=!state.profile?.setup;
+    const role=dom.profileRole.value;
+    if(firstSetup&&!role){showToast("最初に所属を選んでください");dom.profileRole.focus();return;}
+    state.profile={...state.profile,setup:true,dismissed:false,age:dom.profileAge.value,role,analytics:dom.profileAnalytics.checked};
+    persist();
+    if(state.profile.analytics){initTelemetry().then(()=>sendTelemetry("profile_saved"));}
+    closeModal(dom.profileDialog);
+    showToast(state.profile.analytics?"プロフィールを保存しました。匿名分析への協力がONです":"プロフィールを保存しました");
+    if(firstSetup&&state.activeTimer) restoreSavedFocus();
+  }
+  function dismissProfile(){if(!state.profile?.setup){showToast("最初に所属を選んでください");return;}state.profile.dismissed=true;persist();closeModal(dom.profileDialog);showToast("いつでも設定から変更できます");}
+  function maybeOfferProfile(success){if(!success||state.profile?.setup||state.profile?.dismissed)return;setTimeout(()=>openProfile(true),350);}
   function analytics(key){if(!state.profile?.analytics)return;if(typeof state.analytics[key]==="number")state.analytics[key]+=1;const today=todayKey();if(!state.analytics.activeDays.includes(today))state.analytics.activeDays.push(today);persist();}
 
   async function initTelemetry(){
@@ -2120,7 +2189,7 @@ main {
         role_group:normalizeRoleGroup(state.profile.role),
         focus_seconds:Math.max(0,Math.min(86400,Number(focusSeconds||0))),
         task_category:taskCategory||"other",
-        app_version:"2.2"
+        app_version:"2.3"
       };
       const {error}=await supabaseClient.from("nudge_events").insert(payload);
       if(error) throw error;
