@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#4f8f63" />
-  <meta name="version" content="Nudge Ver.2.2" />
+  <meta name="version" content="Nudge Ver.2.4" />
   <meta name="description" content="5分だけ始めることで、今日の一歩を後押しするブラウザアプリ Nudge" />
-  <title>Nudge Ver.2.3｜5分だけ始める</title>
+  <title>Nudge Ver.2.4｜5分だけ始める</title>
   
   
 <style>
@@ -51,7 +51,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -61,7 +62,8 @@ button {
 
 button:focus-visible,
 input:focus-visible,
-select:focus-visible {
+select:focus-visible,
+textarea:focus-visible {
   outline: 3px solid rgba(79, 143, 99, 0.30);
   outline-offset: 2px;
 }
@@ -1497,6 +1499,242 @@ main {
     max-width: 100%;
   }
 }
+
+/* ===== Home trial forms + rotating Nudge ===== */
+.home-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.home-form-card {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 8px 28px rgba(44, 73, 52, 0.05);
+}
+
+.home-form-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--surface-soft);
+  font-size: 22px;
+}
+
+.home-form-card h3 {
+  margin: 1px 0 6px;
+  font-size: 16px;
+}
+
+.home-form-card p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 12px;
+}
+
+.home-form-card .primary-button {
+  width: 100%;
+}
+
+#dailyNudgeMessage {
+  transition: opacity 180ms ease;
+}
+
+@media (max-width: 620px) {
+  .home-form-grid { grid-template-columns: 1fr; }
+  .home-form-card { padding: 16px; }
+}
+
+/* ===== Ver.2.4: onboarding / version history / feedback ===== */
+.guide-content,
+.version-content,
+.feedback-content {
+  padding: 26px;
+}
+
+.guide-lead {
+  margin: 10px 0 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.guide-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide-step {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+
+.guide-step-number {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--primary-dark);
+  font-weight: 900;
+  box-shadow: 0 5px 16px rgba(44,73,52,.08);
+}
+
+.guide-step strong {
+  display: block;
+  margin-top: 2px;
+}
+
+.guide-step p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 13px;
+}
+
+.guide-caution {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff9e9;
+  border: 1px solid #f0dfac;
+  color: #6d6249;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.version-card,
+.feedback-card,
+.guide-card {
+  grid-column: 1 / -1;
+}
+
+.settings-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.version-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.version-item {
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+
+.version-item.current {
+  border-color: rgba(79,143,99,.35);
+  background: #f4faf2;
+}
+
+.version-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.version-item h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.version-badge {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--primary-dark);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.version-item ul {
+  margin: 9px 0 0;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 13px;
+}
+
+.feedback-content form {
+  padding: 0;
+}
+
+.feedback-content textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.feedback-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.feedback-privacy {
+  margin: 14px 0 0;
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: #fff6f6;
+  color: #7a4e4e;
+  line-height: 1.55;
+  font-size: 12px;
+}
+
+@media (max-width: 620px) {
+  .guide-content,
+  .version-content,
+  .feedback-content {
+    padding: 22px 18px;
+  }
+
+  .settings-button-row {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .settings-button-row button {
+    width: 100%;
+  }
+}
+
 </style></head>
 <body>
   <div class="app-shell">
@@ -1505,7 +1743,7 @@ main {
         <span class="brand-mark" aria-hidden="true">🌱</span>
         <span>
           <strong>Nudge</strong>
-          <small>5分だけ始める ・ Ver.2.3</small>
+          <small>5分だけ始める ・ Ver.2.4</small>
         </span>
       </button>
 
@@ -1565,9 +1803,28 @@ main {
           <div class="insight-icon" aria-hidden="true">💡</div>
           <div>
             <strong>今日のNudge</strong>
-            <p>「全部やる」ではなく、「始める」に成功しよう。5分できたら、それだけで今日の達成です。</p>
+            <p id="dailyNudgeMessage" data-i18n-dynamic>「全部やる」ではなく、「始める」に成功しよう。5分できたら、それだけで今日の達成です。</p>
           </div>
         </article>
+
+        <div class="home-form-grid" aria-label="試作版フィードバックフォーム">
+          <article class="home-form-card">
+            <div class="home-form-icon" aria-hidden="true">📝</div>
+            <div>
+              <h3>3日間の振り返り</h3>
+              <p>回答フォームはNudgeとは別のタブ／ウィンドウで開きます。</p>
+              <button id="openReflection" class="primary-button" type="button">📝 振り返りフォームを別画面で開く</button>
+            </div>
+          </article>
+          <article class="home-form-card">
+            <div class="home-form-icon" aria-hidden="true">💬</div>
+            <div>
+              <h3>改善点・要望</h3>
+              <p>GoogleフォームをNudgeとは別のタブ／ウィンドウで開きます。使いにくかった点や追加してほしい機能を送れます。</p>
+              <button id="openFeedback" class="primary-button" type="button">💬 改善点・要望フォームを別画面で開く</button>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section id="view-tasks" class="view" aria-labelledby="tasksTitle">
@@ -1709,16 +1966,32 @@ main {
             </label>
           </article>
 
+          <article class="settings-card language-card">
+            <h2>言語 / Language</h2>
+            <p class="settings-note">画面表示を日本語または英語に切り替えます。入力したタスク名はそのまま表示されます。</p>
+            <label for="languageSelect">表示言語</label>
+            <select id="languageSelect">
+              <option value="ja">日本語</option>
+              <option value="en">English</option>
+            </select>
+          </article>
+
           <article class="settings-card">
             <h2>プロフィール</h2>
             <p class="settings-note">年代・立場と、匿名利用データの送信設定を変更できます。</p>
             <button id="editProfile" class="secondary-button">プロフィールを編集</button>
           </article>
 
-          <article class="settings-card reflection-card">
-            <h2>3日間の振り返り</h2>
-            <p class="settings-note">回答フォームはNudgeとは別のタブ／ウィンドウで開きます。</p>
-            <button id="openReflection" class="primary-button" type="button">📝 振り返りフォームを別画面で開く</button>
+          <article class="settings-card guide-card">
+            <h2>使い方</h2>
+            <p class="settings-note">初回に表示される4ステップのガイドを、いつでももう一度確認できます。</p>
+            <button id="openGuideFromSettings" class="secondary-button" type="button">📘 使い方を見る</button>
+          </article>
+
+          <article class="settings-card version-card">
+            <h2>Nudgeの更新履歴</h2>
+            <p class="settings-note">各バージョンで追加・改善した内容を確認できます。現在はVer.2.4です。</p>
+            <button id="openVersionHistory" class="secondary-button" type="button">🕘 更新履歴を見る</button>
           </article>
 
           <article class="settings-card danger-zone">
@@ -1841,6 +2114,97 @@ main {
     </div>
   </div>
 
+  <div id="guideDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+    <div class="guide-content">
+      <div class="modal-header">
+        <div><p class="eyebrow">HOW TO USE</p><h2 id="guideTitle">Nudgeの使い方</h2></div>
+        <button id="guideClose" type="button" class="icon-button" aria-label="閉じる">×</button>
+      </div>
+      <p class="guide-lead">最初に4つだけ確認してください。Nudgeは「全部終わらせる」より、まず小さく始めることを助けるアプリです。</p>
+      <ol class="guide-steps">
+        <li class="guide-step"><span class="guide-step-number">1</span><div><strong>やることを登録</strong><p>タスク名だけでもOK。必要なら期限や予想時間を追加します。</p></div></li>
+        <li class="guide-step"><span class="guide-step-number">2</span><div><strong>「5分だけ始める」</strong><p>最初の一歩を小さくして、タイマーで集中を始めます。</p></div></li>
+        <li class="guide-step"><span class="guide-step-number">3</span><div><strong>達成後に次を選ぶ</strong><p>もう5分続ける、次のタスクへ進む、今日はここまで、から選べます。</p></div></li>
+        <li class="guide-step"><span class="guide-step-number">4</span><div><strong>最後に振り返る</strong><p>利用後は振り返りフォームや改善点・要望フォームから感想を送れます。</p></div></li>
+      </ol>
+      <p class="guide-caution"><strong>試験利用のお願い：</strong>普段どおりに使い、テスト目的でタスクや完了記録を不自然に大量作成しないでください。</p>
+      <div class="modal-actions">
+        <button id="guideContinue" type="button" class="primary-button">次へ：所属を回答する</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="versionDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle">
+    <div class="version-content">
+      <div class="modal-header">
+        <div><p class="eyebrow">CHANGELOG</p><h2 id="versionTitle">Nudgeの更新履歴</h2></div>
+        <button type="button" class="icon-button" data-close-dialog aria-label="閉じる">×</button>
+      </div>
+      <div class="version-list">
+        <article class="version-item current">
+          <div class="version-item-head"><h3>Ver.2.4</h3><span class="version-badge">CURRENT</span></div>
+          <ul>
+            <li>初回起動時に「Nudgeの使い方」4ステップを表示</li>
+            <li>使い方ガイドの後に所属・年代のプロフィール設定へ進む導線に変更</li>
+            <li>設定画面にバージョンごとの更新履歴を追加</li>
+            <li>改善点・要望をGoogleフォームへ別タブで送れる導線を追加</li>
+            <li>設定から日本語／英語の表示を切り替えられる機能を追加</li>
+            <li>振り返りフォームと改善点・要望フォームをホームの「今日のNudge」下へ移動</li>
+            <li>「今日のNudge」メッセージが4時間ごとに自動で切り替わるよう改善</li>
+          </ul>
+        </article>
+        <article class="version-item">
+          <div class="version-item-head"><h3>Ver.2.3</h3></div>
+          <ul>
+            <li>振り返りアンケートを別タブ／ウィンドウで開けるように改善</li>
+            <li>プロフィール入力を試験利用の最初に行う導線へ変更</li>
+            <li>スマホでのプロフィール・モーダル・チェックボックス表示崩れを修正</li>
+            <li>タイマーをバックグラウンド・再読み込み後に復元できるよう改善</li>
+            <li>5分達成後に「同じタスクでもう5分」「次のタスク」「今日はここまで」を選べるよう改善</li>
+            <li>session_idを追加し、集中開始から5分達成までを同一セッションとして追跡</li>
+            <li>focus_start / focus_goal / step_complete / reflection_opened などの行動ログを確認できるよう改善</li>
+          </ul>
+        </article>
+        <article class="version-item">
+          <div class="version-item-head"><h3>Ver.2.2</h3></div>
+          <ul>
+            <li>Supabaseと接続し、匿名利用イベントの収集を導入</li>
+            <li>匿名認証とRLSを使い、ブラウザからは必要なイベントのみ送信する構成に変更</li>
+            <li>年代・所属と利用イベントを組み合わせて集計できるようにした</li>
+            <li>タスク名・ステップ本文・名前・学校名・住所などは送信しない設計にした</li>
+          </ul>
+        </article>
+        <article class="version-item">
+          <div class="version-item-head"><h3>Ver.2.1</h3></div>
+          <ul>
+            <li>「5分達成」と「ステップ完了」を別の成功として扱うよう変更</li>
+            <li>タスク名だけ入力してすぐ「5分だけ始める」導線を追加</li>
+            <li>自動作成したステップの内容・順番・予想分数を編集できるよう改善</li>
+            <li>途中まで進めたステップを優先表示し、続きから再開できるよう改善</li>
+            <li>記録画面を「始めた回数・集中時間・連続日数・完了ステップ」を中心に見直し</li>
+          </ul>
+        </article>
+        <article class="version-item">
+          <div class="version-item-head"><h3>Ver.2.0</h3></div>
+          <ul>
+            <li>大きなタスクと予想時間から、小さな行動ステップ案を作る機能を追加</li>
+            <li>ステップ案を編集・並べ替えてから確定できる計画編集機能を追加</li>
+            <li>1ステップずつ集中し、途中保存して後から再開できる流れを実装</li>
+          </ul>
+        </article>
+        <article class="version-item">
+          <div class="version-item-head"><h3>Ver.1.0</h3></div>
+          <ul>
+            <li>「5分だけ始める」ことを中心にしたNudgeの最初の試作版</li>
+            <li>小さな開始・ポイント・記録・育成要素の基本構造を実装</li>
+          </ul>
+        </article>
+      </div>
+      <div class="modal-actions"><button type="button" class="primary-button" data-close-dialog>閉じる</button></div>
+    </div>
+  </div>
+
+
   <div id="profileDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
     <form id="profileForm">
       <div class="modal-header">
@@ -1880,7 +2244,8 @@ main {
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "nudge-app-v2-3";
+  const STORAGE_KEY = "nudge-app-v2-4";
+  const V23_KEY = "nudge-app-v2-3";
   const V22_KEY = "nudge-app-v2-2";
   const V21_KEY = "nudge-app-v2-1";
   const V2_KEY = "nudge-app-v2";
@@ -1889,6 +2254,7 @@ main {
   const DAY_MS = 86400000;
   const CIRCLE_LENGTH = 2 * Math.PI * 68;
   const REFLECTION_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfylieuOh1wZwzI6bmD-BS4Grp5YsU7nTUXpE2EmtzL6owg8g/viewform?usp=publish-editor";
+  const FEEDBACK_FORM_URL = "https://forms.gle/hybhgf9BpJsgDAjZ8";
 
   // Supabase接続設定：Dashboard → Project Settings / API の値を入れてください。
   // Publishable key（または旧anon key）のみ使用し、secret/service_role keyは絶対に入れないでください。
@@ -1897,9 +2263,10 @@ main {
   const TELEMETRY_ENABLED = !SUPABASE_URL.includes("YOUR_") && !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_");
   let supabaseClient = null;
   let currentSessionId = null;
+  let guideFirstLaunch = false;
 
   const defaultState = () => ({
-    version: "2.3",
+    version: "2.4",
     points: 0,
     totalSeconds: 0,
     totalMinutes: 0,
@@ -1907,8 +2274,9 @@ main {
     sessions: [],
     tasks: [],
     activeTimer: null,
-    settings: { focusMinutes: 5, sound: false, confetti: true },
+    settings: { focusMinutes: 5, sound: false, confetti: true, language: "ja" },
     profile: { setup: false, age: "", role: "", analytics: false, dismissed: false },
+    onboarding: { guideSeen: false },
     analytics: { focusStarts: 0, focusGoals: 0, focusCompletions: 0, partialSaves: 0, planEdits: 0, activeDays: [] },
     telemetry: { lastError: "", connectedOnce: false }
   });
@@ -1932,6 +2300,131 @@ main {
   let sessionStartedAt = null;
   let sessionGoalReached = false;
   let persistTick = 0;
+  let nudgeMessageTimer = null;
+
+  const NUDGE_MESSAGES_JA = [
+    "タスクへのスタートダッシュを、今ここで切ろう！",
+    "全部終わらせなくていい。まず5分だけ動かしてみよう。",
+    "完璧より着手。最初の一歩を小さくしよう。",
+    "今日のゼロを1に変えるのは、たった5分から。",
+    "迷ったら、一番小さい作業から始めよう。",
+    "やる気を待つより、先にタイマーを押してみよう。",
+    "最初の5分が、今日の流れをつくるかもしれない。",
+    "『あとで』を『今5分だけ』に変えてみよう。",
+    "少し進めば、次に取りかかる自分が楽になる。",
+    "大きなタスクほど、入口は小さくていい。",
+    "始めた時点で前進。まず1つだけ手を動かそう。",
+    "5分だけ集中して、勢いのきっかけをつくろう。",
+    "止まっても大丈夫。まず一歩進めることが大切。",
+    "最初の一歩が重い日は、5分だけで十分。",
+    "できるところから、静かにスタートしよう。",
+    "今日の自分に、小さな成功を1つ残そう。",
+    "タスクを開く、道具を出す。それも立派なスタート。",
+    "小さく始めて、進めそうならそのまま続けよう。"
+  ];
+
+  const NUDGE_MESSAGES_EN = [
+    "Kick-start your task right now.",
+    "You do not have to finish it all. Just move for five minutes.",
+    "Starting beats perfect. Make the first step small.",
+    "Turn today's zero into one with just five minutes.",
+    "If you are unsure, start with the smallest action.",
+    "Do not wait for motivation. Try starting the timer first.",
+    "The first five minutes can create today's momentum.",
+    "Turn 'later' into 'just five minutes now.'",
+    "A little progress makes the next start easier.",
+    "The bigger the task, the smaller the entrance can be.",
+    "Starting is already progress. Move one thing forward.",
+    "Focus for five minutes and create a little momentum.",
+    "It is okay to stop. Taking one step still matters.",
+    "On hard days, the first five minutes are enough.",
+    "Start quietly with whatever feels doable.",
+    "Give yourself one small win today.",
+    "Open the task or prepare your tools. That counts as a start.",
+    "Start small, and keep going only if it feels right."
+  ];
+
+
+  const I18N_EN = {"振り返りフォームと改善点・要望フォームをホームの「今日のNudge」下へ移動":"Move the reflection and feedback forms to Home below Today’s Nudge.","「今日のNudge」メッセージが4時間ごとに自動で切り替わるよう改善":"Rotate the Today’s Nudge message automatically every four hours.","5分だけ始める":"Start for 5 minutes","5分だけ始める ・ Ver.2.4":"Start for 5 minutes · Ver.2.4","今日の一歩を、":"Take one small step,","5分だけ。":"just 5 minutes.","やる気が出るのを待たずに、小さく始めるためのデイリーミッション。":"Daily missions that help you start small instead of waiting for motivation.","今日やること":"Today","＋ 追加する":"+ Add","今日のNudge":"Today's Nudge","「全部やる」ではなく、「始める」に成功しよう。5分できたら、それだけで今日の達成です。":"Don't aim to finish everything. Succeed at starting. Five minutes is already a win.","タスク管理":"Tasks","大きな課題を、小さく始められる形にします。":"Turn a big task into a small first step.","＋ 新しいタスク":"+ New task","未完了":"Active","完了":"Completed","すべて":"All","サンプルを追加":"Add samples","積み上げ記録":"Progress","比べる相手は、過去の自分です。":"Compare with your past self.","始めた回数":"Starts","集中した分数":"Focus minutes","行動した連続日数":"Active streak","完了したステップ":"Steps completed","先週の自分と比べる":"Compare with last week","今週の「始めた」":"Starts this week","先週の「始めた」":"Starts last week","小さな一歩を記録していきましょう。":"Keep recording small steps.","この7日間":"Last 7 days","称号":"Badges","最近の一歩":"Recent steps","設定":"Settings","自分が始めやすい環境に調整します。":"Adjust Nudge to make starting easier for you.","集中時間":"Focus time","1回のタイマー":"Timer length","基本は「5分だけ」。試すときは1分にもできます。":"The default is 5 minutes. You can use 1 minute for testing.","演出":"Effects","効果音":"Sound","開始・達成時に短い音を鳴らす":"Play a short sound when starting or reaching a goal.","紙吹雪":"Confetti","達成時に小さな演出を表示する":"Show a small celebration when you reach a goal.","プロフィール":"Profile","年代・立場と、匿名利用データの送信設定を変更できます。":"Change age group, role and anonymous analytics settings.","プロフィールを編集":"Edit profile","3日間の振り返り":"3-day reflection","回答フォームはNudgeとは別のタブ／ウィンドウで開きます。":"The reflection form opens in a separate tab/window.","📝 振り返りフォームを別画面で開く":"📝 Open reflection form","使い方":"How to use","初回に表示される4ステップのガイドを、いつでももう一度確認できます。":"Review the four-step guide shown on first launch.","📘 使い方を見る":"📘 View guide","Nudgeの更新履歴":"Nudge changelog","各バージョンで追加・改善した内容を確認できます。現在はVer.2.4です。":"See what changed in each version. Current version: 2.4.","🕘 更新履歴を見る":"🕘 View changelog","改善点・要望":"Feedback & requests","GoogleフォームをNudgeとは別のタブ／ウィンドウで開きます。使いにくかった点や追加してほしい機能を送れます。":"Open a Google Form in a separate tab/window to send usability feedback and feature requests.","💬 改善点・要望フォームを別画面で開く":"💬 Open feedback form","データ":"Data","この端末のブラウザに保存されたデータを消去します。":"Delete data stored in this browser on this device.","すべてのデータを初期化":"Reset all data","ホーム":"Home","タスク":"Tasks","記録":"Records","まず、やることだけ":"Start with just the task","何をやりますか？":"What do you want to do?","細かく決めなくても大丈夫。名前だけ入力して、そのまま5分を始められます。":"You do not need every detail. Enter a task name and start for 5 minutes.","▶ 5分だけ始める":"▶ Start for 5 minutes","詳しく計画する":"Plan details","期限や予想時間が分かる場合だけ設定してください。Nudgeのプラン案は後から自由に直せます。":"Only add a due date or estimate if you know them. You can edit Nudge's plan later.","期限":"Due date","予想時間":"Estimated time","優先度":"Priority","ふつう":"Medium","高い":"High","低い":"Low","Nudgeのプラン案を自動作成する":"Create a Nudge plan automatically","入力した予想時間を参考に、5〜15分程度の行動ステップ案を端末内で作ります。作成後に編集できます。":"Using your estimate, Nudge creates 5–15 minute action steps on this device. You can edit them afterward.","ステップを編集する":"Edit steps","キャンセル":"Cancel","この計画で追加":"Add this plan","残り時間":"Time left","完璧にやらなくていい。始めた時点で前進です。":"It does not have to be perfect. Starting is progress.","一時停止":"Pause","ステップ完了":"Complete step","ここまで保存":"Save progress","ステップ完了！":"Step complete!","小さな一歩を完了しました。":"You completed a small step.","同じタスクでもう5分":"Another 5 min on this task","次のタスクへ":"Next task","今日はここまで":"Stop for today","Nudgeの使い方":"How to use Nudge","最初に4つだけ確認してください。Nudgeは「全部終わらせる」より、まず小さく始めることを助けるアプリです。":"Check these four steps first. Nudge helps you start small rather than finish everything at once.","やることを登録":"Add a task","タスク名だけでもOK。必要なら期限や予想時間を追加します。":"A task name is enough. Add a due date or estimate only if needed.","「5分だけ始める」":"“Start for 5 minutes”","最初の一歩を小さくして、タイマーで集中を始めます。":"Make the first step small and start a focus timer.","達成後に次を選ぶ":"Choose what to do next","もう5分続ける、次のタスクへ進む、今日はここまで、から選べます。":"Choose another 5 minutes, the next task, or stop for today.","最後に振り返る":"Reflect at the end","利用後は振り返りフォームや改善点・要望フォームから感想を送れます。":"After using Nudge, you can send feedback through the reflection or feedback form.","試験利用のお願い：":"Test-use request:","普段どおりに使い、テスト目的でタスクや完了記録を不自然に大量作成しないでください。":"Please use Nudge normally and do not create large numbers of fake tasks or completion records for testing.","次へ：所属を回答する":"Next: answer profile","閉じる":"Close","計画を編集":"Edit plan","Nudgeの自動プランは「たたき台」です。順番・内容・数を自由に直してから保存できます。":"Nudge's automatic plan is a draft. Edit the order, content and number of steps before saving.","＋追加":"+ Add","この計画で保存":"Save this plan","所属・立場":"Role","選択してください":"Select","中学生":"Middle school student","高校生":"High school student","大学・専門学校生":"College / vocational student","社会人":"Working adult","その他":"Other","回答しない":"Prefer not to say","年代":"Age group","10代":"Teens","20代":"20s","30代":"30s","40代":"40s","50代以上":"50s+","匿名・集計された利用データの分析に協力する":"Help improve Nudge with anonymous usage data","年代・立場、5分開始・達成などの匿名イベントをNudge改善用サーバーへ送信します。名前・学校名・住所・タスク本文は送信しません。いつでもOFFにできます。":"Sends anonymous events such as age group, role, starts and goals. Names, school names, addresses and task text are not sent. You can turn this off anytime.","あとで":"Later","保存してはじめる":"Save and start","言語 / Language":"Language","画面表示を日本語または英語に切り替えます。入力したタスク名はそのまま表示されます。":"Switch the interface between Japanese and English. Your task names are not translated.","表示言語":"Display language","日本語":"Japanese","1分（試用）":"1 min (trial)","3分":"3 min","5分":"5 min","10分":"10 min","15分":"15 min","25分":"25 min","30分":"30 min","60分":"60 min","120分以上":"120+ min","0回":"0","日":"days","初回起動時に「Nudgeの使い方」4ステップを表示":"Show a four-step “How to use Nudge” guide on first launch.","使い方ガイドの後に所属・年代のプロフィール設定へ進む導線に変更":"After the guide, move users to role and age-group setup.","設定画面にバージョンごとの更新履歴を追加":"Add a version-by-version changelog in Settings.","改善点・要望をGoogleフォームへ別タブで送れる導線を追加":"Open the feedback Google Form in a separate tab.","設定から日本語／英語の表示を切り替えられる機能を追加":"Add Japanese/English interface switching in Settings.","振り返りアンケートを別タブ／ウィンドウで開けるように改善":"Open the reflection survey in a separate tab/window.","プロフィール入力を試験利用の最初に行う導線へ変更":"Move profile setup to the start of the trial flow.","スマホでのプロフィール・モーダル・チェックボックス表示崩れを修正":"Fix mobile layout issues in profile, modals and checkboxes.","タイマーをバックグラウンド・再読み込み後に復元できるよう改善":"Improve timer recovery after backgrounding or reloading.","5分達成後に「同じタスクでもう5分」「次のタスク」「今日はここまで」を選べるよう改善":"After a 5-minute goal, let users choose another block, the next task, or stop.","session_idを追加し、集中開始から5分達成までを同一セッションとして追跡":"Add session_id to connect focus start and goal events.","focus_start / focus_goal / step_complete / reflection_opened などの行動ログを確認できるよう改善":"Track events such as focus_start, focus_goal, step_complete and reflection_opened.","Supabaseと接続し、匿名利用イベントの収集を導入":"Connect Supabase and add anonymous usage-event collection.","匿名認証とRLSを使い、ブラウザからは必要なイベントのみ送信する構成に変更":"Use anonymous auth and RLS so the browser can only send required events.","年代・所属と利用イベントを組み合わせて集計できるようにした":"Enable analysis of usage events by age group and role.","タスク名・ステップ本文・名前・学校名・住所などは送信しない設計にした":"Do not send task text, step text, names, school names or addresses.","「5分達成」と「ステップ完了」を別の成功として扱うよう変更":"Separate the 5-minute goal from step completion.","タスク名だけ入力してすぐ「5分だけ始める」導線を追加":"Allow users to enter only a task name and start immediately.","自動作成したステップの内容・順番・予想分数を編集できるよう改善":"Allow editing of generated step text, order and estimated minutes.","途中まで進めたステップを優先表示し、続きから再開できるよう改善":"Prioritize partially started steps and support resuming.","記録画面を「始めた回数・集中時間・連続日数・完了ステップ」を中心に見直し":"Refocus records on starts, focus time, streak and completed steps.","大きなタスクと予想時間から、小さな行動ステップ案を作る機能を追加":"Generate small action-step drafts from a large task and time estimate.","ステップ案を編集・並べ替えてから確定できる計画編集機能を追加":"Add a plan editor for editing and reordering step drafts.","1ステップずつ集中し、途中保存して後から再開できる流れを実装":"Add one-step-at-a-time focus with partial save and resume.","「5分だけ始める」ことを中心にしたNudgeの最初の試作版":"The first Nudge prototype centered on “start for 5 minutes.”","小さな開始・ポイント・記録・育成要素の基本構造を実装":"Implement the basic structure for small starts, points, records and growth.","Nudgeの芽":"Nudge sprout","Nudgeの若葉":"Nudge leaf","Nudgeの苗":"Nudge seedling","Nudgeの木":"Nudge tree","Nudgeの花":"Nudge flower","今日のミッションは完了です":"Today's missions are complete","新しいタスクを追加するか、今日はここまでにしましょう。":"Add a new task, or call it a day.","タスクを追加":"Add task","表示するタスクがありません":"No tasks to show","大きなタスクを登録し、小さなステップにしてみましょう。":"Add a larger task and break it into small steps.","ステップ進捗":"Step progress","期限なし":"No due date","開始":"Start","最初の一歩から記録していきましょう。":"Start by recording one small step.","先週と同じペースです。小さく続けられています。":"You are at the same pace as last week. Keep it small and steady.","目標達成":"Goal reached","途中まで":"Partial","始めると、ここに「小さな一歩」が残ります。":"Your small steps will appear here after you start.","最初の一歩":"First step","初めて集中を記録":"Logged first focus session","3日連続":"3-day streak","3日続けて始めた":"Started for 3 days in a row","10回スタート":"10 starts","10回の小さな開始":"10 small starts","集中60分":"60 focus minutes","合計60分に到達":"Reached 60 focus minutes","育てる人":"Grower","レベル7に到達":"Reached level 7","100の一歩":"100 steps","100回始めた":"Started 100 times","詳細を閉じる":"Hide details","まず、やることを入力してください":"Enter what you want to do first.","タスク名を入力してください":"Enter a task name.","計画を保存しました。好きなステップから5分だけ！":"Plan saved. Start any step for 5 minutes!","ステップを編集":"Edit steps","ステップがありません。「＋追加」で1つ作ってください。":"No steps yet. Use “+ Add” to create one.","分":"min","削除":"Delete","ステップを1つ以上残してください":"Keep at least one step.","計画を更新しました":"Plan updated.","このプランでタスクを追加できます":"You can add the task with this plan.","タスクを削除しました":"Task deleted.","前回の続きから。今日も小さく始めます。":"Continue from last time. Start small again today.","再開する":"Resume","ステップも完了":"Complete step too","5分達成を保存しました。今日はここまで！":"5-minute goal saved. That's enough for today!","途中まで保存しました。次回は続きから5分だけ。":"Progress saved. Resume for 5 minutes next time.","次にどうするか選べます。ここで終えても、今日の一歩は記録されています。":"Choose what to do next. Even if you stop here, today's step is recorded.","ホームへ戻る":"Back to Home","別画面を開けませんでした。ブラウザのポップアップ設定を確認してください":"Could not open a new tab. Check your browser pop-up settings.","前回の集中を復元しました":"Restored your previous focus session.","使い方を確認しました":"Guide completed.","最初に所属を教えてください":"Tell us your role first","試作版の利用傾向を振り返るため、まず所属を選んでください。「回答しない」も選べます。匿名分析をONにした場合のみ、所属・年代と利用イベントをNudge改善用サーバーへ送信します。":"To understand trial usage, choose your role first. You can choose “Prefer not to say.” Role, age group and usage events are sent only when anonymous analytics is on.","名前・学校名・住所などは入力しません。匿名分析をONにした場合のみ、年代・立場と利用イベントをNudge改善用サーバーへ送信します。":"Nudge does not ask for names, school names or addresses. Age group, role and usage events are sent only when anonymous analytics is on.","保存してNudgeをはじめる":"Save and start Nudge","保存する":"Save","最初に所属を選んでください":"Select your role first.","プロフィールを保存しました。匿名分析への協力がONです":"Profile saved. Anonymous analytics is on.","プロフィールを保存しました":"Profile saved.","いつでも設定から変更できます":"You can change this anytime in Settings.","集中時間を変更しました":"Focus time changed.","サンプルタスクを追加しました":"Sample tasks added.","ポイント、記録、タスク、プロフィールをすべて初期化します。よろしいですか？":"Reset all points, records, tasks and profile data?","データを初期化しました":"Data reset.","Nudgeを試してみる":"Try Nudge","「5分だけ始める」を押してみる":"Tap “Start for 5 minutes”","新しいタスク":"New task","このタスク":"this task","まず5分だけ：":"First 5 min: ","プラン案":"Plan draft","✦ 端末内ルールで案を作成・外部AI通信なし":"✦ Created on-device with rules · no external AI request","条件・提出形式を確認する":"Check requirements and format","必要な資料を1つ集める":"Gather one needed resource","見出し・要点を3つ作る":"Draft three headings/key points","最初の部分を書く":"Write the first section","読み直して1か所直す":"Review and fix one part","提出前の確認をする":"Do a final check before submitting","範囲とゴールを確認する":"Check scope and goal","教材を開いて最初の5問だけ進める":"Open the material and do the first 5 questions","分からない所に印をつける":"Mark anything unclear","次の5問だけ進める":"Do the next 5 questions","間違いを見直す":"Review mistakes","次回の開始位置を決める":"Choose where to resume next time","対象の場所を1か所決める":"Choose one area","不要な物を3つ分ける":"Sort three unnecessary items","元の場所に5つ戻す":"Put five items back","一角だけ整える":"Tidy one small area","残りをもう5分だけ進める":"Continue the rest for 5 more minutes","終わった場所を確認する":"Check what you finished","期限と必要事項を確認する":"Check deadline and requirements","必要な情報を3点メモする":"Note three needed pieces of information","最初の入力・1文を進める":"Complete the first field or sentence","残りの内容を埋める":"Fill in the remaining content","誤りがないか確認する":"Check for errors","送信・提出前の最終確認をする":"Final check before sending/submitting","必要なものを準備する":"Prepare what you need","軽く始める":"Start lightly","基本動作を少し進める":"Do a little of the basic movement","もう1セットだけ続ける":"Do one more set","記録を残す":"Record what you did","ゴールと条件を確認する":"Check the goal and conditions","必要なものを1つ準備する":"Prepare one needed item","次にやることを1つ決める":"Choose one next action","もう5分だけ続ける":"Continue for 5 more minutes","できた所と次の開始位置を記録する":"Record what you did and where to resume","ホームへ":"Go Home","集中画面を閉じる":"Close focus view","未完了に戻す":"Mark active","完了にする":"Mark complete","追加するステップ":"Add a step","例：英語のレポートを書く":"Example: write an English report"};
+  const ORIGINAL_TEXT = new WeakMap();
+  const ORIGINAL_ATTRS = new WeakMap();
+
+  function isEnglish(){ return state?.settings?.language === "en"; }
+
+  function translateText(value){
+    const raw=String(value ?? "");
+    const trimmed=raw.trim();
+    if(!trimmed) return raw;
+    let out=I18N_EN[trimmed];
+
+    if(!out){
+      let m;
+      if((m=trimmed.match(/^(\d+)分$/))) out=`${m[1]} min`;
+      else if((m=trimmed.match(/^(\d+)秒$/))) out=`${m[1]} sec`;
+      else if((m=trimmed.match(/^(\d+)回$/))) out=`${m[1]}`;
+      else if((m=trimmed.match(/^予想(\d+)分$/))) out=`Est. ${m[1]} min`;
+      else if((m=trimmed.match(/^⏱ 予想(\d+)分$/))) out=`⏱ Est. ${m[1]} min`;
+      else if((m=trimmed.match(/^・(\d+)分目安$/))) out=`· about ${m[1]} min`;
+      else if((m=trimmed.match(/^・(\d+)分$/))) out=`· ${m[1]} min`;
+      else if((m=trimmed.match(/^(\d+)分だけ始める$/))) out=`Start for ${m[1]} min`;
+      else if((m=trimmed.match(/^続きから(\d+)分だけ始める$/))) out=`Resume for ${m[1]} min`;
+      else if((m=trimmed.match(/^続きから(\d+)分だけ$/))) out=`Resume for ${m[1]} min`;
+      else if((m=trimmed.match(/^もう(\d+)分$/))) out=`Another ${m[1]} min`;
+      else if((m=trimmed.match(/^もう(\d+)分だけ。途中で止めても記録は残ります。$/))) out=`Just ${m[1]} more minutes. Your progress is saved even if you stop early.`;
+      else if((m=trimmed.match(/^(\d+)分達成！$/))) out=`${m[1]}-minute goal reached!`;
+      else if((m=trimmed.match(/^🎉 (\d+)分達成！$/))) out=`🎉 ${m[1]}-minute goal reached!`;
+      else if((m=trimmed.match(/^予想(\d+)分 → (\d+)ステップ（目安合計(\d+)分）。集中タイマーは(\d+)分です。$/))) out=`Estimated ${m[1]} min → ${m[2]} steps (about ${m[3]} min total). Focus timer: ${m[4]} min.`;
+      else if((m=trimmed.match(/^先週より(\d+)回多く始められています。$/))) out=`You started ${m[1]} more time(s) than last week.`;
+      else if((m=trimmed.match(/^先週より(\d+)回少なめ。今日は1回だけでも十分です。$/))) out=`${m[1]} fewer start(s) than last week. One start today is enough.`;
+      else if((m=trimmed.match(/^「(.+)」の計画$/))) out=`Plan: “${m[1]}”`;
+      else if((m=trimmed.match(/^「(.+)」を削除しますか？$/))) out=`Delete “${m[1]}”?`;
+      else if((m=trimmed.match(/^(.+) ・ ステップ (\d+)\/(\d+)$/))) out=`${m[1]} · Step ${m[2]}/${m[3]}`;
+      else if((m=trimmed.match(/^ステップ(\d+)$/))) out=`Step ${m[1]}`;
+      else if((m=trimmed.match(/^ステップ(\d+)の予想分数$/))) out=`Estimated minutes for step ${m[1]}`;
+      else if((m=trimmed.match(/^まず5分だけ：(.+)$/))) out=`First 5 min: ${m[1]}`;
+      else if((m=trimmed.match(/^5分だけ「(.+)」を始める$/))) out=`Start “${m[1]}” for 5 minutes`;
+      else if((m=trimmed.match(/^「(.+)」の最初の作業を5分だけ行う$/))) out=`Do the first part of “${m[1]}” for 5 minutes`;
+      else if((m=trimmed.match(/^前回(\d+)分進みました$/))) out=`${m[1]} min last time`;
+      else if(trimmed==="前回1分未満進みました") out="Less than 1 min last time";
+    }
+
+    if(!out) return raw;
+    const start=raw.match(/^\s*/)?.[0]||"";
+    const end=raw.match(/\s*$/)?.[0]||"";
+    return start+out+end;
+  }
+
+  function applyLanguage(root=document){
+    const english=isEnglish();
+    document.documentElement.lang=english?"en":"ja";
+    const base=root===document?document.body:root;
+    if(!base) return;
+
+    const walker=document.createTreeWalker(base, NodeFilter.SHOW_TEXT, {
+      acceptNode(node){
+        const p=node.parentElement;
+        if(!p || ["SCRIPT","STYLE"].includes(p.tagName) || p.closest("[data-i18n-dynamic]")) return NodeFilter.FILTER_REJECT;
+        return node.nodeValue?.trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+      }
+    });
+    const nodes=[];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node=>{
+      if(!ORIGINAL_TEXT.has(node)) ORIGINAL_TEXT.set(node,node.nodeValue);
+      const original=ORIGINAL_TEXT.get(node);
+      node.nodeValue=english?translateText(original):original;
+    });
+
+    base.querySelectorAll?.("[placeholder],[aria-label],[title]").forEach(el=>{
+      if(!ORIGINAL_ATTRS.has(el)) ORIGINAL_ATTRS.set(el,{});
+      const saved=ORIGINAL_ATTRS.get(el);
+      ["placeholder","aria-label","title"].forEach(attr=>{
+        if(!el.hasAttribute(attr)) return;
+        if(saved[attr]===undefined) saved[attr]=el.getAttribute(attr);
+        el.setAttribute(attr,english?translateText(saved[attr]):saved[attr]);
+      });
+    });
+  }
 
   document.addEventListener("DOMContentLoaded", init);
 
@@ -1940,29 +2433,38 @@ main {
     bindEvents();
     ensureStarterTask();
     renderAll();
+    if(!nudgeMessageTimer) nudgeMessageTimer = window.setInterval(updateNudgeMessage, 60 * 1000);
+
     const profileComplete =
-     state.profile?.setup &&
-     Boolean(state.profile?.role);
+      state.profile?.setup &&
+      Boolean(state.profile?.role);
 
     if (profileComplete) {
       restoreSavedFocus();
       initTelemetry();
+      return;
+    }
+
+    state.profile.setup = false;
+    persist();
+
+    if (!state.onboarding?.guideSeen) {
+      openGuide(true);
     } else {
-      state.profile.setup = false;
-      persist();
       openProfile(true);
     }
   }
 
   function cacheDom() {
     [
-      "headerPoints","headerStreak","todayLabel","characterStage","characterEmoji","levelLabel","characterName","xpText","xpBar",
+      "headerPoints","headerStreak","todayLabel","dailyNudgeMessage","characterStage","characterEmoji","levelLabel","characterName","xpText","xpBar",
       "missionList","taskList","totalStarted","totalCompleted","totalMinutes","recordStreak","weeklySummary","weeklyChart","badgeList","historyList",
       "thisWeekStarts","lastWeekStarts","comparisonMessage","focusMinutes","soundToggle","confettiToggle","taskDialog","taskForm","taskTitle",
       "taskDue","taskEstimate","taskPriority","autoBreakdown","taskDetails","toggleTaskDetails","quickStartTask","breakdownPreview","openPlanEditor",
       "focusDialog","focusTaskTitle","focusParentTitle","timerDisplay","timerProgress","focusMessage","toggleTimer","completeFocus","stopFocus",
       "rewardDialog","rewardPoints","rewardMessage","rewardStop","rewardSame","rewardNext","toast","profileDialog","profileForm","profileAge","profileRole",
-      "profileAnalytics","profileLater","profileEyebrow","profileTitle","profileNote","openReflection","planDialog","planDialogTitle","planEditorList","planNewStep","planAddStep","planSave","editProfile"
+      "profileAnalytics","profileLater","profileEyebrow","profileTitle","profileNote","openReflection","planDialog","planDialogTitle","planEditorList","planNewStep","planAddStep","planSave","editProfile",
+      "guideDialog","guideClose","guideContinue","openGuideFromSettings","versionDialog","openVersionHistory","openFeedback","languageSelect"
     ].forEach(id => dom[id] = document.getElementById(id));
   }
 
@@ -1976,6 +2478,7 @@ main {
       currentFilter = button.dataset.filter;
       document.querySelectorAll(".filter-tab").forEach(tab => tab.classList.toggle("active", tab === button));
       renderTasks();
+      applyLanguage(dom.taskList);
     }));
 
     dom.taskForm.addEventListener("submit", handleTaskSubmit);
@@ -2002,6 +2505,11 @@ main {
     dom.rewardSame.addEventListener("click", continueSameTaskAfterReward);
     dom.rewardNext.addEventListener("click", continueAfterReward);
     dom.openReflection?.addEventListener("click", openReflection);
+    dom.openGuideFromSettings?.addEventListener("click", () => openGuide(false));
+    dom.openVersionHistory?.addEventListener("click", () => openModal(dom.versionDialog));
+    dom.openFeedback?.addEventListener("click", openFeedback);
+    dom.guideClose?.addEventListener("click", () => closeModal(dom.guideDialog));
+    dom.guideContinue?.addEventListener("click", finishGuide);
 
     dom.focusMinutes.addEventListener("change", () => {
       state.settings.focusMinutes = Number(dom.focusMinutes.value || 5);
@@ -2009,6 +2517,13 @@ main {
     });
     dom.soundToggle.addEventListener("change", () => { state.settings.sound = dom.soundToggle.checked; persist(); });
     dom.confettiToggle.addEventListener("change", () => { state.settings.confetti = dom.confettiToggle.checked; persist(); });
+    dom.languageSelect?.addEventListener("change", () => {
+      state.settings.language = dom.languageSelect.value === "en" ? "en" : "ja";
+      persist();
+      renderAll();
+      applyLanguage();
+      showToast(isEnglish() ? "Language changed to English" : "表示言語を日本語に変更しました");
+    });
     document.getElementById("resetData").addEventListener("click", resetData);
     dom.editProfile?.addEventListener("click", openProfile);
     dom.profileForm.addEventListener("submit", saveProfile);
@@ -2019,6 +2534,7 @@ main {
       const open = [...document.querySelectorAll(".modal.open")].pop();
       if (!open) return;
       if (open === dom.profileDialog && !state.profile?.setup) return;
+      if (open === dom.guideDialog && guideFirstLaunch) return;
       if (open === dom.focusDialog) closeFocusDialog(true);
       else if (open === dom.planDialog) closePlanEditor();
       else closeModal(open);
@@ -2031,7 +2547,7 @@ main {
   function loadState() {
     try {
       let raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) raw = localStorage.getItem(V22_KEY) || localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
+      if (!raw) raw = localStorage.getItem(V23_KEY) || localStorage.getItem(V22_KEY) || localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
       const saved = raw ? JSON.parse(raw) : null;
       const base = defaultState();
       if (!saved) return base;
@@ -2045,9 +2561,10 @@ main {
       }
       const totalSeconds = Number(saved.totalSeconds ?? (Number(saved.totalMinutes || 0) * 60));
       const merged = {
-        ...base, ...saved, version: "2.3", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
+        ...base, ...saved, version: "2.4", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
         settings: { ...base.settings, ...(saved.settings || {}) },
         profile: { ...base.profile, ...(saved.profile || {}) },
+        onboarding: { ...base.onboarding, ...(saved.onboarding || {}) },
         analytics: { ...base.analytics, ...(saved.analytics || saved.v2Analytics || {}) },
         tasks: Array.isArray(saved.tasks) ? saved.tasks.map(normalizeTask) : [], history, sessions,
         activeTimer: saved.activeTimer || null
@@ -2085,8 +2602,23 @@ main {
     persist();
   }
 
-  function renderAll() { renderHeader(); renderCharacter(); renderMissions(); renderTasks(); renderRecords(); renderSettings(); renderTodayLabel(); }
-  function renderTodayLabel() { dom.todayLabel.textContent = new Intl.DateTimeFormat("ja-JP", { month:"long", day:"numeric", weekday:"long" }).format(new Date()); }
+  function updateNudgeMessage(){
+    const el = dom.dailyNudgeMessage || document.getElementById("dailyNudgeMessage");
+    if(!el) return;
+    const now = new Date();
+    const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / DAY_MS);
+    const fourHourSlot = Math.floor(now.getHours() / 4);
+    const messages = isEnglish() ? NUDGE_MESSAGES_EN : NUDGE_MESSAGES_JA;
+    const index = ((dayNumber * 6) + fourHourSlot) % messages.length;
+    const next = messages[index];
+    if(el.textContent !== next){
+      el.style.opacity = "0.35";
+      window.setTimeout(() => { el.textContent = next; el.style.opacity = "1"; }, 120);
+    }
+  }
+
+  function renderAll() { renderHeader(); renderCharacter(); renderMissions(); renderTasks(); renderRecords(); renderSettings(); renderTodayLabel(); applyLanguage(); updateNudgeMessage(); }
+  function renderTodayLabel() { dom.todayLabel.textContent = new Intl.DateTimeFormat(isEnglish()?"en-US":"ja-JP", { month:"long", day:"numeric", weekday:"long" }).format(new Date()); }
   function renderHeader() { dom.headerPoints.textContent = state.points; dom.headerStreak.textContent = calculateStreak(); }
 
   function getLevelInfo() {
@@ -2139,32 +2671,41 @@ main {
   function renderWeeklyChart(){const days=lastSevenDays();const counts=days.map(d=>state.sessions.filter(x=>dateKey(new Date(x.endedAt||x.startedAt))===d.key).length),max=Math.max(1,...counts),total=counts.reduce((a,b)=>a+b,0);dom.weeklySummary.textContent=`${total}回`;dom.weeklyChart.innerHTML=days.map((d,i)=>`<div class="chart-day"><div class="chart-bar-wrap"><div class="chart-bar" style="height:${Math.max(5,(counts[i]/max)*120)}px"></div></div><div class="chart-value">${counts[i]}</div><div class="chart-label">${d.label}</div></div>`).join("");}
   function renderBadges(badges){dom.badgeList.innerHTML=badges.map(b=>`<div class="badge ${b.unlocked?"":"locked"}"><span aria-hidden="true">${b.icon}</span><div><strong>${b.name}</strong><small>${b.description}</small></div></div>`).join("");}
   function renderHistory(){const h=[...state.sessions].sort((a,b)=>new Date(b.endedAt||b.startedAt)-new Date(a.endedAt||a.startedAt)).slice(0,10);dom.historyList.innerHTML=h.length?h.map(x=>`<div class="history-item"><span class="history-icon" aria-hidden="true">${x.reachedGoal?"👣":"🌱"}</span><div><strong>${escapeHtml(x.title)}</strong><small>${formatDateTime(x.endedAt||x.startedAt)}・${formatDuration(x.seconds)} <span class="activity-tag">${x.reachedGoal?"目標達成":"途中まで"}</span></small></div><span class="history-points">${x.points?`＋${x.points}pt`:"記録"}</span></div>`).join(""):`<p class="settings-note">始めると、ここに「小さな一歩」が残ります。</p>`;}
-  function renderSettings(){dom.focusMinutes.value=String(state.settings.focusMinutes);dom.soundToggle.checked=state.settings.sound;dom.confettiToggle.checked=state.settings.confetti;}
+  function renderSettings(){dom.focusMinutes.value=String(state.settings.focusMinutes);dom.soundToggle.checked=state.settings.sound;dom.confettiToggle.checked=state.settings.confetti;if(dom.languageSelect)dom.languageSelect.value=state.settings.language==="en"?"en":"ja";}
   function getBadges(){return [{icon:"👣",name:"最初の一歩",description:"初めて集中を記録",unlocked:state.sessions.length>=1},{icon:"🔥",name:"3日連続",description:"3日続けて始めた",unlocked:calculateStreak()>=3},{icon:"🌟",name:"10回スタート",description:"10回の小さな開始",unlocked:state.sessions.length>=10},{icon:"⏱️",name:"集中60分",description:"合計60分に到達",unlocked:(state.totalSeconds||0)>=3600},{icon:"🌳",name:"育てる人",description:"レベル7に到達",unlocked:getLevelInfo().level>=7},{icon:"🏆",name:"100の一歩",description:"100回始めた",unlocked:state.sessions.length>=100}];}
 
   function openTaskDialog(){dom.taskForm.reset();dom.autoBreakdown.checked=true;dom.taskEstimate.value="30";dom.taskPriority.value="medium";dom.taskDue.value="";dom.taskDetails.hidden=true;dom.toggleTaskDetails.setAttribute("aria-expanded","false");dom.toggleTaskDetails.textContent="詳しく計画する";editingTaskId=null;draftDirty=false;refreshDraft(true);openModal(dom.taskDialog);setTimeout(()=>dom.taskTitle.focus(),60);}
-  function toggleTaskDetails(){const willOpen=dom.taskDetails.hidden;dom.taskDetails.hidden=!willOpen;dom.toggleTaskDetails.setAttribute("aria-expanded",String(willOpen));dom.toggleTaskDetails.textContent=willOpen?"詳細を閉じる":"詳しく計画する";if(willOpen)refreshDraft(true);}
-  function quickStartFromTitle(){const title=dom.taskTitle.value.trim();if(!title){showToast("まず、やることを入力してください");dom.taskTitle.focus();return;}const task={id:uid(),title,due:"",estimate:5,priority:"medium",createdAt:new Date().toISOString(),completed:false,subtasks:[{id:uid(),title:`まず5分だけ：${title}`,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0}]};state.tasks.unshift(task);persist();closeModal(dom.taskDialog);renderAll();startFocus(task,task.subtasks[0]);}
+  function toggleTaskDetails(){const willOpen=dom.taskDetails.hidden;dom.taskDetails.hidden=!willOpen;dom.toggleTaskDetails.setAttribute("aria-expanded",String(willOpen));dom.toggleTaskDetails.textContent=willOpen?"詳細を閉じる":"詳しく計画する";if(willOpen)refreshDraft(true);applyLanguage(dom.toggleTaskDetails);}
+  function quickStartFromTitle(){const title=dom.taskTitle.value.trim();if(!title){showToast("まず、やることを入力してください");dom.taskTitle.focus();return;}const task={id:uid(),title,due:"",estimate:5,priority:"medium",createdAt:new Date().toISOString(),completed:false,subtasks:[{id:uid(),title:isEnglish()?`First 5 min: ${title}`:`まず5分だけ：${title}`,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0}]};state.tasks.unshift(task);persist();closeModal(dom.taskDialog);renderAll();startFocus(task,task.subtasks[0]);}
   function refreshDraftIfClean(){if(!draftDirty)refreshDraft(true);else renderDraftPreview();}
-  function refreshDraft(force=false){if(draftDirty&&!force)return;const title=dom.taskTitle.value.trim()||"このタスク",estimate=Number(dom.taskEstimate.value||30);draftSteps=dom.autoBreakdown.checked?createBreakdown(title,estimate):[{id:uid(),title:`5分だけ「${title}」を始める`,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0}];renderDraftPreview();}
-  function renderDraftPreview(){const estimate=Number(dom.taskEstimate.value||30),sum=draftSteps.reduce((a,s)=>a+Number(s.minutes||0),0);dom.breakdownPreview.classList.add("visible");dom.breakdownPreview.innerHTML=`<strong>プラン案</strong><p style="margin:0 0 8px;color:var(--muted)">予想${estimate}分 → ${draftSteps.length}ステップ（目安合計${sum}分）。集中タイマーは${state.settings.focusMinutes}分です。</p><ol>${draftSteps.map(s=>`<li>${escapeHtml(s.title)} <small>・${s.minutes}分</small></li>`).join("")}</ol><span class="ver2-note">✦ Ver.2.2：端末内ルールで案を作成・外部AI通信なし</span>`;}
+  function refreshDraft(force=false){if(draftDirty&&!force)return;const title=dom.taskTitle.value.trim()||(isEnglish()?"this task":"このタスク"),estimate=Number(dom.taskEstimate.value||30);draftSteps=dom.autoBreakdown.checked?createBreakdown(title,estimate):[{id:uid(),title:isEnglish()?`Start “${title}” for 5 minutes`:`5分だけ「${title}」を始める`,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0}];renderDraftPreview();}
+  function renderDraftPreview(){const estimate=Number(dom.taskEstimate.value||30),sum=draftSteps.reduce((a,s)=>a+Number(s.minutes||0),0);dom.breakdownPreview.classList.add("visible");dom.breakdownPreview.innerHTML=`<strong>プラン案</strong><p style="margin:0 0 8px;color:var(--muted)">予想${estimate}分 → ${draftSteps.length}ステップ（目安合計${sum}分）。集中タイマーは${state.settings.focusMinutes}分です。</p><ol>${draftSteps.map(s=>`<li>${escapeHtml(s.title)} <small>・${s.minutes}分</small></li>`).join("")}</ol><span class="ver2-note">✦ 端末内ルールで案を作成・外部AI通信なし</span>`;applyLanguage(dom.breakdownPreview);}
 
   function createBreakdown(title,estimate){
-    const t=(title||"このタスク").replace(/[。！!？?]$/,"");let p;
-    if(/レポート|論文|作文|文章|原稿|書く|志望理由|願書/.test(t))p=["条件・提出形式を確認する","必要な資料を1つ集める","見出し・要点を3つ作る","最初の部分を書く","読み直して1か所直す","提出前の確認をする"];
-    else if(/勉強|覚える|暗記|単語|試験|テスト|問題集|宿題|課題/.test(t))p=["範囲とゴールを確認する","教材を開いて最初の5問だけ進める","分からない所に印をつける","次の5問だけ進める","間違いを見直す","次回の開始位置を決める"];
-    else if(/掃除|片付け|整理/.test(t))p=["対象の場所を1か所決める","不要な物を3つ分ける","元の場所に5つ戻す","一角だけ整える","残りをもう5分だけ進める","終わった場所を確認する"];
-    else if(/メール|連絡|返信|電話|申込|出願/.test(t))p=["期限と必要事項を確認する","必要な情報を3点メモする","最初の入力・1文を進める","残りの内容を埋める","誤りがないか確認する","送信・提出前の最終確認をする"];
-    else if(/練習|運動|筋トレ|走る/.test(t))p=["必要なものを準備する","軽く始める","基本動作を少し進める","もう1セットだけ続ける","記録を残す"];
-    else p=["ゴールと条件を確認する","必要なものを1つ準備する",`「${t}」の最初の作業を5分だけ行う`,"次にやることを1つ決める","もう5分だけ続ける","できた所と次の開始位置を記録する"];
+    const t=(title||(isEnglish()?"this task":"このタスク")).replace(/[。！!？?]$/,"");let p;
+    if(isEnglish()){
+      if(/report|essay|paper|write|writing|application|statement/i.test(t))p=["Check requirements and format","Gather one needed resource","Draft three headings/key points","Write the first section","Review and fix one part","Do a final check before submitting"];
+      else if(/study|memor|vocab|exam|test|homework|assignment|math|science|english/i.test(t))p=["Check scope and goal","Open the material and do the first 5 questions","Mark anything unclear","Do the next 5 questions","Review mistakes","Choose where to resume next time"];
+      else if(/clean|tidy|organize|desk|room/i.test(t))p=["Choose one area","Sort three unnecessary items","Put five items back","Tidy one small area","Continue for 5 more minutes","Check what you finished"];
+      else if(/email|reply|call|apply|application|submit|contact/i.test(t))p=["Check deadline and requirements","Note three needed pieces of information","Complete the first field or sentence","Fill in the remaining content","Check for errors","Final check before sending/submitting"];
+      else if(/practice|exercise|workout|run|training/i.test(t))p=["Prepare what you need","Start lightly","Do a little of the basic movement","Do one more set","Record what you did"];
+      else p=["Check the goal and conditions","Prepare one needed item",`Do the first part of “${t}” for 5 minutes`,"Choose one next action","Continue for 5 more minutes","Record what you did and where to resume"];
+    }else{
+      if(/レポート|論文|作文|文章|原稿|書く|志望理由|願書/.test(t))p=["条件・提出形式を確認する","必要な資料を1つ集める","見出し・要点を3つ作る","最初の部分を書く","読み直して1か所直す","提出前の確認をする"];
+      else if(/勉強|覚える|暗記|単語|試験|テスト|問題集|宿題|課題/.test(t))p=["範囲とゴールを確認する","教材を開いて最初の5問だけ進める","分からない所に印をつける","次の5問だけ進める","間違いを見直す","次回の開始位置を決める"];
+      else if(/掃除|片付け|整理/.test(t))p=["対象の場所を1か所決める","不要な物を3つ分ける","元の場所に5つ戻す","一角だけ整える","残りをもう5分だけ進める","終わった場所を確認する"];
+      else if(/メール|連絡|返信|電話|申込|出願/.test(t))p=["期限と必要事項を確認する","必要な情報を3点メモする","最初の入力・1文を進める","残りの内容を埋める","誤りがないか確認する","送信・提出前の最終確認をする"];
+      else if(/練習|運動|筋トレ|走る/.test(t))p=["必要なものを準備する","軽く始める","基本動作を少し進める","もう1セットだけ続ける","記録を残す"];
+      else p=["ゴールと条件を確認する","必要なものを1つ準備する",`「${t}」の最初の作業を5分だけ行う`,"次にやることを1つ決める","もう5分だけ続ける","できた所と次の開始位置を記録する"];
+    }
     const n=Math.max(1,Math.min(p.length,Math.ceil(Number(estimate||30)/12)));const each=Math.max(5,Math.min(15,Math.ceil(Number(estimate||30)/n)));
-    return p.slice(0,n).map((x,i)=>({id:uid(),title:i===0&&n===1?`まず5分だけ：${x}`:x,minutes:i===0?5:each,completed:false,progressSeconds:0,lastSessionSeconds:0}));
+    return p.slice(0,n).map((x,i)=>({id:uid(),title:i===0&&n===1?(isEnglish()?`First 5 min: ${x}`:`まず5分だけ：${x}`):x,minutes:i===0?5:each,completed:false,progressSeconds:0,lastSessionSeconds:0}));
   }
 
   function handleTaskSubmit(event){event.preventDefault();const title=dom.taskTitle.value.trim();if(!title){showToast("タスク名を入力してください");return;}let steps=normalizeDraft();if(!steps.length)steps=createBreakdown(title,Number(dom.taskEstimate.value||30));state.tasks.unshift({id:uid(),title,due:dom.taskDue.value||"",estimate:Number(dom.taskEstimate.value||30),priority:dom.taskPriority.value,createdAt:new Date().toISOString(),completed:false,subtasks:steps});persist();sendTelemetry("task_created", {taskCategory: classifyTask(title)});closeModal(dom.taskDialog);renderAll();showToast("計画を保存しました。好きなステップから5分だけ！");}
 
-  function openPlanEditor(taskId,steps,title){editingTaskId=taskId;draftSteps=(steps||[]).map(s=>({...s,id:s.id||uid(),minutes:Number(s.minutes||5),progressSeconds:Number(s.progressSeconds||0),lastSessionSeconds:Number(s.lastSessionSeconds||0)}));dom.planDialogTitle.textContent=title?`「${title}」の計画`:`ステップを編集`;dom.planNewStep.value="";renderPlanEditor();openModal(dom.planDialog);}
-  function renderPlanEditor(){dom.planEditorList.innerHTML=draftSteps.length?draftSteps.map((s,i)=>`<div class="plan-editor-row-v21"><strong>${i+1}</strong><input type="text" data-step-input="${s.id}" value="${escapeAttr(s.title)}" maxlength="80" aria-label="ステップ${i+1}"><label class="plan-minutes"><input type="number" data-step-minutes="${s.id}" value="${Number(s.minutes||5)}" min="1" max="120" aria-label="ステップ${i+1}の予想分数"><span>分</span></label><div class="plan-editor-actions"><button type="button" data-up="${s.id}" ${i===0?"disabled":""}>↑</button><button type="button" data-down="${s.id}" ${i===draftSteps.length-1?"disabled":""}>↓</button><button type="button" data-del="${s.id}" aria-label="削除">×</button></div></div>`).join(""):`<p class="settings-note">ステップがありません。「＋追加」で1つ作ってください。</p>`;}
+  function openPlanEditor(taskId,steps,title){editingTaskId=taskId;draftSteps=(steps||[]).map(s=>({...s,id:s.id||uid(),minutes:Number(s.minutes||5),progressSeconds:Number(s.progressSeconds||0),lastSessionSeconds:Number(s.lastSessionSeconds||0)}));dom.planDialogTitle.textContent=title?(isEnglish()?`Plan: “${title}”`:`「${title}」の計画`):(isEnglish()?"Edit steps":"ステップを編集");dom.planNewStep.value="";renderPlanEditor();openModal(dom.planDialog);}
+  function renderPlanEditor(){dom.planEditorList.innerHTML=draftSteps.length?draftSteps.map((s,i)=>`<div class="plan-editor-row-v21"><strong>${i+1}</strong><input type="text" data-step-input="${s.id}" value="${escapeAttr(s.title)}" maxlength="80" aria-label="ステップ${i+1}"><label class="plan-minutes"><input type="number" data-step-minutes="${s.id}" value="${Number(s.minutes||5)}" min="1" max="120" aria-label="ステップ${i+1}の予想分数"><span>分</span></label><div class="plan-editor-actions"><button type="button" data-up="${s.id}" ${i===0?"disabled":""}>↑</button><button type="button" data-down="${s.id}" ${i===draftSteps.length-1?"disabled":""}>↓</button><button type="button" data-del="${s.id}" aria-label="削除">×</button></div></div>`).join(""):`<p class="settings-note">ステップがありません。「＋追加」で1つ作ってください。</p>`;applyLanguage(dom.planEditorList);}
   function addPlanStep(){const v=dom.planNewStep.value.trim();if(!v)return;draftSteps.push({id:uid(),title:v,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0});dom.planNewStep.value="";draftDirty=true;renderPlanEditor();}
   function handlePlanInput(event){const id=event.target.dataset.stepInput||event.target.dataset.stepMinutes;if(!id)return;const s=draftSteps.find(x=>x.id===id);if(!s)return;if(event.target.dataset.stepInput)s.title=event.target.value;else s.minutes=Math.max(1,Math.min(120,Number(event.target.value||5)));draftDirty=true;}
   function handlePlanAction(event){const b=event.target.closest("button");if(!b)return;const id=b.dataset.up||b.dataset.down||b.dataset.del;if(!id)return;const i=draftSteps.findIndex(x=>x.id===id);if(i<0)return;if(b.dataset.up&&i>0)[draftSteps[i-1],draftSteps[i]]=[draftSteps[i],draftSteps[i-1]];if(b.dataset.down&&i<draftSteps.length-1)[draftSteps[i+1],draftSteps[i]]=[draftSteps[i],draftSteps[i+1]];if(b.dataset.del)draftSteps.splice(i,1);draftDirty=true;renderPlanEditor();}
@@ -2178,17 +2719,17 @@ main {
     if(start){const task=state.tasks.find(t=>t.id===start.dataset.startStep),sub=task?.subtasks.find(s=>s.id===start.dataset.subtask);if(task&&sub)startFocus(task,sub);return;}
     if(edit){const task=state.tasks.find(t=>t.id===edit.dataset.editPlan);if(task)openPlanEditor(task.id,task.subtasks,task.title);return;}
     if(toggle){const task=state.tasks.find(t=>t.id===toggle.dataset.toggleTask);if(!task)return;task.completed=!task.completed;task.subtasks.forEach(s=>s.completed=task.completed);persist();renderAll();return;}
-    if(del){const task=state.tasks.find(t=>t.id===del.dataset.deleteTask);if(!task)return;if(!confirm(`「${task.title}」を削除しますか？`))return;state.tasks=state.tasks.filter(t=>t.id!==task.id);persist();renderAll();showToast("タスクを削除しました");}
+    if(del){const task=state.tasks.find(t=>t.id===del.dataset.deleteTask);if(!task)return;if(!confirm(isEnglish()?`Delete “${task.title}”?`:`「${task.title}」を削除しますか？`))return;state.tasks=state.tasks.filter(t=>t.id!==task.id);persist();renderAll();showToast("タスクを削除しました");}
   }
 
   function startFocus(task,sub){
     if(timer)clearInterval(timer);activeMission={taskId:task.id,subtaskId:sub.id};currentSessionId = createSessionId();pendingNextMission=null;sessionWorkSeconds=0;sessionGoalReached=false;sessionStartedAt=new Date().toISOString();totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;persistTick=0;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();
-    dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=`${task.title} ・ ステップ ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`;dom.focusMessage.textContent=sub.progressSeconds?"前回の続きから。今日も小さく始めます。":"完璧にやらなくていい。始めた時点で前進です。";dom.toggleTimer.textContent="一時停止";dom.completeFocus.textContent="ステップ完了";dom.stopFocus.textContent="ここまで保存";dom.focusDialog.classList.remove("goal-pulse");updateTimerDisplay();openModal(dom.focusDialog);analytics("focusStarts");sendTelemetry("focus_start", {taskCategory: classifyTask(task.title)});checkpointTimer();playTone(520,.08);startTicker();
+    dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=isEnglish()?`${task.title} · Step ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`:`${task.title} ・ ステップ ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`;dom.focusMessage.textContent=isEnglish()?(sub.progressSeconds?"Continue from last time. Start small again today.":"It does not have to be perfect. Starting is progress."):(sub.progressSeconds?"前回の続きから。今日も小さく始めます。":"完璧にやらなくていい。始めた時点で前進です。");dom.toggleTimer.textContent=isEnglish()?"Pause":"一時停止";dom.completeFocus.textContent=isEnglish()?"Complete step":"ステップ完了";dom.stopFocus.textContent=isEnglish()?"Save progress":"ここまで保存";dom.focusDialog.classList.remove("goal-pulse");updateTimerDisplay();openModal(dom.focusDialog);analytics("focusStarts");sendTelemetry("focus_start", {taskCategory: classifyTask(task.title)});checkpointTimer();playTone(520,.08);startTicker();
   }
   function startTicker(){if(timer)clearInterval(timer);if(timerRunning&&!timerDeadlineMs)timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();timer=setInterval(syncTimerFromClock,500);}
   function syncTimerFromClock(){if(!timerRunning||!activeMission)return;const now=Date.now();if(!timerDeadlineMs)timerDeadlineMs=now+remainingSeconds*1000;const previous=remainingSeconds;remainingSeconds=Math.max(0,Math.ceil((timerDeadlineMs-now)/1000));const elapsed=Math.max(0,previous-remainingSeconds);if(elapsed>0){sessionWorkSeconds+=elapsed;persistTick+=elapsed;}lastTimerSyncMs=now;updateTimerDisplay();if(persistTick>=5){persistTick=0;checkpointTimer();}if(remainingSeconds<=0)handleGoalReached();}
   function updateTimerDisplay(){const r=Math.max(0,remainingSeconds),m=Math.floor(r/60),s=r%60;dom.timerDisplay.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;const progress=totalTimerSeconds?Math.max(0,Math.min(1,r/totalTimerSeconds)):0;dom.timerProgress.style.strokeDasharray=String(CIRCLE_LENGTH);dom.timerProgress.style.strokeDashoffset=String(CIRCLE_LENGTH*(1-progress));}
-  function toggleTimer(){if(!activeMission)return;if(remainingSeconds<=0){beginAnotherBlock();return;}if(timerRunning){syncTimerFromClock();timerRunning=false;timerDeadlineMs=null;}else{timerRunning=true;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();startTicker();}dom.toggleTimer.textContent=timerRunning?"一時停止":"再開する";checkpointTimer();}
+  function toggleTimer(){if(!activeMission)return;if(remainingSeconds<=0){beginAnotherBlock();return;}if(timerRunning){syncTimerFromClock();timerRunning=false;timerDeadlineMs=null;}else{timerRunning=true;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();startTicker();}dom.toggleTimer.textContent=isEnglish()?(timerRunning?"Pause":"Resume"):(timerRunning?"一時停止":"再開する");checkpointTimer();}
   function beginAnotherBlock(){
   sessionGoalReached = false;
   sessionStartedAt = new Date().toISOString();
@@ -2207,11 +2748,12 @@ main {
     taskCategory: classifyTask(taskTitleForActiveMission())
   });
 
-  dom.toggleTimer.textContent = "一時停止";
-  dom.completeFocus.textContent = "ステップ完了";
-  dom.stopFocus.textContent = "ここまで保存";
-  dom.focusMessage.textContent =
-    `もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;
+  dom.toggleTimer.textContent = isEnglish() ? "Pause" : "一時停止";
+  dom.completeFocus.textContent = isEnglish() ? "Complete step" : "ステップ完了";
+  dom.stopFocus.textContent = isEnglish() ? "Save progress" : "ここまで保存";
+  dom.focusMessage.textContent = isEnglish()
+    ? `Just ${state.settings.focusMinutes} more minutes. Your progress is saved even if you stop early.`
+    : `もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;
 
   updateTimerDisplay();
   checkpointTimer();
@@ -2221,10 +2763,12 @@ main {
     const saved=commitSessionSegment(true);
     analytics("focusGoals");
     sendTelemetry("focus_goal", {focusSeconds: saved.seconds, taskCategory: classifyTask(taskTitleForActiveMission())});
-    dom.focusMessage.innerHTML=`<span class="focus-success">🎉 ${state.settings.focusMinutes}分達成！<br>ここで止めても、今日の成功です。</span>`;
-    dom.toggleTimer.textContent=`もう${state.settings.focusMinutes}分`;
-    dom.completeFocus.textContent="ステップも完了";
-    dom.stopFocus.textContent="今日はここまで";
+    dom.focusMessage.innerHTML=isEnglish()
+      ? `<span class="focus-success">🎉 ${state.settings.focusMinutes}-minute goal reached!<br>Stopping here is already a win today.</span>`
+      : `<span class="focus-success">🎉 ${state.settings.focusMinutes}分達成！<br>ここで止めても、今日の成功です。</span>`;
+    dom.toggleTimer.textContent=isEnglish()?`Another ${state.settings.focusMinutes} min`:`もう${state.settings.focusMinutes}分`;
+    dom.completeFocus.textContent=isEnglish()?"Complete step too":"ステップも完了";
+    dom.stopFocus.textContent=isEnglish()?"Stop for today":"今日はここまで";
     dom.focusDialog.classList.remove("goal-pulse");void dom.focusDialog.offsetWidth;dom.focusDialog.classList.add("goal-pulse");
     showToast(saved.points?`${state.settings.focusMinutes}分達成！ ＋${saved.points}pt`: `${state.settings.focusMinutes}分達成！`);playSuccessSound();if(state.settings.confetti)launchConfetti();checkpointTimer(true);renderAll();
   }
@@ -2244,7 +2788,7 @@ main {
     if(timer){clearInterval(timer);timer=null;}timerRunning=false;if(sessionWorkSeconds>0)commitSessionSegment(false,true);
     const currentIndex=task.subtasks.findIndex(s=>s.id===sub.id);sub.completed=true;sub.completedAt=new Date().toISOString();task.completed=task.subtasks.every(s=>s.completed);
     const completionBonus=10+(task.priority==="high"?5:0);state.points+=completionBonus;state.history.push({id:uid(),title:sub.title,parentTitle:task.title,completedAt:new Date().toISOString(),minutes:Math.max(1,Math.round((sub.lastSessionSeconds||60)/60)),points:completionBonus});analytics("focusCompletions");sendTelemetry("step_complete", {taskCategory: classifyTask(task.title)});persist();clearActiveTimer();closeModal(dom.focusDialog);
-    const sameNext=task.subtasks.find((s,i)=>i>currentIndex&&!s.completed)||task.subtasks.find(s=>!s.completed);pendingSameMission=sameNext?{taskId:task.id,subtaskId:sameNext.id}:null;const otherTask=state.tasks.find(t=>t.id!==task.id&&!t.completed&&t.subtasks.some(x=>!x.completed));const otherSub=otherTask?.subtasks.find(x=>!x.completed);pendingNextMission=otherTask&&otherSub?{taskId:otherTask.id,subtaskId:otherSub.id}:null;dom.rewardPoints.textContent=completionBonus;dom.rewardMessage.textContent="次にどうするか選べます。ここで終えても、今日の一歩は記録されています。";dom.rewardSame.hidden=!pendingSameMission;dom.rewardNext.hidden=!pendingNextMission;dom.rewardStop.textContent=(!pendingSameMission&&!pendingNextMission)?"ホームへ戻る":"今日はここまで";openModal(dom.rewardDialog);playSuccessSound();if(state.settings.confetti)launchConfetti();activeMission=null;sessionWorkSeconds=0;renderAll();
+    const sameNext=task.subtasks.find((s,i)=>i>currentIndex&&!s.completed)||task.subtasks.find(s=>!s.completed);pendingSameMission=sameNext?{taskId:task.id,subtaskId:sameNext.id}:null;const otherTask=state.tasks.find(t=>t.id!==task.id&&!t.completed&&t.subtasks.some(x=>!x.completed));const otherSub=otherTask?.subtasks.find(x=>!x.completed);pendingNextMission=otherTask&&otherSub?{taskId:otherTask.id,subtaskId:otherSub.id}:null;dom.rewardPoints.textContent=completionBonus;dom.rewardMessage.textContent=isEnglish()?"Choose what to do next. Even if you stop here, today's step is recorded.":"次にどうするか選べます。ここで終えても、今日の一歩は記録されています。";dom.rewardSame.hidden=!pendingSameMission;dom.rewardNext.hidden=!pendingNextMission;dom.rewardStop.textContent=isEnglish()?((!pendingSameMission&&!pendingNextMission)?"Back to Home":"Stop for today"):((!pendingSameMission&&!pendingNextMission)?"ホームへ戻る":"今日はここまで");openModal(dom.rewardDialog);playSuccessSound();if(state.settings.confetti)launchConfetti();activeMission=null;sessionWorkSeconds=0;renderAll();
   }
   function stopAfterReward(){closeModal(dom.rewardDialog);pendingNextMission=null;pendingSameMission=null;switchView("home");maybeOfferProfile(true);}
   function continueAfterReward(){const next=pendingNextMission;pendingNextMission=null;closeModal(dom.rewardDialog);if(next){const task=state.tasks.find(t=>t.id===next.taskId),sub=task?.subtasks.find(s=>s.id===next.subtaskId);if(task&&sub&&!sub.completed){startFocus(task,sub);return;}}switchView("home");}
@@ -2354,6 +2898,26 @@ currentSessionId = a.sessionId || createSessionId();
 
   showToast("前回の集中を復元しました");
 }
+  function openGuide(firstLaunch=false){
+    guideFirstLaunch = !!firstLaunch;
+    if(dom.guideClose) dom.guideClose.hidden = guideFirstLaunch;
+    if(dom.guideContinue) dom.guideContinue.textContent = guideFirstLaunch ? "次へ：所属を回答する" : "閉じる";
+    openModal(dom.guideDialog);
+  }
+
+  function finishGuide(){
+    state.onboarding = { ...(state.onboarding || {}), guideSeen: true };
+    persist();
+    closeModal(dom.guideDialog);
+    if(guideFirstLaunch && !state.profile?.setup){
+      guideFirstLaunch = false;
+      openProfile(true);
+      return;
+    }
+    guideFirstLaunch = false;
+    showToast("使い方を確認しました");
+  }
+
   function openProfile(firstLaunch=false){
     const isFirst = firstLaunch || !state.profile?.setup;
     dom.profileAge.value=state.profile.age||"";
@@ -2387,8 +2951,8 @@ currentSessionId = a.sessionId || createSessionId();
   function maybeOfferProfile(success){if(!success||state.profile?.setup||state.profile?.dismissed)return;setTimeout(()=>openProfile(true),350);}
   function analytics(key){if(!state.profile?.analytics)return;if(typeof state.analytics[key]==="number")state.analytics[key]+=1;const today=todayKey();if(!state.analytics.activeDays.includes(today))state.analytics.activeDays.push(today);persist();}
 
-  async function initTelemetry(){
-    if(!TELEMETRY_ENABLED || !state.profile?.analytics || !window.supabase?.createClient) return false;
+  async function ensureSupabaseSession(){
+    if(!TELEMETRY_ENABLED || !window.supabase?.createClient) return false;
     try{
       if(!supabaseClient) supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
       const {data:{session}}=await supabaseClient.auth.getSession();
@@ -2396,16 +2960,27 @@ currentSessionId = a.sessionId || createSessionId();
         const {error}=await supabaseClient.auth.signInAnonymously();
         if(error) throw error;
       }
-      state.telemetry={...(state.telemetry||{}),connectedOnce:true,lastError:""};persist();return true;
+      return true;
     }catch(error){
-      state.telemetry={...(state.telemetry||{}),lastError:String(error?.message||error)};persist();console.warn("Nudge telemetry init failed",error);return false;
+      state.telemetry={...(state.telemetry||{}),lastError:String(error?.message||error)};persist();
+      console.warn("Nudge Supabase session failed",error);
+      return false;
     }
+  }
+
+  async function initTelemetry(){
+    if(!state.profile?.analytics) return false;
+    const ok=await ensureSupabaseSession();
+    if(ok){
+      state.telemetry={...(state.telemetry||{}),connectedOnce:true,lastError:""};persist();
+    }
+    return ok;
   }
 
   async function sendTelemetry(eventType,{focusSeconds=0,taskCategory="other"}={}){
     if(!state.profile?.analytics || !TELEMETRY_ENABLED) return;
     try{
-      const ok=await initTelemetry();if(!ok)return;
+      const ok=await ensureSupabaseSession();if(!ok)return;
       const {data:{user}}=await supabaseClient.auth.getUser();if(!user)return;
       const payload={
         user_id:user.id,
@@ -2415,7 +2990,7 @@ currentSessionId = a.sessionId || createSessionId();
         focus_seconds:Math.max(0,Math.min(86400,Number(focusSeconds||0))),
         task_category:taskCategory||"other",
         session_id:currentSessionId,
-        app_version:"2.3"
+        app_version:"2.4"
       };
       const {error}=await supabaseClient.from("nudge_events").insert(payload);
       if(error) throw error;
@@ -2425,37 +3000,47 @@ currentSessionId = a.sessionId || createSessionId();
     }
   }
 
+  function openFeedback(){
+    const newTab = window.open("", "_blank");
+    if(!newTab){
+      showToast(isEnglish() ? "Could not open a new tab. Check your browser pop-up settings." : "別画面を開けませんでした。ブラウザのポップアップ設定を確認してください");
+      return;
+    }
+    newTab.opener = null;
+    newTab.location.replace(FEEDBACK_FORM_URL);
+  }
+
   function taskTitleForActiveMission(){const task=state.tasks.find(t=>t.id===activeMission?.taskId);return task?.title||"";}
-  function classifyTask(title){const t=String(title||"");if(/勉強|暗記|単語|試験|テスト|問題集|宿題|課題/.test(t))return"study";if(/レポート|論文|作文|文章|原稿|書く|志望理由|願書/.test(t))return"writing";if(/掃除|片付け|整理/.test(t))return"cleaning";if(/練習|運動|筋トレ|走る/.test(t))return"exercise";if(/メール|連絡|返信|電話|申込|出願/.test(t))return"communication";return"other";}
+  function classifyTask(title){const t=String(title||"");if(/勉強|暗記|単語|試験|テスト|問題集|宿題|課題|study|memor|vocab|exam|test|homework|assignment/i.test(t))return"study";if(/レポート|論文|作文|文章|原稿|書く|志望理由|願書|report|essay|paper|write|writing/i.test(t))return"writing";if(/掃除|片付け|整理|clean|tidy|organize/i.test(t))return"cleaning";if(/練習|運動|筋トレ|走る|practice|exercise|workout|run|training/i.test(t))return"exercise";if(/メール|連絡|返信|電話|申込|出願|email|reply|call|apply|submit|contact/i.test(t))return"communication";return"other";}
   function normalizeAgeGroup(v){return ["10代","20代","30代","40代","50代以上"].includes(v)?v:"回答しない";}
   function normalizeRoleGroup(v){return ["中学生","高校生","大学・専門学校生","社会人","その他"].includes(v)?v:"回答しない";}
 
   function calculateStreak(){const unique=[...new Set(state.sessions.map(x=>dateKey(new Date(x.endedAt||x.startedAt))))].sort().reverse();if(!unique.length)return 0;const today=todayKey(),yesterday=dateKey(new Date(Date.now()-DAY_MS));if(unique[0]!==today&&unique[0]!==yesterday)return 0;let streak=1,cursor=new Date(`${unique[0]}T12:00:00`);for(let i=1;i<unique.length;i++){cursor=new Date(cursor.getTime()-DAY_MS);if(unique[i]===dateKey(cursor))streak++;else break;}return streak;}
-  function addSampleTasks(){[{title:"英語レポートを書く",estimate:60,priority:"high",due:offsetDateKey(2)},{title:"机の上を片付ける",estimate:15,priority:"low",due:todayKey()}].forEach(x=>state.tasks.push({id:uid(),...x,createdAt:new Date().toISOString(),completed:false,subtasks:createBreakdown(x.title,x.estimate)}));persist();renderAll();showToast("サンプルタスクを追加しました");}
-  function resetData(){if(!confirm("ポイント、記録、タスク、プロフィールをすべて初期化します。よろしいですか？"))return;state=defaultState();persist();ensureStarterTask();renderAll();switchView("home");showToast("データを初期化しました");}
+  function addSampleTasks(){const samples=isEnglish()?[{title:"Write an English report",estimate:60,priority:"high",due:offsetDateKey(2)},{title:"Tidy my desk",estimate:15,priority:"low",due:todayKey()}]:[{title:"英語レポートを書く",estimate:60,priority:"high",due:offsetDateKey(2)},{title:"机の上を片付ける",estimate:15,priority:"low",due:todayKey()}];samples.forEach(x=>state.tasks.push({id:uid(),...x,createdAt:new Date().toISOString(),completed:false,subtasks:createBreakdown(x.title,x.estimate)}));persist();renderAll();showToast(isEnglish()?"Sample tasks added.":"サンプルタスクを追加しました");}
+  function resetData(){if(!confirm(isEnglish()?"Reset all points, records, tasks and profile data?":"ポイント、記録、タスク、プロフィールをすべて初期化します。よろしいですか？"))return;state=defaultState();persist();ensureStarterTask();renderAll();switchView("home");showToast("データを初期化しました");setTimeout(()=>openGuide(true),250);}
 
-  function switchView(name){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===`view-${name}`));document.querySelectorAll(".nav-button").forEach(b=>b.classList.toggle("active",b.dataset.viewTarget===name));window.scrollTo({top:0,behavior:"smooth"});if(name==="records")renderRecords();if(name==="tasks")renderTasks();}
-  function openModal(el){if(!el)return;el.classList.add("open");document.body.classList.add("modal-open");}
+  function switchView(name){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===`view-${name}`));document.querySelectorAll(".nav-button").forEach(b=>b.classList.toggle("active",b.dataset.viewTarget===name));window.scrollTo({top:0,behavior:"smooth"});if(name==="records")renderRecords();if(name==="tasks")renderTasks();applyLanguage();}
+  function openModal(el){if(!el)return;el.classList.add("open");document.body.classList.add("modal-open");applyLanguage(el);}
   function closeModal(el){if(!el)return;el.classList.remove("open");if(!document.querySelector(".modal.open"))document.body.classList.remove("modal-open");}
-  function showToast(message){dom.toast.textContent=message;dom.toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>dom.toast.classList.remove("show"),2200);}
+  function showToast(message){dom.toast.textContent=isEnglish()?translateText(message):message;dom.toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>dom.toast.classList.remove("show"),2200);}
 
   function launchConfetti(){const colors=["#346f49","#e6a33d","#9bbf81","#f1c85b","#76a6d8"];for(let i=0;i<30;i++){const p=document.createElement("span");p.className="confetti-piece";p.style.left=`${Math.random()*100}vw`;p.style.color=colors[Math.floor(Math.random()*colors.length)];p.style.setProperty("--drift",`${(Math.random()-.5)*240}px`);p.style.animationDelay=`${Math.random()*.35}s`;document.body.appendChild(p);setTimeout(()=>p.remove(),2100);}}
   function playTone(f,d){if(!state.settings.sound)return;try{const A=window.AudioContext||window.webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.08,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d);}catch{}}
   function playSuccessSound(){if(!state.settings.sound)return;playTone(660,.10);setTimeout(()=>playTone(880,.12),100);}
 
-  function progressText(total,last){const s=Number(last||total||0);if(s<60)return "前回1分未満進みました";return `前回${Math.max(1,Math.round(s/60))}分進みました`;}
-  function formatDuration(seconds){const s=Math.max(0,Number(seconds||0));if(s<60)return `${Math.max(1,s)}秒`;return `${Math.max(1,Math.round(s/60))}分`;}
-  function priorityLabel(p){return p==="high"?"急":p==="low"?"低":"今";}
-  function priorityLongLabel(p){return p==="high"?"優先度 高":p==="low"?"優先度 低":"優先度 中";}
+  function progressText(total,last){const s=Number(last||total||0);if(isEnglish()){if(s<60)return "Less than 1 min last time";return `${Math.max(1,Math.round(s/60))} min last time`;}if(s<60)return "前回1分未満進みました";return `前回${Math.max(1,Math.round(s/60))}分進みました`;}
+  function formatDuration(seconds){const s=Math.max(0,Number(seconds||0));if(isEnglish()){if(s<60)return `${Math.max(1,s)} sec`;return `${Math.max(1,Math.round(s/60))} min`;}if(s<60)return `${Math.max(1,s)}秒`;return `${Math.max(1,Math.round(s/60))}分`;}
+  function priorityLabel(p){if(isEnglish())return p==="high"?"High":p==="low"?"Low":"Now";return p==="high"?"急":p==="low"?"低":"今";}
+  function priorityLongLabel(p){if(isEnglish())return p==="high"?"High priority":p==="low"?"Low priority":"Medium priority";return p==="high"?"優先度 高":p==="low"?"優先度 低":"優先度 中";}
   function uid(){return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,9)}`;}
   function createSessionId(){return uid();}
   function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
   function todayKey(){return dateKey(new Date());}
   function offsetDateKey(n){return dateKey(new Date(Date.now()+n*DAY_MS));}
   function daysUntil(k){const t=new Date(`${k}T12:00:00`).getTime(),n=new Date(`${todayKey()}T12:00:00`).getTime();return Math.ceil((t-n)/DAY_MS);}
-  function lastSevenDays(){const f=new Intl.DateTimeFormat("ja-JP",{weekday:"short"});return Array.from({length:7},(_,i)=>{const d=new Date(Date.now()-(6-i)*DAY_MS);return{key:dateKey(d),label:f.format(d)}});}
-  function formatDate(k){if(!k)return"";const d=new Date(`${k}T12:00:00`);return new Intl.DateTimeFormat("ja-JP",{month:"numeric",day:"numeric"}).format(d);}
-  function formatDateTime(v){return new Intl.DateTimeFormat("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(v));}
+  function lastSevenDays(){const f=new Intl.DateTimeFormat(isEnglish()?"en-US":"ja-JP",{weekday:"short"});return Array.from({length:7},(_,i)=>{const d=new Date(Date.now()-(6-i)*DAY_MS);return{key:dateKey(d),label:f.format(d)}});}
+  function formatDate(k){if(!k)return"";const d=new Date(`${k}T12:00:00`);return new Intl.DateTimeFormat(isEnglish()?"en-US":"ja-JP",{month:"numeric",day:"numeric"}).format(d);}
+  function formatDateTime(v){return new Intl.DateTimeFormat(isEnglish()?"en-US":"ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(v));}
   function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
   function escapeAttr(v){return escapeHtml(v).replace(/`/g,"&#096;");}
 })();
