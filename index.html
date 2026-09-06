@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#4f8f63" />
-  <meta name="version" content="Nudge Ver.2.4" />
+  <meta name="version" content="Nudge Ver.2.5" />
   <meta name="description" content="5分だけ始めることで、今日の一歩を後押しするブラウザアプリ Nudge" />
-  <title>Nudge Ver.2.4｜5分だけ始める</title>
+  <title>Nudge Ver.2.5｜5分だけ始める</title>
   
   
 <style>
@@ -1111,6 +1111,71 @@ main {
   line-height: 1.7;
 }
 
+.overtime-reward-panel {
+  display: grid;
+  gap: 10px;
+  max-width: 420px;
+  margin: 16px auto 0;
+  padding: 14px 15px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-soft);
+  text-align: left;
+}
+
+.overtime-reward-panel[hidden] {
+  display: none !important;
+}
+
+.overtime-reward-head,
+.overtime-reward-next {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.overtime-reward-head strong {
+  color: var(--primary-dark);
+}
+
+.overtime-reward-head span,
+.overtime-reward-next span,
+.overtime-reward-earned {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.overtime-reward-next strong {
+  font-size: 18px;
+  color: var(--primary-dark);
+}
+
+.overtime-reward-progress {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dfe7dd;
+}
+
+.overtime-reward-progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+  transition: width 350ms linear;
+}
+
+.overtime-reward-panel.reward-pulse {
+  animation: rewardPanelPulse .5s ease;
+}
+
+@keyframes rewardPanelPulse {
+  0% { transform: scale(.98); }
+  55% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+
 .focus-actions {
   display: grid;
   grid-template-columns: 1fr 1.4fr;
@@ -1735,6 +1800,15 @@ main {
   }
 }
 
+
+
+/* ===== Ver.2.5: post-goal continuation timer ===== */
+.timer-ring.is-grace .timer-progress { opacity: .72; }
+.timer-ring.is-overtime .timer-progress { stroke-dashoffset: 0 !important; }
+.timer-ring.is-overtime .timer-text strong { color: var(--primary-dark); }
+.focus-actions button:disabled { opacity: .55; cursor: default; transform: none; }
+.overtime-note { display:block; margin:14px auto 0; max-width:430px; padding:12px 14px; border-radius:14px; background:var(--surface-soft); color:var(--primary-dark); font-weight:800; line-height:1.6; }
+
 </style></head>
 <body>
   <div class="app-shell">
@@ -1743,7 +1817,7 @@ main {
         <span class="brand-mark" aria-hidden="true">🌱</span>
         <span>
           <strong>Nudge</strong>
-          <small>5分だけ始める ・ Ver.2.4</small>
+          <small>5分だけ始める ・ Ver.2.5</small>
         </span>
       </button>
 
@@ -1751,7 +1825,7 @@ main {
         <div class="stat-chip">
           <span aria-hidden="true">✨</span>
           <strong id="headerPoints">0</strong>
-          <small>pt</small>
+          <small>EXP</small>
         </div>
         <div class="stat-chip">
           <span aria-hidden="true">🔥</span>
@@ -1990,7 +2064,7 @@ main {
 
           <article class="settings-card version-card">
             <h2>Nudgeの更新履歴</h2>
-            <p class="settings-note">各バージョンで追加・改善した内容を確認できます。現在はVer.2.4です。</p>
+            <p class="settings-note">各バージョンで追加・改善した内容を確認できます。現在はVer.2.5です。</p>
             <button id="openVersionHistory" class="secondary-button" type="button">🕘 更新履歴を見る</button>
           </article>
 
@@ -2085,11 +2159,26 @@ main {
         </svg>
         <div class="timer-text">
           <strong id="timerDisplay">05:00</strong>
-          <small>残り時間</small>
+          <small id="timerLabel">残り時間</small>
         </div>
       </div>
 
       <p id="focusMessage">完璧にやらなくていい。始めた時点で前進です。</p>
+
+      <div id="overtimeRewardPanel" class="overtime-reward-panel" hidden data-i18n-dynamic>
+        <div class="overtime-reward-head">
+          <strong id="overtimeRewardTitle">継続ボーナス</strong>
+          <span id="overtimeRewardRule">5分ごとに ＋10 EXP</span>
+        </div>
+        <div class="overtime-reward-next">
+          <span id="overtimeRewardNextLabel">次の報酬まで</span>
+          <strong id="overtimeRewardRemaining">5分</strong>
+        </div>
+        <div class="overtime-reward-progress" aria-hidden="true">
+          <div id="overtimeRewardProgressBar" class="overtime-reward-progress-fill"></div>
+        </div>
+        <small id="overtimeRewardEarned" class="overtime-reward-earned">今回の継続EXP：0 EXP</small>
+      </div>
 
       <div class="focus-actions">
         <button id="toggleTimer" class="secondary-button">一時停止</button>
@@ -2104,7 +2193,7 @@ main {
       <div id="rewardBurst" class="reward-burst" aria-hidden="true">✨</div>
       <p class="eyebrow">STEP COMPLETE</p>
       <h2 id="rewardTitle">ステップ完了！</h2>
-      <div class="reward-points"><span>＋</span><strong id="rewardPoints">10</strong><small>pt</small></div>
+      <div class="reward-points"><span>＋</span><strong id="rewardPoints">10</strong><small>EXP</small></div>
       <p id="rewardMessage">小さな一歩を完了しました。</p>
       <div class="reward-actions three-way">
         <button id="rewardSame" class="primary-button">同じタスクでもう5分</button>
@@ -2124,7 +2213,7 @@ main {
       <ol class="guide-steps">
         <li class="guide-step"><span class="guide-step-number">1</span><div><strong>やることを登録</strong><p>タスク名だけでもOK。必要なら期限や予想時間を追加します。</p></div></li>
         <li class="guide-step"><span class="guide-step-number">2</span><div><strong>「5分だけ始める」</strong><p>最初の一歩を小さくして、タイマーで集中を始めます。</p></div></li>
-        <li class="guide-step"><span class="guide-step-number">3</span><div><strong>達成後に次を選ぶ</strong><p>もう5分続ける、次のタスクへ進む、今日はここまで、から選べます。</p></div></li>
+        <li class="guide-step"><span class="guide-step-number">3</span><div><strong>5分後も続けられる</strong><p>5分達成後は30秒の区切りを表示し、そのまま作業している場合は追加の継続時間を計測します。継続5分ごとに10 EXPを獲得できます。いつでも終了・ステップ完了できます。</p></div></li>
         <li class="guide-step"><span class="guide-step-number">4</span><div><strong>最後に振り返る</strong><p>利用後は振り返りフォームや改善点・要望フォームから感想を送れます。</p></div></li>
       </ol>
       <p class="guide-caution"><strong>試験利用のお願い：</strong>普段どおりに使い、テスト目的でタスクや完了記録を不自然に大量作成しないでください。</p>
@@ -2142,7 +2231,18 @@ main {
       </div>
       <div class="version-list">
         <article class="version-item current">
-          <div class="version-item-head"><h3>Ver.2.4</h3><span class="version-badge">CURRENT</span></div>
+          <div class="version-item-head"><h3>Ver.2.5</h3><span class="version-badge">CURRENT</span></div>
+          <ul>
+            <li>タスク分類ルールを拡張し、チュートリアル・学習・文章作成・家事・運動・連絡・制作・計画・生活・仕事などをより細かく判定</li>
+            <li>タスク名だけでなく実行中ステップの文脈も使って匿名カテゴリを判定し、otherの割合を減らすよう改善</li>
+            <li>5分達成後に30秒の区切りを表示し、その後も続けた時間を自動でカウントアップ</li>
+            <li>継続計測は5分本体と分け、overtime_start / overtime_stopとして同じsession_idで記録</li>
+            <li>ページ再読み込み後の継続計測は自動で時間を水増しせず、いったん停止状態で復元</li>
+            <li>5分達成後の継続時間5分ごとに10 EXPを獲得し、次の報酬までの残り分数を表示する継続ボーナスを追加</li>
+          </ul>
+        </article>
+        <article class="version-item">
+          <div class="version-item-head"><h3>Ver.2.4</h3></div>
           <ul>
             <li>初回起動時に「Nudgeの使い方」4ステップを表示</li>
             <li>使い方ガイドの後に所属・年代のプロフィール設定へ進む導線に変更</li>
@@ -2244,7 +2344,8 @@ main {
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "nudge-app-v2-4";
+  const STORAGE_KEY = "nudge-app-v2-5";
+  const V24_KEY = "nudge-app-v2-4";
   const V23_KEY = "nudge-app-v2-3";
   const V22_KEY = "nudge-app-v2-2";
   const V21_KEY = "nudge-app-v2-1";
@@ -2266,7 +2367,7 @@ main {
   let guideFirstLaunch = false;
 
   const defaultState = () => ({
-    version: "2.4",
+    version: "2.5",
     points: 0,
     totalSeconds: 0,
     totalMinutes: 0,
@@ -2301,6 +2402,14 @@ main {
   let sessionGoalReached = false;
   let persistTick = 0;
   let nudgeMessageTimer = null;
+  const OVERTIME_GRACE_SECONDS = 30;
+  const OVERTIME_REWARD_INTERVAL_SECONDS = 5 * 60;
+  const OVERTIME_REWARD_EXP = 10;
+  let focusPhase = "countdown"; // countdown | grace | overtime
+  let overtimeSeconds = 0;
+  let overtimeStartMs = null;
+  let overtimeTelemetryStarted = false;
+  let overtimeRewardCount = 0;
 
   const NUDGE_MESSAGES_JA = [
     "タスクへのスタートダッシュを、今ここで切ろう！",
@@ -2345,9 +2454,29 @@ main {
   ];
 
 
-  const I18N_EN = {"振り返りフォームと改善点・要望フォームをホームの「今日のNudge」下へ移動":"Move the reflection and feedback forms to Home below Today’s Nudge.","「今日のNudge」メッセージが4時間ごとに自動で切り替わるよう改善":"Rotate the Today’s Nudge message automatically every four hours.","5分だけ始める":"Start for 5 minutes","5分だけ始める ・ Ver.2.4":"Start for 5 minutes · Ver.2.4","今日の一歩を、":"Take one small step,","5分だけ。":"just 5 minutes.","やる気が出るのを待たずに、小さく始めるためのデイリーミッション。":"Daily missions that help you start small instead of waiting for motivation.","今日やること":"Today","＋ 追加する":"+ Add","今日のNudge":"Today's Nudge","「全部やる」ではなく、「始める」に成功しよう。5分できたら、それだけで今日の達成です。":"Don't aim to finish everything. Succeed at starting. Five minutes is already a win.","タスク管理":"Tasks","大きな課題を、小さく始められる形にします。":"Turn a big task into a small first step.","＋ 新しいタスク":"+ New task","未完了":"Active","完了":"Completed","すべて":"All","サンプルを追加":"Add samples","積み上げ記録":"Progress","比べる相手は、過去の自分です。":"Compare with your past self.","始めた回数":"Starts","集中した分数":"Focus minutes","行動した連続日数":"Active streak","完了したステップ":"Steps completed","先週の自分と比べる":"Compare with last week","今週の「始めた」":"Starts this week","先週の「始めた」":"Starts last week","小さな一歩を記録していきましょう。":"Keep recording small steps.","この7日間":"Last 7 days","称号":"Badges","最近の一歩":"Recent steps","設定":"Settings","自分が始めやすい環境に調整します。":"Adjust Nudge to make starting easier for you.","集中時間":"Focus time","1回のタイマー":"Timer length","基本は「5分だけ」。試すときは1分にもできます。":"The default is 5 minutes. You can use 1 minute for testing.","演出":"Effects","効果音":"Sound","開始・達成時に短い音を鳴らす":"Play a short sound when starting or reaching a goal.","紙吹雪":"Confetti","達成時に小さな演出を表示する":"Show a small celebration when you reach a goal.","プロフィール":"Profile","年代・立場と、匿名利用データの送信設定を変更できます。":"Change age group, role and anonymous analytics settings.","プロフィールを編集":"Edit profile","3日間の振り返り":"3-day reflection","回答フォームはNudgeとは別のタブ／ウィンドウで開きます。":"The reflection form opens in a separate tab/window.","📝 振り返りフォームを別画面で開く":"📝 Open reflection form","使い方":"How to use","初回に表示される4ステップのガイドを、いつでももう一度確認できます。":"Review the four-step guide shown on first launch.","📘 使い方を見る":"📘 View guide","Nudgeの更新履歴":"Nudge changelog","各バージョンで追加・改善した内容を確認できます。現在はVer.2.4です。":"See what changed in each version. Current version: 2.4.","🕘 更新履歴を見る":"🕘 View changelog","改善点・要望":"Feedback & requests","GoogleフォームをNudgeとは別のタブ／ウィンドウで開きます。使いにくかった点や追加してほしい機能を送れます。":"Open a Google Form in a separate tab/window to send usability feedback and feature requests.","💬 改善点・要望フォームを別画面で開く":"💬 Open feedback form","データ":"Data","この端末のブラウザに保存されたデータを消去します。":"Delete data stored in this browser on this device.","すべてのデータを初期化":"Reset all data","ホーム":"Home","タスク":"Tasks","記録":"Records","まず、やることだけ":"Start with just the task","何をやりますか？":"What do you want to do?","細かく決めなくても大丈夫。名前だけ入力して、そのまま5分を始められます。":"You do not need every detail. Enter a task name and start for 5 minutes.","▶ 5分だけ始める":"▶ Start for 5 minutes","詳しく計画する":"Plan details","期限や予想時間が分かる場合だけ設定してください。Nudgeのプラン案は後から自由に直せます。":"Only add a due date or estimate if you know them. You can edit Nudge's plan later.","期限":"Due date","予想時間":"Estimated time","優先度":"Priority","ふつう":"Medium","高い":"High","低い":"Low","Nudgeのプラン案を自動作成する":"Create a Nudge plan automatically","入力した予想時間を参考に、5〜15分程度の行動ステップ案を端末内で作ります。作成後に編集できます。":"Using your estimate, Nudge creates 5–15 minute action steps on this device. You can edit them afterward.","ステップを編集する":"Edit steps","キャンセル":"Cancel","この計画で追加":"Add this plan","残り時間":"Time left","完璧にやらなくていい。始めた時点で前進です。":"It does not have to be perfect. Starting is progress.","一時停止":"Pause","ステップ完了":"Complete step","ここまで保存":"Save progress","ステップ完了！":"Step complete!","小さな一歩を完了しました。":"You completed a small step.","同じタスクでもう5分":"Another 5 min on this task","次のタスクへ":"Next task","今日はここまで":"Stop for today","Nudgeの使い方":"How to use Nudge","最初に4つだけ確認してください。Nudgeは「全部終わらせる」より、まず小さく始めることを助けるアプリです。":"Check these four steps first. Nudge helps you start small rather than finish everything at once.","やることを登録":"Add a task","タスク名だけでもOK。必要なら期限や予想時間を追加します。":"A task name is enough. Add a due date or estimate only if needed.","「5分だけ始める」":"“Start for 5 minutes”","最初の一歩を小さくして、タイマーで集中を始めます。":"Make the first step small and start a focus timer.","達成後に次を選ぶ":"Choose what to do next","もう5分続ける、次のタスクへ進む、今日はここまで、から選べます。":"Choose another 5 minutes, the next task, or stop for today.","最後に振り返る":"Reflect at the end","利用後は振り返りフォームや改善点・要望フォームから感想を送れます。":"After using Nudge, you can send feedback through the reflection or feedback form.","試験利用のお願い：":"Test-use request:","普段どおりに使い、テスト目的でタスクや完了記録を不自然に大量作成しないでください。":"Please use Nudge normally and do not create large numbers of fake tasks or completion records for testing.","次へ：所属を回答する":"Next: answer profile","閉じる":"Close","計画を編集":"Edit plan","Nudgeの自動プランは「たたき台」です。順番・内容・数を自由に直してから保存できます。":"Nudge's automatic plan is a draft. Edit the order, content and number of steps before saving.","＋追加":"+ Add","この計画で保存":"Save this plan","所属・立場":"Role","選択してください":"Select","中学生":"Middle school student","高校生":"High school student","大学・専門学校生":"College / vocational student","社会人":"Working adult","その他":"Other","回答しない":"Prefer not to say","年代":"Age group","10代":"Teens","20代":"20s","30代":"30s","40代":"40s","50代以上":"50s+","匿名・集計された利用データの分析に協力する":"Help improve Nudge with anonymous usage data","年代・立場、5分開始・達成などの匿名イベントをNudge改善用サーバーへ送信します。名前・学校名・住所・タスク本文は送信しません。いつでもOFFにできます。":"Sends anonymous events such as age group, role, starts and goals. Names, school names, addresses and task text are not sent. You can turn this off anytime.","あとで":"Later","保存してはじめる":"Save and start","言語 / Language":"Language","画面表示を日本語または英語に切り替えます。入力したタスク名はそのまま表示されます。":"Switch the interface between Japanese and English. Your task names are not translated.","表示言語":"Display language","日本語":"Japanese","1分（試用）":"1 min (trial)","3分":"3 min","5分":"5 min","10分":"10 min","15分":"15 min","25分":"25 min","30分":"30 min","60分":"60 min","120分以上":"120+ min","0回":"0","日":"days","初回起動時に「Nudgeの使い方」4ステップを表示":"Show a four-step “How to use Nudge” guide on first launch.","使い方ガイドの後に所属・年代のプロフィール設定へ進む導線に変更":"After the guide, move users to role and age-group setup.","設定画面にバージョンごとの更新履歴を追加":"Add a version-by-version changelog in Settings.","改善点・要望をGoogleフォームへ別タブで送れる導線を追加":"Open the feedback Google Form in a separate tab.","設定から日本語／英語の表示を切り替えられる機能を追加":"Add Japanese/English interface switching in Settings.","振り返りアンケートを別タブ／ウィンドウで開けるように改善":"Open the reflection survey in a separate tab/window.","プロフィール入力を試験利用の最初に行う導線へ変更":"Move profile setup to the start of the trial flow.","スマホでのプロフィール・モーダル・チェックボックス表示崩れを修正":"Fix mobile layout issues in profile, modals and checkboxes.","タイマーをバックグラウンド・再読み込み後に復元できるよう改善":"Improve timer recovery after backgrounding or reloading.","5分達成後に「同じタスクでもう5分」「次のタスク」「今日はここまで」を選べるよう改善":"After a 5-minute goal, let users choose another block, the next task, or stop.","session_idを追加し、集中開始から5分達成までを同一セッションとして追跡":"Add session_id to connect focus start and goal events.","focus_start / focus_goal / step_complete / reflection_opened などの行動ログを確認できるよう改善":"Track events such as focus_start, focus_goal, step_complete and reflection_opened.","Supabaseと接続し、匿名利用イベントの収集を導入":"Connect Supabase and add anonymous usage-event collection.","匿名認証とRLSを使い、ブラウザからは必要なイベントのみ送信する構成に変更":"Use anonymous auth and RLS so the browser can only send required events.","年代・所属と利用イベントを組み合わせて集計できるようにした":"Enable analysis of usage events by age group and role.","タスク名・ステップ本文・名前・学校名・住所などは送信しない設計にした":"Do not send task text, step text, names, school names or addresses.","「5分達成」と「ステップ完了」を別の成功として扱うよう変更":"Separate the 5-minute goal from step completion.","タスク名だけ入力してすぐ「5分だけ始める」導線を追加":"Allow users to enter only a task name and start immediately.","自動作成したステップの内容・順番・予想分数を編集できるよう改善":"Allow editing of generated step text, order and estimated minutes.","途中まで進めたステップを優先表示し、続きから再開できるよう改善":"Prioritize partially started steps and support resuming.","記録画面を「始めた回数・集中時間・連続日数・完了ステップ」を中心に見直し":"Refocus records on starts, focus time, streak and completed steps.","大きなタスクと予想時間から、小さな行動ステップ案を作る機能を追加":"Generate small action-step drafts from a large task and time estimate.","ステップ案を編集・並べ替えてから確定できる計画編集機能を追加":"Add a plan editor for editing and reordering step drafts.","1ステップずつ集中し、途中保存して後から再開できる流れを実装":"Add one-step-at-a-time focus with partial save and resume.","「5分だけ始める」ことを中心にしたNudgeの最初の試作版":"The first Nudge prototype centered on “start for 5 minutes.”","小さな開始・ポイント・記録・育成要素の基本構造を実装":"Implement the basic structure for small starts, points, records and growth.","Nudgeの芽":"Nudge sprout","Nudgeの若葉":"Nudge leaf","Nudgeの苗":"Nudge seedling","Nudgeの木":"Nudge tree","Nudgeの花":"Nudge flower","今日のミッションは完了です":"Today's missions are complete","新しいタスクを追加するか、今日はここまでにしましょう。":"Add a new task, or call it a day.","タスクを追加":"Add task","表示するタスクがありません":"No tasks to show","大きなタスクを登録し、小さなステップにしてみましょう。":"Add a larger task and break it into small steps.","ステップ進捗":"Step progress","期限なし":"No due date","開始":"Start","最初の一歩から記録していきましょう。":"Start by recording one small step.","先週と同じペースです。小さく続けられています。":"You are at the same pace as last week. Keep it small and steady.","目標達成":"Goal reached","途中まで":"Partial","始めると、ここに「小さな一歩」が残ります。":"Your small steps will appear here after you start.","最初の一歩":"First step","初めて集中を記録":"Logged first focus session","3日連続":"3-day streak","3日続けて始めた":"Started for 3 days in a row","10回スタート":"10 starts","10回の小さな開始":"10 small starts","集中60分":"60 focus minutes","合計60分に到達":"Reached 60 focus minutes","育てる人":"Grower","レベル7に到達":"Reached level 7","100の一歩":"100 steps","100回始めた":"Started 100 times","詳細を閉じる":"Hide details","まず、やることを入力してください":"Enter what you want to do first.","タスク名を入力してください":"Enter a task name.","計画を保存しました。好きなステップから5分だけ！":"Plan saved. Start any step for 5 minutes!","ステップを編集":"Edit steps","ステップがありません。「＋追加」で1つ作ってください。":"No steps yet. Use “+ Add” to create one.","分":"min","削除":"Delete","ステップを1つ以上残してください":"Keep at least one step.","計画を更新しました":"Plan updated.","このプランでタスクを追加できます":"You can add the task with this plan.","タスクを削除しました":"Task deleted.","前回の続きから。今日も小さく始めます。":"Continue from last time. Start small again today.","再開する":"Resume","ステップも完了":"Complete step too","5分達成を保存しました。今日はここまで！":"5-minute goal saved. That's enough for today!","途中まで保存しました。次回は続きから5分だけ。":"Progress saved. Resume for 5 minutes next time.","次にどうするか選べます。ここで終えても、今日の一歩は記録されています。":"Choose what to do next. Even if you stop here, today's step is recorded.","ホームへ戻る":"Back to Home","別画面を開けませんでした。ブラウザのポップアップ設定を確認してください":"Could not open a new tab. Check your browser pop-up settings.","前回の集中を復元しました":"Restored your previous focus session.","使い方を確認しました":"Guide completed.","最初に所属を教えてください":"Tell us your role first","試作版の利用傾向を振り返るため、まず所属を選んでください。「回答しない」も選べます。匿名分析をONにした場合のみ、所属・年代と利用イベントをNudge改善用サーバーへ送信します。":"To understand trial usage, choose your role first. You can choose “Prefer not to say.” Role, age group and usage events are sent only when anonymous analytics is on.","名前・学校名・住所などは入力しません。匿名分析をONにした場合のみ、年代・立場と利用イベントをNudge改善用サーバーへ送信します。":"Nudge does not ask for names, school names or addresses. Age group, role and usage events are sent only when anonymous analytics is on.","保存してNudgeをはじめる":"Save and start Nudge","保存する":"Save","最初に所属を選んでください":"Select your role first.","プロフィールを保存しました。匿名分析への協力がONです":"Profile saved. Anonymous analytics is on.","プロフィールを保存しました":"Profile saved.","いつでも設定から変更できます":"You can change this anytime in Settings.","集中時間を変更しました":"Focus time changed.","サンプルタスクを追加しました":"Sample tasks added.","ポイント、記録、タスク、プロフィールをすべて初期化します。よろしいですか？":"Reset all points, records, tasks and profile data?","データを初期化しました":"Data reset.","Nudgeを試してみる":"Try Nudge","「5分だけ始める」を押してみる":"Tap “Start for 5 minutes”","新しいタスク":"New task","このタスク":"this task","まず5分だけ：":"First 5 min: ","プラン案":"Plan draft","✦ 端末内ルールで案を作成・外部AI通信なし":"✦ Created on-device with rules · no external AI request","条件・提出形式を確認する":"Check requirements and format","必要な資料を1つ集める":"Gather one needed resource","見出し・要点を3つ作る":"Draft three headings/key points","最初の部分を書く":"Write the first section","読み直して1か所直す":"Review and fix one part","提出前の確認をする":"Do a final check before submitting","範囲とゴールを確認する":"Check scope and goal","教材を開いて最初の5問だけ進める":"Open the material and do the first 5 questions","分からない所に印をつける":"Mark anything unclear","次の5問だけ進める":"Do the next 5 questions","間違いを見直す":"Review mistakes","次回の開始位置を決める":"Choose where to resume next time","対象の場所を1か所決める":"Choose one area","不要な物を3つ分ける":"Sort three unnecessary items","元の場所に5つ戻す":"Put five items back","一角だけ整える":"Tidy one small area","残りをもう5分だけ進める":"Continue the rest for 5 more minutes","終わった場所を確認する":"Check what you finished","期限と必要事項を確認する":"Check deadline and requirements","必要な情報を3点メモする":"Note three needed pieces of information","最初の入力・1文を進める":"Complete the first field or sentence","残りの内容を埋める":"Fill in the remaining content","誤りがないか確認する":"Check for errors","送信・提出前の最終確認をする":"Final check before sending/submitting","必要なものを準備する":"Prepare what you need","軽く始める":"Start lightly","基本動作を少し進める":"Do a little of the basic movement","もう1セットだけ続ける":"Do one more set","記録を残す":"Record what you did","ゴールと条件を確認する":"Check the goal and conditions","必要なものを1つ準備する":"Prepare one needed item","次にやることを1つ決める":"Choose one next action","もう5分だけ続ける":"Continue for 5 more minutes","できた所と次の開始位置を記録する":"Record what you did and where to resume","ホームへ":"Go Home","集中画面を閉じる":"Close focus view","未完了に戻す":"Mark active","完了にする":"Mark complete","追加するステップ":"Add a step","例：英語のレポートを書く":"Example: write an English report"};
+  const I18N_EN = {"振り返りフォームと改善点・要望フォームをホームの「今日のNudge」下へ移動":"Move the reflection and feedback forms to Home below Today’s Nudge.","「今日のNudge」メッセージが4時間ごとに自動で切り替わるよう改善":"Rotate the Today’s Nudge message automatically every four hours.","5分だけ始める":"Start for 5 minutes","5分だけ始める ・ Ver.2.4":"Start for 5 minutes · Ver.2.4","今日の一歩を、":"Take one small step,","5分だけ。":"just 5 minutes.","やる気が出るのを待たずに、小さく始めるためのデイリーミッション。":"Daily missions that help you start small instead of waiting for motivation.","今日やること":"Today","＋ 追加する":"+ Add","今日のNudge":"Today's Nudge","「全部やる」ではなく、「始める」に成功しよう。5分できたら、それだけで今日の達成です。":"Don't aim to finish everything. Succeed at starting. Five minutes is already a win.","タスク管理":"Tasks","大きな課題を、小さく始められる形にします。":"Turn a big task into a small first step.","＋ 新しいタスク":"+ New task","未完了":"Active","完了":"Completed","すべて":"All","サンプルを追加":"Add samples","積み上げ記録":"Progress","比べる相手は、過去の自分です。":"Compare with your past self.","始めた回数":"Starts","集中した分数":"Focus minutes","行動した連続日数":"Active streak","完了したステップ":"Steps completed","先週の自分と比べる":"Compare with last week","今週の「始めた」":"Starts this week","先週の「始めた」":"Starts last week","小さな一歩を記録していきましょう。":"Keep recording small steps.","この7日間":"Last 7 days","称号":"Badges","最近の一歩":"Recent steps","設定":"Settings","自分が始めやすい環境に調整します。":"Adjust Nudge to make starting easier for you.","集中時間":"Focus time","1回のタイマー":"Timer length","基本は「5分だけ」。試すときは1分にもできます。":"The default is 5 minutes. You can use 1 minute for testing.","演出":"Effects","効果音":"Sound","開始・達成時に短い音を鳴らす":"Play a short sound when starting or reaching a goal.","紙吹雪":"Confetti","達成時に小さな演出を表示する":"Show a small celebration when you reach a goal.","プロフィール":"Profile","年代・立場と、匿名利用データの送信設定を変更できます。":"Change age group, role and anonymous analytics settings.","プロフィールを編集":"Edit profile","3日間の振り返り":"3-day reflection","回答フォームはNudgeとは別のタブ／ウィンドウで開きます。":"The reflection form opens in a separate tab/window.","📝 振り返りフォームを別画面で開く":"📝 Open reflection form","使い方":"How to use","初回に表示される4ステップのガイドを、いつでももう一度確認できます。":"Review the four-step guide shown on first launch.","📘 使い方を見る":"📘 View guide","Nudgeの更新履歴":"Nudge changelog","各バージョンで追加・改善した内容を確認できます。現在はVer.2.5です。":"See what changed in each version. Current version: 2.4.","🕘 更新履歴を見る":"🕘 View changelog","改善点・要望":"Feedback & requests","GoogleフォームをNudgeとは別のタブ／ウィンドウで開きます。使いにくかった点や追加してほしい機能を送れます。":"Open a Google Form in a separate tab/window to send usability feedback and feature requests.","💬 改善点・要望フォームを別画面で開く":"💬 Open feedback form","データ":"Data","この端末のブラウザに保存されたデータを消去します。":"Delete data stored in this browser on this device.","すべてのデータを初期化":"Reset all data","ホーム":"Home","タスク":"Tasks","記録":"Records","まず、やることだけ":"Start with just the task","何をやりますか？":"What do you want to do?","細かく決めなくても大丈夫。名前だけ入力して、そのまま5分を始められます。":"You do not need every detail. Enter a task name and start for 5 minutes.","▶ 5分だけ始める":"▶ Start for 5 minutes","詳しく計画する":"Plan details","期限や予想時間が分かる場合だけ設定してください。Nudgeのプラン案は後から自由に直せます。":"Only add a due date or estimate if you know them. You can edit Nudge's plan later.","期限":"Due date","予想時間":"Estimated time","優先度":"Priority","ふつう":"Medium","高い":"High","低い":"Low","Nudgeのプラン案を自動作成する":"Create a Nudge plan automatically","入力した予想時間を参考に、5〜15分程度の行動ステップ案を端末内で作ります。作成後に編集できます。":"Using your estimate, Nudge creates 5–15 minute action steps on this device. You can edit them afterward.","ステップを編集する":"Edit steps","キャンセル":"Cancel","この計画で追加":"Add this plan","残り時間":"Time left","完璧にやらなくていい。始めた時点で前進です。":"It does not have to be perfect. Starting is progress.","一時停止":"Pause","ステップ完了":"Complete step","ここまで保存":"Save progress","ステップ完了！":"Step complete!","小さな一歩を完了しました。":"You completed a small step.","同じタスクでもう5分":"Another 5 min on this task","次のタスクへ":"Next task","今日はここまで":"Stop for today","Nudgeの使い方":"How to use Nudge","最初に4つだけ確認してください。Nudgeは「全部終わらせる」より、まず小さく始めることを助けるアプリです。":"Check these four steps first. Nudge helps you start small rather than finish everything at once.","やることを登録":"Add a task","タスク名だけでもOK。必要なら期限や予想時間を追加します。":"A task name is enough. Add a due date or estimate only if needed.","「5分だけ始める」":"“Start for 5 minutes”","最初の一歩を小さくして、タイマーで集中を始めます。":"Make the first step small and start a focus timer.","達成後に次を選ぶ":"Choose what to do next","もう5分続ける、次のタスクへ進む、今日はここまで、から選べます。":"Choose another 5 minutes, the next task, or stop for today.","最後に振り返る":"Reflect at the end","利用後は振り返りフォームや改善点・要望フォームから感想を送れます。":"After using Nudge, you can send feedback through the reflection or feedback form.","試験利用のお願い：":"Test-use request:","普段どおりに使い、テスト目的でタスクや完了記録を不自然に大量作成しないでください。":"Please use Nudge normally and do not create large numbers of fake tasks or completion records for testing.","次へ：所属を回答する":"Next: answer profile","閉じる":"Close","計画を編集":"Edit plan","Nudgeの自動プランは「たたき台」です。順番・内容・数を自由に直してから保存できます。":"Nudge's automatic plan is a draft. Edit the order, content and number of steps before saving.","＋追加":"+ Add","この計画で保存":"Save this plan","所属・立場":"Role","選択してください":"Select","中学生":"Middle school student","高校生":"High school student","大学・専門学校生":"College / vocational student","社会人":"Working adult","その他":"Other","回答しない":"Prefer not to say","年代":"Age group","10代":"Teens","20代":"20s","30代":"30s","40代":"40s","50代以上":"50s+","匿名・集計された利用データの分析に協力する":"Help improve Nudge with anonymous usage data","年代・立場、5分開始・達成などの匿名イベントをNudge改善用サーバーへ送信します。名前・学校名・住所・タスク本文は送信しません。いつでもOFFにできます。":"Sends anonymous events such as age group, role, starts and goals. Names, school names, addresses and task text are not sent. You can turn this off anytime.","あとで":"Later","保存してはじめる":"Save and start","言語 / Language":"Language","画面表示を日本語または英語に切り替えます。入力したタスク名はそのまま表示されます。":"Switch the interface between Japanese and English. Your task names are not translated.","表示言語":"Display language","日本語":"Japanese","1分（試用）":"1 min (trial)","3分":"3 min","5分":"5 min","10分":"10 min","15分":"15 min","25分":"25 min","30分":"30 min","60分":"60 min","120分以上":"120+ min","0回":"0","日":"days","初回起動時に「Nudgeの使い方」4ステップを表示":"Show a four-step “How to use Nudge” guide on first launch.","使い方ガイドの後に所属・年代のプロフィール設定へ進む導線に変更":"After the guide, move users to role and age-group setup.","設定画面にバージョンごとの更新履歴を追加":"Add a version-by-version changelog in Settings.","改善点・要望をGoogleフォームへ別タブで送れる導線を追加":"Open the feedback Google Form in a separate tab.","設定から日本語／英語の表示を切り替えられる機能を追加":"Add Japanese/English interface switching in Settings.","振り返りアンケートを別タブ／ウィンドウで開けるように改善":"Open the reflection survey in a separate tab/window.","プロフィール入力を試験利用の最初に行う導線へ変更":"Move profile setup to the start of the trial flow.","スマホでのプロフィール・モーダル・チェックボックス表示崩れを修正":"Fix mobile layout issues in profile, modals and checkboxes.","タイマーをバックグラウンド・再読み込み後に復元できるよう改善":"Improve timer recovery after backgrounding or reloading.","5分達成後に「同じタスクでもう5分」「次のタスク」「今日はここまで」を選べるよう改善":"After a 5-minute goal, let users choose another block, the next task, or stop.","session_idを追加し、集中開始から5分達成までを同一セッションとして追跡":"Add session_id to connect focus start and goal events.","focus_start / focus_goal / step_complete / reflection_opened などの行動ログを確認できるよう改善":"Track events such as focus_start, focus_goal, step_complete and reflection_opened.","Supabaseと接続し、匿名利用イベントの収集を導入":"Connect Supabase and add anonymous usage-event collection.","匿名認証とRLSを使い、ブラウザからは必要なイベントのみ送信する構成に変更":"Use anonymous auth and RLS so the browser can only send required events.","年代・所属と利用イベントを組み合わせて集計できるようにした":"Enable analysis of usage events by age group and role.","タスク名・ステップ本文・名前・学校名・住所などは送信しない設計にした":"Do not send task text, step text, names, school names or addresses.","「5分達成」と「ステップ完了」を別の成功として扱うよう変更":"Separate the 5-minute goal from step completion.","タスク名だけ入力してすぐ「5分だけ始める」導線を追加":"Allow users to enter only a task name and start immediately.","自動作成したステップの内容・順番・予想分数を編集できるよう改善":"Allow editing of generated step text, order and estimated minutes.","途中まで進めたステップを優先表示し、続きから再開できるよう改善":"Prioritize partially started steps and support resuming.","記録画面を「始めた回数・集中時間・連続日数・完了ステップ」を中心に見直し":"Refocus records on starts, focus time, streak and completed steps.","大きなタスクと予想時間から、小さな行動ステップ案を作る機能を追加":"Generate small action-step drafts from a large task and time estimate.","ステップ案を編集・並べ替えてから確定できる計画編集機能を追加":"Add a plan editor for editing and reordering step drafts.","1ステップずつ集中し、途中保存して後から再開できる流れを実装":"Add one-step-at-a-time focus with partial save and resume.","「5分だけ始める」ことを中心にしたNudgeの最初の試作版":"The first Nudge prototype centered on “start for 5 minutes.”","小さな開始・ポイント・記録・育成要素の基本構造を実装":"Implement the basic structure for small starts, points, records and growth.","Nudgeの芽":"Nudge sprout","Nudgeの若葉":"Nudge leaf","Nudgeの苗":"Nudge seedling","Nudgeの木":"Nudge tree","Nudgeの花":"Nudge flower","今日のミッションは完了です":"Today's missions are complete","新しいタスクを追加するか、今日はここまでにしましょう。":"Add a new task, or call it a day.","タスクを追加":"Add task","表示するタスクがありません":"No tasks to show","大きなタスクを登録し、小さなステップにしてみましょう。":"Add a larger task and break it into small steps.","ステップ進捗":"Step progress","期限なし":"No due date","開始":"Start","最初の一歩から記録していきましょう。":"Start by recording one small step.","先週と同じペースです。小さく続けられています。":"You are at the same pace as last week. Keep it small and steady.","目標達成":"Goal reached","途中まで":"Partial","始めると、ここに「小さな一歩」が残ります。":"Your small steps will appear here after you start.","最初の一歩":"First step","初めて集中を記録":"Logged first focus session","3日連続":"3-day streak","3日続けて始めた":"Started for 3 days in a row","10回スタート":"10 starts","10回の小さな開始":"10 small starts","集中60分":"60 focus minutes","合計60分に到達":"Reached 60 focus minutes","育てる人":"Grower","レベル7に到達":"Reached level 7","100の一歩":"100 steps","100回始めた":"Started 100 times","詳細を閉じる":"Hide details","まず、やることを入力してください":"Enter what you want to do first.","タスク名を入力してください":"Enter a task name.","計画を保存しました。好きなステップから5分だけ！":"Plan saved. Start any step for 5 minutes!","ステップを編集":"Edit steps","ステップがありません。「＋追加」で1つ作ってください。":"No steps yet. Use “+ Add” to create one.","分":"min","削除":"Delete","ステップを1つ以上残してください":"Keep at least one step.","計画を更新しました":"Plan updated.","このプランでタスクを追加できます":"You can add the task with this plan.","タスクを削除しました":"Task deleted.","前回の続きから。今日も小さく始めます。":"Continue from last time. Start small again today.","再開する":"Resume","ステップも完了":"Complete step too","5分達成を保存しました。今日はここまで！":"5-minute goal saved. That's enough for today!","途中まで保存しました。次回は続きから5分だけ。":"Progress saved. Resume for 5 minutes next time.","次にどうするか選べます。ここで終えても、今日の一歩は記録されています。":"Choose what to do next. Even if you stop here, today's step is recorded.","ホームへ戻る":"Back to Home","別画面を開けませんでした。ブラウザのポップアップ設定を確認してください":"Could not open a new tab. Check your browser pop-up settings.","前回の集中を復元しました":"Restored your previous focus session.","使い方を確認しました":"Guide completed.","最初に所属を教えてください":"Tell us your role first","試作版の利用傾向を振り返るため、まず所属を選んでください。「回答しない」も選べます。匿名分析をONにした場合のみ、所属・年代と利用イベントをNudge改善用サーバーへ送信します。":"To understand trial usage, choose your role first. You can choose “Prefer not to say.” Role, age group and usage events are sent only when anonymous analytics is on.","名前・学校名・住所などは入力しません。匿名分析をONにした場合のみ、年代・立場と利用イベントをNudge改善用サーバーへ送信します。":"Nudge does not ask for names, school names or addresses. Age group, role and usage events are sent only when anonymous analytics is on.","保存してNudgeをはじめる":"Save and start Nudge","保存する":"Save","最初に所属を選んでください":"Select your role first.","プロフィールを保存しました。匿名分析への協力がONです":"Profile saved. Anonymous analytics is on.","プロフィールを保存しました":"Profile saved.","いつでも設定から変更できます":"You can change this anytime in Settings.","集中時間を変更しました":"Focus time changed.","サンプルタスクを追加しました":"Sample tasks added.","ポイント、記録、タスク、プロフィールをすべて初期化します。よろしいですか？":"Reset all points, records, tasks and profile data?","データを初期化しました":"Data reset.","Nudgeを試してみる":"Try Nudge","「5分だけ始める」を押してみる":"Tap “Start for 5 minutes”","新しいタスク":"New task","このタスク":"this task","まず5分だけ：":"First 5 min: ","プラン案":"Plan draft","✦ 端末内ルールで案を作成・外部AI通信なし":"✦ Created on-device with rules · no external AI request","条件・提出形式を確認する":"Check requirements and format","必要な資料を1つ集める":"Gather one needed resource","見出し・要点を3つ作る":"Draft three headings/key points","最初の部分を書く":"Write the first section","読み直して1か所直す":"Review and fix one part","提出前の確認をする":"Do a final check before submitting","範囲とゴールを確認する":"Check scope and goal","教材を開いて最初の5問だけ進める":"Open the material and do the first 5 questions","分からない所に印をつける":"Mark anything unclear","次の5問だけ進める":"Do the next 5 questions","間違いを見直す":"Review mistakes","次回の開始位置を決める":"Choose where to resume next time","対象の場所を1か所決める":"Choose one area","不要な物を3つ分ける":"Sort three unnecessary items","元の場所に5つ戻す":"Put five items back","一角だけ整える":"Tidy one small area","残りをもう5分だけ進める":"Continue the rest for 5 more minutes","終わった場所を確認する":"Check what you finished","期限と必要事項を確認する":"Check deadline and requirements","必要な情報を3点メモする":"Note three needed pieces of information","最初の入力・1文を進める":"Complete the first field or sentence","残りの内容を埋める":"Fill in the remaining content","誤りがないか確認する":"Check for errors","送信・提出前の最終確認をする":"Final check before sending/submitting","必要なものを準備する":"Prepare what you need","軽く始める":"Start lightly","基本動作を少し進める":"Do a little of the basic movement","もう1セットだけ続ける":"Do one more set","記録を残す":"Record what you did","ゴールと条件を確認する":"Check the goal and conditions","必要なものを1つ準備する":"Prepare one needed item","次にやることを1つ決める":"Choose one next action","もう5分だけ続ける":"Continue for 5 more minutes","できた所と次の開始位置を記録する":"Record what you did and where to resume","ホームへ":"Go Home","集中画面を閉じる":"Close focus view","未完了に戻す":"Mark active","完了にする":"Mark complete","追加するステップ":"Add a step","例：英語のレポートを書く":"Example: write an English report","5分達成後の継続時間5分ごとに10 EXPを獲得し、次の報酬までの残り分数を表示する継続ボーナスを追加":"Add a continuation bonus that awards 10 EXP for every 5 minutes beyond the goal and shows minutes until the next reward.","5分達成後は30秒の区切りを表示し、そのまま作業している場合は追加の継続時間を計測します。継続5分ごとに10 EXPを獲得できます。いつでも終了・ステップ完了できます。":"After the goal, Nudge shows a 30-second transition and measures extra continuation time. Earn 10 EXP for every 5 minutes you continue. You can stop or complete the step anytime."};
   const ORIGINAL_TEXT = new WeakMap();
   const ORIGINAL_ATTRS = new WeakMap();
+
+  Object.assign(I18N_EN, {
+    "5分だけ始める ・ Ver.2.5":"Start for 5 minutes · Ver.2.5",
+    "各バージョンで追加・改善した内容を確認できます。現在はVer.2.5です。":"See what changed in each version. Current version: 2.5.",
+    "5分後も続けられる":"Keep going after 5 minutes",
+    "5分達成後は30秒の区切りを表示し、そのまま作業している場合は追加の継続時間を計測します。いつでも終了・ステップ完了できます。":"After the 5-minute goal, Nudge shows a 30-second transition, then measures additional continuation time if you keep working. You can stop or complete the step anytime.",
+    "タスク分類ルールを拡張し、学習・文章作成・家事・運動・連絡・制作・計画・生活・仕事などをより細かく判定":"Expand task classification across study, writing, chores, exercise, communication, creative work, planning, daily life and work.",
+    "タスク名だけでなく実行中ステップの文脈も使って匿名カテゴリを判定し、otherの割合を減らすよう改善":"Use both task and step context for anonymous category classification to reduce the share of other.",
+    "5分達成後に30秒の区切りを表示し、その後も続けた時間を自動でカウントアップ":"Show a 30-second transition after the goal, then automatically count additional continuation time.",
+    "継続計測は5分本体と分け、overtime_start / overtime_stopとして同じsession_idで記録":"Track continuation separately with overtime_start / overtime_stop under the same session_id.",
+    "ページ再読み込み後の継続計測は自動で時間を水増しせず、いったん停止状態で復元":"After reload, restore continuation measurement paused so closed-page time is not automatically added.",
+    "継続計測開始まで":"Continuation starts in",
+    "5分達成後の継続":"Continuation after goal",
+    "継続計測を一時停止":"Pause continuation",
+    "継続計測を再開":"Resume continuation",
+    "5分達成！30秒後から、続けた時間を計測します。ここで終了しても今日の成功です。":"Goal reached! In 30 seconds, Nudge will start measuring additional continuation time. Stopping here is still a win today.",
+    "5分を超えて継続中です。無理に続ける必要はありません。終えると追加時間だけを別に記録します。":"You are continuing beyond the goal. You do not need to keep going. When you stop, only the additional time is recorded separately.",
+    "前回の継続計測は停止状態で復元しました。続ける場合は再開してください。":"Continuation measurement was restored paused. Resume it only if you are still working.",
+    "追加集中":"Extra focus"
+  });
 
   function isEnglish(){ return state?.settings?.language === "en"; }
 
@@ -2461,7 +2590,7 @@ main {
       "missionList","taskList","totalStarted","totalCompleted","totalMinutes","recordStreak","weeklySummary","weeklyChart","badgeList","historyList",
       "thisWeekStarts","lastWeekStarts","comparisonMessage","focusMinutes","soundToggle","confettiToggle","taskDialog","taskForm","taskTitle",
       "taskDue","taskEstimate","taskPriority","autoBreakdown","taskDetails","toggleTaskDetails","quickStartTask","breakdownPreview","openPlanEditor",
-      "focusDialog","focusTaskTitle","focusParentTitle","timerDisplay","timerProgress","focusMessage","toggleTimer","completeFocus","stopFocus",
+      "focusDialog","focusTaskTitle","focusParentTitle","timerDisplay","timerLabel","timerProgress","focusMessage","overtimeRewardPanel","overtimeRewardTitle","overtimeRewardRule","overtimeRewardNextLabel","overtimeRewardRemaining","overtimeRewardProgressBar","overtimeRewardEarned","toggleTimer","completeFocus","stopFocus",
       "rewardDialog","rewardPoints","rewardMessage","rewardStop","rewardSame","rewardNext","toast","profileDialog","profileForm","profileAge","profileRole",
       "profileAnalytics","profileLater","profileEyebrow","profileTitle","profileNote","openReflection","planDialog","planDialogTitle","planEditorList","planNewStep","planAddStep","planSave","editProfile",
       "guideDialog","guideClose","guideContinue","openGuideFromSettings","versionDialog","openVersionHistory","openFeedback","languageSelect"
@@ -2511,10 +2640,20 @@ main {
     dom.guideClose?.addEventListener("click", () => closeModal(dom.guideDialog));
     dom.guideContinue?.addEventListener("click", finishGuide);
 
-    dom.focusMinutes.addEventListener("change", () => {
-      state.settings.focusMinutes = Number(dom.focusMinutes.value || 5);
-      persist(); renderSettings(); showToast("集中時間を変更しました");
-    });
+    const syncFocusMinutesSetting = (notify = false) => {
+      const next = Number(dom.focusMinutes?.value);
+      if (![1,3,5,10,15,25].includes(next)) return;
+      const changed = state.settings.focusMinutes !== next;
+      state.settings.focusMinutes = next;
+      if (changed) {
+        persist();
+        renderMissions();
+      }
+      renderSettings();
+      if (notify && changed) showToast(isEnglish()?`Focus time changed to ${next} min`:`集中時間を${next}分に変更しました`);
+    };
+    dom.focusMinutes.addEventListener("input", () => syncFocusMinutesSetting(false));
+    dom.focusMinutes.addEventListener("change", () => syncFocusMinutesSetting(true));
     dom.soundToggle.addEventListener("change", () => { state.settings.sound = dom.soundToggle.checked; persist(); });
     dom.confettiToggle.addEventListener("change", () => { state.settings.confetti = dom.confettiToggle.checked; persist(); });
     dom.languageSelect?.addEventListener("change", () => {
@@ -2547,7 +2686,7 @@ main {
   function loadState() {
     try {
       let raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) raw = localStorage.getItem(V23_KEY) || localStorage.getItem(V22_KEY) || localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
+      if (!raw) raw = localStorage.getItem(V24_KEY) || localStorage.getItem(V23_KEY) || localStorage.getItem(V22_KEY) || localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
       const saved = raw ? JSON.parse(raw) : null;
       const base = defaultState();
       if (!saved) return base;
@@ -2561,7 +2700,7 @@ main {
       }
       const totalSeconds = Number(saved.totalSeconds ?? (Number(saved.totalMinutes || 0) * 60));
       const merged = {
-        ...base, ...saved, version: "2.4", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
+        ...base, ...saved, version: "2.5", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
         settings: { ...base.settings, ...(saved.settings || {}) },
         profile: { ...base.profile, ...(saved.profile || {}) },
         onboarding: { ...base.onboarding, ...(saved.onboarding || {}) },
@@ -2670,15 +2809,15 @@ main {
   }
   function renderWeeklyChart(){const days=lastSevenDays();const counts=days.map(d=>state.sessions.filter(x=>dateKey(new Date(x.endedAt||x.startedAt))===d.key).length),max=Math.max(1,...counts),total=counts.reduce((a,b)=>a+b,0);dom.weeklySummary.textContent=`${total}回`;dom.weeklyChart.innerHTML=days.map((d,i)=>`<div class="chart-day"><div class="chart-bar-wrap"><div class="chart-bar" style="height:${Math.max(5,(counts[i]/max)*120)}px"></div></div><div class="chart-value">${counts[i]}</div><div class="chart-label">${d.label}</div></div>`).join("");}
   function renderBadges(badges){dom.badgeList.innerHTML=badges.map(b=>`<div class="badge ${b.unlocked?"":"locked"}"><span aria-hidden="true">${b.icon}</span><div><strong>${b.name}</strong><small>${b.description}</small></div></div>`).join("");}
-  function renderHistory(){const h=[...state.sessions].sort((a,b)=>new Date(b.endedAt||b.startedAt)-new Date(a.endedAt||a.startedAt)).slice(0,10);dom.historyList.innerHTML=h.length?h.map(x=>`<div class="history-item"><span class="history-icon" aria-hidden="true">${x.reachedGoal?"👣":"🌱"}</span><div><strong>${escapeHtml(x.title)}</strong><small>${formatDateTime(x.endedAt||x.startedAt)}・${formatDuration(x.seconds)} <span class="activity-tag">${x.reachedGoal?"目標達成":"途中まで"}</span></small></div><span class="history-points">${x.points?`＋${x.points}pt`:"記録"}</span></div>`).join(""):`<p class="settings-note">始めると、ここに「小さな一歩」が残ります。</p>`;}
-  function renderSettings(){dom.focusMinutes.value=String(state.settings.focusMinutes);dom.soundToggle.checked=state.settings.sound;dom.confettiToggle.checked=state.settings.confetti;if(dom.languageSelect)dom.languageSelect.value=state.settings.language==="en"?"en":"ja";}
+  function renderHistory(){const h=[...state.sessions].sort((a,b)=>new Date(b.endedAt||b.startedAt)-new Date(a.endedAt||a.startedAt)).slice(0,10);dom.historyList.innerHTML=h.length?h.map(x=>{const extra=Number(x.overtimeSeconds||0);const tag=x.reachedGoal?(extra>0?(isEnglish()?`Goal + ${formatDuration(extra)} extra`:`目標達成・追加${formatDuration(extra)}`):(isEnglish()?"Goal reached":"目標達成")):(isEnglish()?"Partial":"途中まで");return `<div class="history-item"><span class="history-icon" aria-hidden="true">${x.reachedGoal?"👣":"🌱"}</span><div><strong>${escapeHtml(x.title)}</strong><small>${formatDateTime(x.endedAt||x.startedAt)}・${formatDuration(x.seconds)} <span class="activity-tag">${tag}</span></small></div><span class="history-points">${x.points?`＋${x.points} EXP`:"記録"}</span></div>`;}).join(""):`<p class="settings-note">始めると、ここに「小さな一歩」が残ります。</p>`;}
+  function renderSettings(){const fm=[1,3,5,10,15,25].includes(Number(state.settings.focusMinutes))?Number(state.settings.focusMinutes):5;state.settings.focusMinutes=fm;dom.focusMinutes.value=String(fm);dom.soundToggle.checked=state.settings.sound;dom.confettiToggle.checked=state.settings.confetti;if(dom.languageSelect)dom.languageSelect.value=state.settings.language==="en"?"en":"ja";if(dom.quickStartTask)dom.quickStartTask.textContent=isEnglish()?`▶ Start for ${fm} min`:`▶ ${fm}分だけ始める`;if(dom.rewardSame)dom.rewardSame.textContent=isEnglish()?`Another ${fm} min on this task`:`同じタスクでもう${fm}分`;}
   function getBadges(){return [{icon:"👣",name:"最初の一歩",description:"初めて集中を記録",unlocked:state.sessions.length>=1},{icon:"🔥",name:"3日連続",description:"3日続けて始めた",unlocked:calculateStreak()>=3},{icon:"🌟",name:"10回スタート",description:"10回の小さな開始",unlocked:state.sessions.length>=10},{icon:"⏱️",name:"集中60分",description:"合計60分に到達",unlocked:(state.totalSeconds||0)>=3600},{icon:"🌳",name:"育てる人",description:"レベル7に到達",unlocked:getLevelInfo().level>=7},{icon:"🏆",name:"100の一歩",description:"100回始めた",unlocked:state.sessions.length>=100}];}
 
   function openTaskDialog(){dom.taskForm.reset();dom.autoBreakdown.checked=true;dom.taskEstimate.value="30";dom.taskPriority.value="medium";dom.taskDue.value="";dom.taskDetails.hidden=true;dom.toggleTaskDetails.setAttribute("aria-expanded","false");dom.toggleTaskDetails.textContent="詳しく計画する";editingTaskId=null;draftDirty=false;refreshDraft(true);openModal(dom.taskDialog);setTimeout(()=>dom.taskTitle.focus(),60);}
   function toggleTaskDetails(){const willOpen=dom.taskDetails.hidden;dom.taskDetails.hidden=!willOpen;dom.toggleTaskDetails.setAttribute("aria-expanded",String(willOpen));dom.toggleTaskDetails.textContent=willOpen?"詳細を閉じる":"詳しく計画する";if(willOpen)refreshDraft(true);applyLanguage(dom.toggleTaskDetails);}
-  function quickStartFromTitle(){const title=dom.taskTitle.value.trim();if(!title){showToast("まず、やることを入力してください");dom.taskTitle.focus();return;}const task={id:uid(),title,due:"",estimate:5,priority:"medium",createdAt:new Date().toISOString(),completed:false,subtasks:[{id:uid(),title:isEnglish()?`First 5 min: ${title}`:`まず5分だけ：${title}`,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0}]};state.tasks.unshift(task);persist();closeModal(dom.taskDialog);renderAll();startFocus(task,task.subtasks[0]);}
+  function quickStartFromTitle(){const title=dom.taskTitle.value.trim();if(!title){showToast("まず、やることを入力してください");dom.taskTitle.focus();return;}const fm=Math.max(1,Number(state.settings.focusMinutes||5));const task={id:uid(),title,due:"",estimate:fm,priority:"medium",createdAt:new Date().toISOString(),completed:false,subtasks:[{id:uid(),title:isEnglish()?`First ${fm} min: ${title}`:`まず${fm}分だけ：${title}`,minutes:fm,completed:false,progressSeconds:0,lastSessionSeconds:0}]};state.tasks.unshift(task);persist();sendTelemetry("task_created",{taskCategory:classifyTask(title)});closeModal(dom.taskDialog);renderAll();startFocus(task,task.subtasks[0]);}
   function refreshDraftIfClean(){if(!draftDirty)refreshDraft(true);else renderDraftPreview();}
-  function refreshDraft(force=false){if(draftDirty&&!force)return;const title=dom.taskTitle.value.trim()||(isEnglish()?"this task":"このタスク"),estimate=Number(dom.taskEstimate.value||30);draftSteps=dom.autoBreakdown.checked?createBreakdown(title,estimate):[{id:uid(),title:isEnglish()?`Start “${title}” for 5 minutes`:`5分だけ「${title}」を始める`,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0}];renderDraftPreview();}
+  function refreshDraft(force=false){if(draftDirty&&!force)return;const title=dom.taskTitle.value.trim()||(isEnglish()?"this task":"このタスク"),estimate=Number(dom.taskEstimate.value||30),fm=Math.max(1,Number(state.settings.focusMinutes||5));draftSteps=dom.autoBreakdown.checked?createBreakdown(title,estimate):[{id:uid(),title:isEnglish()?`Start “${title}” for ${fm} minutes`:`${fm}分だけ「${title}」を始める`,minutes:fm,completed:false,progressSeconds:0,lastSessionSeconds:0}];renderDraftPreview();}
   function renderDraftPreview(){const estimate=Number(dom.taskEstimate.value||30),sum=draftSteps.reduce((a,s)=>a+Number(s.minutes||0),0);dom.breakdownPreview.classList.add("visible");dom.breakdownPreview.innerHTML=`<strong>プラン案</strong><p style="margin:0 0 8px;color:var(--muted)">予想${estimate}分 → ${draftSteps.length}ステップ（目安合計${sum}分）。集中タイマーは${state.settings.focusMinutes}分です。</p><ol>${draftSteps.map(s=>`<li>${escapeHtml(s.title)} <small>・${s.minutes}分</small></li>`).join("")}</ol><span class="ver2-note">✦ 端末内ルールで案を作成・外部AI通信なし</span>`;applyLanguage(dom.breakdownPreview);}
 
   function createBreakdown(title,estimate){
@@ -2702,7 +2841,7 @@ main {
     return p.slice(0,n).map((x,i)=>({id:uid(),title:i===0&&n===1?(isEnglish()?`First 5 min: ${x}`:`まず5分だけ：${x}`):x,minutes:i===0?5:each,completed:false,progressSeconds:0,lastSessionSeconds:0}));
   }
 
-  function handleTaskSubmit(event){event.preventDefault();const title=dom.taskTitle.value.trim();if(!title){showToast("タスク名を入力してください");return;}let steps=normalizeDraft();if(!steps.length)steps=createBreakdown(title,Number(dom.taskEstimate.value||30));state.tasks.unshift({id:uid(),title,due:dom.taskDue.value||"",estimate:Number(dom.taskEstimate.value||30),priority:dom.taskPriority.value,createdAt:new Date().toISOString(),completed:false,subtasks:steps});persist();sendTelemetry("task_created", {taskCategory: classifyTask(title)});closeModal(dom.taskDialog);renderAll();showToast("計画を保存しました。好きなステップから5分だけ！");}
+  function handleTaskSubmit(event){event.preventDefault();const title=dom.taskTitle.value.trim();if(!title){showToast("タスク名を入力してください");return;}let steps=normalizeDraft();if(!steps.length)steps=createBreakdown(title,Number(dom.taskEstimate.value||30));state.tasks.unshift({id:uid(),title,due:dom.taskDue.value||"",estimate:Number(dom.taskEstimate.value||30),priority:dom.taskPriority.value,createdAt:new Date().toISOString(),completed:false,subtasks:steps});persist();sendTelemetry("task_created", {taskCategory: classifyTask(title)});closeModal(dom.taskDialog);renderAll();showToast(isEnglish()?`Plan saved. Start any step for ${state.settings.focusMinutes} min!`:`計画を保存しました。好きなステップから${state.settings.focusMinutes}分だけ！`);}
 
   function openPlanEditor(taskId,steps,title){editingTaskId=taskId;draftSteps=(steps||[]).map(s=>({...s,id:s.id||uid(),minutes:Number(s.minutes||5),progressSeconds:Number(s.progressSeconds||0),lastSessionSeconds:Number(s.lastSessionSeconds||0)}));dom.planDialogTitle.textContent=title?(isEnglish()?`Plan: “${title}”`:`「${title}」の計画`):(isEnglish()?"Edit steps":"ステップを編集");dom.planNewStep.value="";renderPlanEditor();openModal(dom.planDialog);}
   function renderPlanEditor(){dom.planEditorList.innerHTML=draftSteps.length?draftSteps.map((s,i)=>`<div class="plan-editor-row-v21"><strong>${i+1}</strong><input type="text" data-step-input="${s.id}" value="${escapeAttr(s.title)}" maxlength="80" aria-label="ステップ${i+1}"><label class="plan-minutes"><input type="number" data-step-minutes="${s.id}" value="${Number(s.minutes||5)}" min="1" max="120" aria-label="ステップ${i+1}の予想分数"><span>分</span></label><div class="plan-editor-actions"><button type="button" data-up="${s.id}" ${i===0?"disabled":""}>↑</button><button type="button" data-down="${s.id}" ${i===draftSteps.length-1?"disabled":""}>↓</button><button type="button" data-del="${s.id}" aria-label="削除">×</button></div></div>`).join(""):`<p class="settings-note">ステップがありません。「＋追加」で1つ作ってください。</p>`;applyLanguage(dom.planEditorList);}
@@ -2722,72 +2861,375 @@ main {
     if(del){const task=state.tasks.find(t=>t.id===del.dataset.deleteTask);if(!task)return;if(!confirm(isEnglish()?`Delete “${task.title}”?`:`「${task.title}」を削除しますか？`))return;state.tasks=state.tasks.filter(t=>t.id!==task.id);persist();renderAll();showToast("タスクを削除しました");}
   }
 
-  function startFocus(task,sub){
-    if(timer)clearInterval(timer);activeMission={taskId:task.id,subtaskId:sub.id};currentSessionId = createSessionId();pendingNextMission=null;sessionWorkSeconds=0;sessionGoalReached=false;sessionStartedAt=new Date().toISOString();totalTimerSeconds=state.settings.focusMinutes*60;remainingSeconds=totalTimerSeconds;timerRunning=true;persistTick=0;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();
-    dom.focusTaskTitle.textContent=sub.title;dom.focusParentTitle.textContent=isEnglish()?`${task.title} · Step ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`:`${task.title} ・ ステップ ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`;dom.focusMessage.textContent=isEnglish()?(sub.progressSeconds?"Continue from last time. Start small again today.":"It does not have to be perfect. Starting is progress."):(sub.progressSeconds?"前回の続きから。今日も小さく始めます。":"完璧にやらなくていい。始めた時点で前進です。");dom.toggleTimer.textContent=isEnglish()?"Pause":"一時停止";dom.completeFocus.textContent=isEnglish()?"Complete step":"ステップ完了";dom.stopFocus.textContent=isEnglish()?"Save progress":"ここまで保存";dom.focusDialog.classList.remove("goal-pulse");updateTimerDisplay();openModal(dom.focusDialog);analytics("focusStarts");sendTelemetry("focus_start", {taskCategory: classifyTask(task.title)});checkpointTimer();playTone(520,.08);startTicker();
+  function activeTaskAndSub(){
+    const task=state.tasks.find(t=>t.id===activeMission?.taskId);
+    const sub=task?.subtasks.find(s=>s.id===activeMission?.subtaskId);
+    return {task,sub};
   }
-  function startTicker(){if(timer)clearInterval(timer);if(timerRunning&&!timerDeadlineMs)timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();timer=setInterval(syncTimerFromClock,500);}
-  function syncTimerFromClock(){if(!timerRunning||!activeMission)return;const now=Date.now();if(!timerDeadlineMs)timerDeadlineMs=now+remainingSeconds*1000;const previous=remainingSeconds;remainingSeconds=Math.max(0,Math.ceil((timerDeadlineMs-now)/1000));const elapsed=Math.max(0,previous-remainingSeconds);if(elapsed>0){sessionWorkSeconds+=elapsed;persistTick+=elapsed;}lastTimerSyncMs=now;updateTimerDisplay();if(persistTick>=5){persistTick=0;checkpointTimer();}if(remainingSeconds<=0)handleGoalReached();}
-  function updateTimerDisplay(){const r=Math.max(0,remainingSeconds),m=Math.floor(r/60),s=r%60;dom.timerDisplay.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;const progress=totalTimerSeconds?Math.max(0,Math.min(1,r/totalTimerSeconds)):0;dom.timerProgress.style.strokeDasharray=String(CIRCLE_LENGTH);dom.timerProgress.style.strokeDashoffset=String(CIRCLE_LENGTH*(1-progress));}
-  function toggleTimer(){if(!activeMission)return;if(remainingSeconds<=0){beginAnotherBlock();return;}if(timerRunning){syncTimerFromClock();timerRunning=false;timerDeadlineMs=null;}else{timerRunning=true;timerDeadlineMs=Date.now()+remainingSeconds*1000;lastTimerSyncMs=Date.now();startTicker();}dom.toggleTimer.textContent=isEnglish()?(timerRunning?"Pause":"Resume"):(timerRunning?"一時停止":"再開する");checkpointTimer();}
+
+  function activeTaskCategory(){
+    const {task,sub}=activeTaskAndSub();
+    const primary=classifyTask(task?.title||"");
+    if(primary!=="other")return primary;
+    const secondary=classifyTask(sub?.title||"");
+    // Generic auto-generated steps often contain planning words; do not force those into planning.
+    return secondary==="planning"?"other":secondary;
+  }
+
+  function setFocusPhaseUI(){
+    const ring=dom.timerDisplay?.closest(".timer-ring");
+    ring?.classList.toggle("is-grace",focusPhase==="grace");
+    ring?.classList.toggle("is-overtime",focusPhase==="overtime");
+    if(dom.overtimeRewardPanel) dom.overtimeRewardPanel.hidden = focusPhase !== "overtime";
+    if(focusPhase==="countdown"){
+      if(dom.timerLabel)dom.timerLabel.textContent=isEnglish()?"Time left":"残り時間";
+      dom.toggleTimer.disabled=false;
+      dom.toggleTimer.textContent=isEnglish()?(timerRunning?"Pause":"Resume"):(timerRunning?"一時停止":"再開する");
+      return;
+    }
+    if(focusPhase==="grace"){
+      if(dom.timerLabel)dom.timerLabel.textContent=isEnglish()?"Continuation starts in":"継続計測開始まで";
+      dom.toggleTimer.disabled=true;
+      dom.toggleTimer.textContent=isEnglish()?"Starts automatically in 30 sec":"30秒後に自動計測";
+      return;
+    }
+    if(dom.timerLabel)dom.timerLabel.textContent=isEnglish()?"Continuation after goal":"5分達成後の継続";
+    dom.toggleTimer.disabled=false;
+    dom.toggleTimer.textContent=isEnglish()?(timerRunning?"Pause continuation":"Resume continuation"):(timerRunning?"継続計測を一時停止":"継続計測を再開");
+  }
+
+  function updateOvertimeRewardUI(){
+    if(!dom.overtimeRewardPanel) return;
+    const active = focusPhase === "overtime";
+    dom.overtimeRewardPanel.hidden = !active;
+    if(!active) return;
+
+    const elapsed = Math.max(0, Math.floor(Number(overtimeSeconds || 0)));
+    const remainder = elapsed % OVERTIME_REWARD_INTERVAL_SECONDS;
+    const remaining = remainder === 0 ? OVERTIME_REWARD_INTERVAL_SECONDS : OVERTIME_REWARD_INTERVAL_SECONDS - remainder;
+    const remainingMinutes = Math.max(1, Math.ceil(remaining / 60));
+    const progress = (remainder / OVERTIME_REWARD_INTERVAL_SECONDS) * 100;
+    const earnedExp = overtimeRewardCount * OVERTIME_REWARD_EXP;
+
+    dom.overtimeRewardTitle.textContent = isEnglish() ? "Continuation bonus" : "継続ボーナス";
+    dom.overtimeRewardRule.textContent = isEnglish() ? `+${OVERTIME_REWARD_EXP} EXP every 5 min` : `5分ごとに ＋${OVERTIME_REWARD_EXP} EXP`;
+    dom.overtimeRewardNextLabel.textContent = isEnglish() ? "Next reward in" : "次の報酬まで";
+    dom.overtimeRewardRemaining.textContent = isEnglish() ? `${remainingMinutes} min` : `${remainingMinutes}分`;
+    dom.overtimeRewardProgressBar.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+    dom.overtimeRewardEarned.textContent = isEnglish() ? `Continuation EXP this session: ${earnedExp} EXP` : `今回の継続EXP：${earnedExp} EXP`;
+  }
+
+  function awardOvertimeRewards(){
+    if(focusPhase !== "overtime" || !activeMission) return;
+    const earnedCount = Math.floor(Math.max(0, Number(overtimeSeconds || 0)) / OVERTIME_REWARD_INTERVAL_SECONDS);
+    if(earnedCount <= overtimeRewardCount) return;
+
+    const newRewards = earnedCount - overtimeRewardCount;
+    overtimeRewardCount = earnedCount;
+    const gainedExp = newRewards * OVERTIME_REWARD_EXP;
+    state.points = Number(state.points || 0) + gainedExp;
+
+    const goalSession = [...state.sessions].reverse().find(s => s.telemetrySessionId === currentSessionId && s.reachedGoal);
+    if(goalSession){
+      goalSession.points = Number(goalSession.points || 0) + gainedExp;
+      goalSession.overtimeExp = Number(goalSession.overtimeExp || 0) + gainedExp;
+    }
+
+    if(state.activeTimer) state.activeTimer.overtimeRewardCount = overtimeRewardCount;
+    persist();
+    renderHeader();
+    renderCharacter();
+    updateOvertimeRewardUI();
+
+    if(dom.overtimeRewardPanel){
+      dom.overtimeRewardPanel.classList.remove("reward-pulse");
+      void dom.overtimeRewardPanel.offsetWidth;
+      dom.overtimeRewardPanel.classList.add("reward-pulse");
+    }
+    showToast(isEnglish() ? `Continuation bonus +${gainedExp} EXP` : `継続ボーナス ＋${gainedExp} EXP`);
+    playTone(740,.08);
+    checkpointTimer();
+  }
+
+  function startFocus(task,sub){
+    if(timer)clearInterval(timer);
+    const selectedFocusMinutes=Number(dom.focusMinutes?.value);
+    if([1,3,5,10,15,25].includes(selectedFocusMinutes)&&selectedFocusMinutes!==state.settings.focusMinutes){state.settings.focusMinutes=selectedFocusMinutes;persist();}
+    const focusMinutes=Math.max(1,Number(state.settings.focusMinutes||5));
+    activeMission={taskId:task.id,subtaskId:sub.id};
+    currentSessionId=createSessionId();
+    pendingNextMission=null;
+    sessionWorkSeconds=0;
+    sessionGoalReached=false;
+    sessionStartedAt=new Date().toISOString();
+    totalTimerSeconds=focusMinutes*60;
+    remainingSeconds=totalTimerSeconds;
+    timerRunning=true;
+    persistTick=0;
+    timerDeadlineMs=Date.now()+remainingSeconds*1000;
+    lastTimerSyncMs=Date.now();
+    focusPhase="countdown";
+    overtimeSeconds=0;
+    overtimeStartMs=null;
+    overtimeTelemetryStarted=false;
+    overtimeRewardCount=0;
+    dom.focusTaskTitle.textContent=sub.title;
+    dom.focusParentTitle.textContent=isEnglish()?`${task.title} · Step ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`:`${task.title} ・ ステップ ${task.subtasks.findIndex(s=>s.id===sub.id)+1}/${task.subtasks.length}`;
+    dom.focusMessage.textContent=isEnglish()?(sub.progressSeconds?"Continue from last time. Start small again today.":"It does not have to be perfect. Starting is progress."):(sub.progressSeconds?"前回の続きから。今日も小さく始めます。":"完璧にやらなくていい。始めた時点で前進です。");
+    dom.completeFocus.textContent=isEnglish()?"Complete step":"ステップ完了";
+    dom.stopFocus.textContent=isEnglish()?"Save progress":"ここまで保存";
+    dom.focusDialog.classList.remove("goal-pulse");
+    setFocusPhaseUI();
+    updateTimerDisplay();
+    openModal(dom.focusDialog);
+    analytics("focusStarts");
+    sendTelemetry("focus_start",{taskCategory:activeTaskCategory()});
+    checkpointTimer();
+    playTone(520,.08);
+    startTicker();
+  }
+
+  function startTicker(){
+    if(timer)clearInterval(timer);
+    if(timerRunning&&focusPhase!=="overtime"&&!timerDeadlineMs)timerDeadlineMs=Date.now()+remainingSeconds*1000;
+    if(timerRunning&&focusPhase==="overtime"&&!overtimeStartMs)overtimeStartMs=Date.now()-overtimeSeconds*1000;
+    lastTimerSyncMs=Date.now();
+    timer=setInterval(syncTimerFromClock,500);
+  }
+
+  function syncTimerFromClock(){
+    if(!timerRunning||!activeMission)return;
+    const now=Date.now();
+    if(focusPhase==="overtime"){
+      if(!overtimeStartMs)overtimeStartMs=now-overtimeSeconds*1000;
+      const next=Math.max(overtimeSeconds,Math.floor((now-overtimeStartMs)/1000));
+      const elapsed=Math.max(0,next-overtimeSeconds);
+      if(elapsed>0){overtimeSeconds=next;sessionWorkSeconds+=elapsed;persistTick+=elapsed;}
+      lastTimerSyncMs=now;
+      awardOvertimeRewards();
+      updateTimerDisplay();
+      if(persistTick>=5){persistTick=0;checkpointTimer();}
+      return;
+    }
+    if(!timerDeadlineMs)timerDeadlineMs=now+remainingSeconds*1000;
+    const previous=remainingSeconds;
+    remainingSeconds=Math.max(0,Math.ceil((timerDeadlineMs-now)/1000));
+    const elapsed=Math.max(0,previous-remainingSeconds);
+    if(focusPhase==="countdown"&&elapsed>0){sessionWorkSeconds+=elapsed;persistTick+=elapsed;}
+    lastTimerSyncMs=now;
+    updateTimerDisplay();
+    if(persistTick>=5){persistTick=0;checkpointTimer();}
+    if(remainingSeconds<=0){
+      if(focusPhase==="countdown")handleGoalReached();
+      else if(focusPhase==="grace")startOvertime();
+    }
+  }
+
+  function updateTimerDisplay(){
+    if(focusPhase==="overtime"){
+      const s=Math.max(0,Math.floor(overtimeSeconds));
+      const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+      dom.timerDisplay.textContent=h>0?`+${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`:`+${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+      dom.timerProgress.style.strokeDasharray=String(CIRCLE_LENGTH);
+      dom.timerProgress.style.strokeDashoffset="0";
+      setFocusPhaseUI();
+      updateOvertimeRewardUI();
+      return;
+    }
+    const r=Math.max(0,remainingSeconds),m=Math.floor(r/60),s=r%60;
+    dom.timerDisplay.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    const base=focusPhase==="grace"?OVERTIME_GRACE_SECONDS:totalTimerSeconds;
+    const progress=base?Math.max(0,Math.min(1,r/base)):0;
+    dom.timerProgress.style.strokeDasharray=String(CIRCLE_LENGTH);
+    dom.timerProgress.style.strokeDashoffset=String(CIRCLE_LENGTH*(1-progress));
+    setFocusPhaseUI();
+    updateOvertimeRewardUI();
+  }
+
+  function toggleTimer(){
+    if(!activeMission||focusPhase==="grace")return;
+    if(focusPhase==="overtime"){
+      if(timerRunning){
+        syncTimerFromClock();
+        timerRunning=false;
+        overtimeStartMs=null;
+        if(timer){clearInterval(timer);timer=null;}
+      }else{
+        timerRunning=true;
+        overtimeStartMs=Date.now()-overtimeSeconds*1000;
+        if(!overtimeTelemetryStarted){
+          overtimeTelemetryStarted=true;
+          sendTelemetry("overtime_start",{taskCategory:activeTaskCategory()});
+        }
+        startTicker();
+      }
+      setFocusPhaseUI();
+      checkpointTimer();
+      return;
+    }
+    if(timerRunning){
+      syncTimerFromClock();
+      timerRunning=false;
+      timerDeadlineMs=null;
+      if(timer){clearInterval(timer);timer=null;}
+    }else{
+      timerRunning=true;
+      timerDeadlineMs=Date.now()+remainingSeconds*1000;
+      lastTimerSyncMs=Date.now();
+      startTicker();
+    }
+    setFocusPhaseUI();
+    checkpointTimer();
+  }
+
   function beginAnotherBlock(){
-  sessionGoalReached = false;
-  sessionStartedAt = new Date().toISOString();
-  sessionWorkSeconds = 0;
+    const selectedFocusMinutes=Number(dom.focusMinutes?.value);
+    if([1,3,5,10,15,25].includes(selectedFocusMinutes)&&selectedFocusMinutes!==state.settings.focusMinutes){state.settings.focusMinutes=selectedFocusMinutes;persist();}
+    const focusMinutes=Math.max(1,Number(state.settings.focusMinutes||5));
+    sessionGoalReached=false;
+    sessionStartedAt=new Date().toISOString();
+    sessionWorkSeconds=0;
+    currentSessionId=createSessionId();
+    totalTimerSeconds=focusMinutes*60;
+    remainingSeconds=totalTimerSeconds;
+    timerRunning=true;
+    timerDeadlineMs=Date.now()+remainingSeconds*1000;
+    lastTimerSyncMs=Date.now();
+    focusPhase="countdown";
+    overtimeSeconds=0;
+    overtimeStartMs=null;
+    overtimeTelemetryStarted=false;
+    overtimeRewardCount=0;
+    analytics("focusStarts");
+    sendTelemetry("focus_start",{taskCategory:activeTaskCategory()});
+    dom.completeFocus.textContent=isEnglish()?"Complete step":"ステップ完了";
+    dom.stopFocus.textContent=isEnglish()?"Save progress":"ここまで保存";
+    dom.focusMessage.textContent=isEnglish()?`Just ${state.settings.focusMinutes} more minutes. Your progress is saved even if you stop early.`:`もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;
+    setFocusPhaseUI();
+    updateTimerDisplay();
+    checkpointTimer();
+    startTicker();
+  }
 
-  currentSessionId = createSessionId();
-
-  totalTimerSeconds = state.settings.focusMinutes * 60;
-  remainingSeconds = totalTimerSeconds;
-  timerRunning = true;
-  timerDeadlineMs = Date.now() + remainingSeconds * 1000;
-  lastTimerSyncMs = Date.now();
-
-  analytics("focusStarts");
-  sendTelemetry("focus_start", {
-    taskCategory: classifyTask(taskTitleForActiveMission())
-  });
-
-  dom.toggleTimer.textContent = isEnglish() ? "Pause" : "一時停止";
-  dom.completeFocus.textContent = isEnglish() ? "Complete step" : "ステップ完了";
-  dom.stopFocus.textContent = isEnglish() ? "Save progress" : "ここまで保存";
-  dom.focusMessage.textContent = isEnglish()
-    ? `Just ${state.settings.focusMinutes} more minutes. Your progress is saved even if you stop early.`
-    : `もう${state.settings.focusMinutes}分だけ。途中で止めても記録は残ります。`;
-
-  updateTimerDisplay();
-  checkpointTimer();
-  startTicker();
-}  function handleGoalReached(){
-    if(timer){clearInterval(timer);timer=null;}timerRunning=false;remainingSeconds=0;sessionGoalReached=true;
+  function handleGoalReached(){
+    if(!activeMission||sessionGoalReached)return;
+    if(timer){clearInterval(timer);timer=null;}
+    timerRunning=false;
+    remainingSeconds=0;
+    timerDeadlineMs=null;
+    sessionGoalReached=true;
     const saved=commitSessionSegment(true);
     analytics("focusGoals");
-    sendTelemetry("focus_goal", {focusSeconds: saved.seconds, taskCategory: classifyTask(taskTitleForActiveMission())});
+    sendTelemetry("focus_goal",{focusSeconds:saved.seconds,taskCategory:activeTaskCategory()});
+    focusPhase="grace";
+    remainingSeconds=OVERTIME_GRACE_SECONDS;
+    timerRunning=true;
+    timerDeadlineMs=Date.now()+OVERTIME_GRACE_SECONDS*1000;
+    overtimeSeconds=0;
+    overtimeStartMs=null;
+    overtimeTelemetryStarted=false;
+    overtimeRewardCount=0;
+    persistTick=0;
     dom.focusMessage.innerHTML=isEnglish()
-      ? `<span class="focus-success">🎉 ${state.settings.focusMinutes}-minute goal reached!<br>Stopping here is already a win today.</span>`
-      : `<span class="focus-success">🎉 ${state.settings.focusMinutes}分達成！<br>ここで止めても、今日の成功です。</span>`;
-    dom.toggleTimer.textContent=isEnglish()?`Another ${state.settings.focusMinutes} min`:`もう${state.settings.focusMinutes}分`;
+      ? `<span class="focus-success">🎉 ${state.settings.focusMinutes}-minute goal reached!</span><span class="overtime-note">In 30 seconds, Nudge will start measuring additional continuation time. Stopping here is already a win today.</span>`
+      : `<span class="focus-success">🎉 ${state.settings.focusMinutes}分達成！</span><span class="overtime-note">30秒後から、そのまま続けた時間を計測します。ここで終了しても今日の成功です。</span>`;
     dom.completeFocus.textContent=isEnglish()?"Complete step too":"ステップも完了";
     dom.stopFocus.textContent=isEnglish()?"Stop for today":"今日はここまで";
     dom.focusDialog.classList.remove("goal-pulse");void dom.focusDialog.offsetWidth;dom.focusDialog.classList.add("goal-pulse");
-    showToast(saved.points?`${state.settings.focusMinutes}分達成！ ＋${saved.points}pt`: `${state.settings.focusMinutes}分達成！`);playSuccessSound();if(state.settings.confetti)launchConfetti();checkpointTimer(true);renderAll();
+    updateTimerDisplay();
+    showToast(saved.points?`${state.settings.focusMinutes}分達成！ ＋${saved.points} EXP`:`${state.settings.focusMinutes}分達成！`);
+    playSuccessSound();if(state.settings.confetti)launchConfetti();
+    checkpointTimer();
+    renderAll();
+    startTicker();
   }
+
+  function startOvertime(){
+    if(!activeMission||!sessionGoalReached)return;
+    if(timer){clearInterval(timer);timer=null;}
+    focusPhase="overtime";
+    remainingSeconds=0;
+    timerDeadlineMs=null;
+    timerRunning=true;
+    overtimeStartMs=Date.now()-overtimeSeconds*1000;
+    lastTimerSyncMs=Date.now();
+    if(!overtimeTelemetryStarted){
+      overtimeTelemetryStarted=true;
+      sendTelemetry("overtime_start",{taskCategory:activeTaskCategory()});
+    }
+    dom.focusMessage.innerHTML=isEnglish()
+      ? `<span class="overtime-note">You are continuing beyond the goal. You do not need to keep going. When you stop, only the additional time is recorded separately.</span>`
+      : `<span class="overtime-note">5分を超えて継続中です。無理に続ける必要はありません。終了時に追加時間だけを別に記録します。</span>`;
+    setFocusPhaseUI();
+    updateTimerDisplay();
+    checkpointTimer();
+    startTicker();
+  }
+
   function commitSessionSegment(reachedGoal=false,stepCompleted=false){
     if(!activeMission||sessionWorkSeconds<=0)return {seconds:0,points:0};
     const task=state.tasks.find(t=>t.id===activeMission.taskId),sub=task?.subtasks.find(s=>s.id===activeMission.subtaskId);if(!task||!sub)return {seconds:0,points:0};
     const seconds=sessionWorkSeconds;sub.progressSeconds=Number(sub.progressSeconds||0)+seconds;sub.lastSessionSeconds=seconds;
     const points=reachedGoal?10:0;state.points+=points;state.totalSeconds=Number(state.totalSeconds||0)+seconds;
-    state.sessions.push({id:uid(),taskId:task.id,subtaskId:sub.id,title:sub.title,parentTitle:task.title,startedAt:sessionStartedAt||new Date(Date.now()-seconds*1000).toISOString(),endedAt:new Date().toISOString(),seconds,reachedGoal,stepCompleted,points});
+    state.sessions.push({id:uid(),telemetrySessionId:currentSessionId,taskId:task.id,subtaskId:sub.id,title:sub.title,parentTitle:task.title,startedAt:sessionStartedAt||new Date(Date.now()-seconds*1000).toISOString(),endedAt:new Date().toISOString(),seconds,reachedGoal,stepCompleted,points,overtimeSeconds:0,overtimeExp:0});
     sessionWorkSeconds=0;sessionStartedAt=new Date().toISOString();persist();return {seconds,points};
   }
-  function savePartialAndClose(){const hadGoal=sessionGoalReached;if(sessionWorkSeconds>0){const seg=commitSessionSegment(false,false);analytics("partialSaves");sendTelemetry("partial_save", {focusSeconds: seg.seconds, taskCategory: classifyTask(taskTitleForActiveMission())});}clearActiveTimer();closeModal(dom.focusDialog);activeMission=null;renderAll();showToast(hadGoal?"5分達成を保存しました。今日はここまで！":"途中まで保存しました。次回は続きから5分だけ。");maybeOfferProfile(hadGoal);}
-  function closeFocusDialog(savePartial){const hadGoal=sessionGoalReached;if(savePartial&&sessionWorkSeconds>0){const seg=commitSessionSegment(false,false);analytics("partialSaves");sendTelemetry("partial_save", {focusSeconds: seg.seconds, taskCategory: classifyTask(taskTitleForActiveMission())});}clearActiveTimer();activeMission=null;closeModal(dom.focusDialog);renderAll();maybeOfferProfile(hadGoal);}
+
+  function commitOvertimeSegment(stepCompleted=false){
+    if(!activeMission||focusPhase!=="overtime")return {seconds:0};
+    if(timerRunning)syncTimerFromClock();
+    const seconds=Math.max(0,Number(sessionWorkSeconds||0));
+    const {task,sub}=activeTaskAndSub();
+    if(!task||!sub)return {seconds:0};
+    if(seconds>0){
+      sub.progressSeconds=Number(sub.progressSeconds||0)+seconds;
+      sub.lastSessionSeconds=seconds;
+      state.totalSeconds=Number(state.totalSeconds||0)+seconds;
+      const goalSession=[...state.sessions].reverse().find(s=>s.telemetrySessionId===currentSessionId&&s.reachedGoal);
+      if(goalSession){
+        goalSession.seconds=Number(goalSession.seconds||0)+seconds;
+        goalSession.overtimeSeconds=Number(goalSession.overtimeSeconds||0)+seconds;
+        goalSession.endedAt=new Date().toISOString();
+        if(stepCompleted)goalSession.stepCompleted=true;
+      }
+      sessionWorkSeconds=0;
+      persist();
+    }
+    if(overtimeTelemetryStarted){
+      sendTelemetry("overtime_stop",{focusSeconds:seconds,taskCategory:activeTaskCategory()});
+      overtimeTelemetryStarted=false;
+    }
+    return {seconds};
+  }
+  function savePartialAndClose(){
+    const hadGoal=sessionGoalReached;
+    if(hadGoal){
+      if(focusPhase==="overtime")commitOvertimeSegment(false);
+    }else if(sessionWorkSeconds>0){
+      const seg=commitSessionSegment(false,false);analytics("partialSaves");sendTelemetry("partial_save",{focusSeconds:seg.seconds,taskCategory:activeTaskCategory()});
+    }
+    clearActiveTimer();closeModal(dom.focusDialog);activeMission=null;renderAll();showToast(hadGoal?(isEnglish()?`${state.settings.focusMinutes}-minute goal saved. That's enough for today!`:`${state.settings.focusMinutes}分達成を保存しました。今日はここまで！`):(isEnglish()?`Progress saved. Resume for ${state.settings.focusMinutes} minutes next time.`:`途中まで保存しました。次回は続きから${state.settings.focusMinutes}分だけ。`));maybeOfferProfile(hadGoal);
+  }
+
+  function closeFocusDialog(savePartial){
+    const hadGoal=sessionGoalReached;
+    if(savePartial){
+      if(hadGoal&&focusPhase==="overtime")commitOvertimeSegment(false);
+      else if(!hadGoal&&sessionWorkSeconds>0){const seg=commitSessionSegment(false,false);analytics("partialSaves");sendTelemetry("partial_save",{focusSeconds:seg.seconds,taskCategory:activeTaskCategory()});}
+    }
+    clearActiveTimer();activeMission=null;closeModal(dom.focusDialog);renderAll();maybeOfferProfile(hadGoal);
+  }
 
   function completeActiveMission(){
-    if(!activeMission)return;const task=state.tasks.find(t=>t.id===activeMission.taskId),sub=task?.subtasks.find(s=>s.id===activeMission.subtaskId);if(!task||!sub)return;
-    if(timer){clearInterval(timer);timer=null;}timerRunning=false;if(sessionWorkSeconds>0)commitSessionSegment(false,true);
+    if(!activeMission)return;
+    const task=state.tasks.find(t=>t.id===activeMission.taskId),sub=task?.subtasks.find(s=>s.id===activeMission.subtaskId);if(!task||!sub)return;
+    if(timer){clearInterval(timer);timer=null;}
+    if(sessionGoalReached&&focusPhase==="overtime")commitOvertimeSegment(true);
+    else if(!sessionGoalReached&&sessionWorkSeconds>0)commitSessionSegment(false,true);
+    timerRunning=false;
+    const goalSession=[...state.sessions].reverse().find(s=>s.telemetrySessionId===currentSessionId&&s.reachedGoal);if(goalSession)goalSession.stepCompleted=true;
     const currentIndex=task.subtasks.findIndex(s=>s.id===sub.id);sub.completed=true;sub.completedAt=new Date().toISOString();task.completed=task.subtasks.every(s=>s.completed);
-    const completionBonus=10+(task.priority==="high"?5:0);state.points+=completionBonus;state.history.push({id:uid(),title:sub.title,parentTitle:task.title,completedAt:new Date().toISOString(),minutes:Math.max(1,Math.round((sub.lastSessionSeconds||60)/60)),points:completionBonus});analytics("focusCompletions");sendTelemetry("step_complete", {taskCategory: classifyTask(task.title)});persist();clearActiveTimer();closeModal(dom.focusDialog);
+    const completionBonus=10+(task.priority==="high"?5:0);state.points+=completionBonus;state.history.push({id:uid(),title:sub.title,parentTitle:task.title,completedAt:new Date().toISOString(),minutes:Math.max(1,Math.round((sub.lastSessionSeconds||60)/60)),points:completionBonus});analytics("focusCompletions");sendTelemetry("step_complete",{taskCategory:classifyTask(`${task.title} ${sub.title}`)});persist();clearActiveTimer();closeModal(dom.focusDialog);
     const sameNext=task.subtasks.find((s,i)=>i>currentIndex&&!s.completed)||task.subtasks.find(s=>!s.completed);pendingSameMission=sameNext?{taskId:task.id,subtaskId:sameNext.id}:null;const otherTask=state.tasks.find(t=>t.id!==task.id&&!t.completed&&t.subtasks.some(x=>!x.completed));const otherSub=otherTask?.subtasks.find(x=>!x.completed);pendingNextMission=otherTask&&otherSub?{taskId:otherTask.id,subtaskId:otherSub.id}:null;dom.rewardPoints.textContent=completionBonus;dom.rewardMessage.textContent=isEnglish()?"Choose what to do next. Even if you stop here, today's step is recorded.":"次にどうするか選べます。ここで終えても、今日の一歩は記録されています。";dom.rewardSame.hidden=!pendingSameMission;dom.rewardNext.hidden=!pendingNextMission;dom.rewardStop.textContent=isEnglish()?((!pendingSameMission&&!pendingNextMission)?"Back to Home":"Stop for today"):((!pendingSameMission&&!pendingNextMission)?"ホームへ戻る":"今日はここまで");openModal(dom.rewardDialog);playSuccessSound();if(state.settings.confetti)launchConfetti();activeMission=null;sessionWorkSeconds=0;renderAll();
   }
   function stopAfterReward(){closeModal(dom.rewardDialog);pendingNextMission=null;pendingSameMission=null;switchView("home");maybeOfferProfile(true);}
@@ -2810,98 +3252,75 @@ main {
 
   function checkpointTimer(clear=false){
     if(clear||!activeMission){state.activeTimer=null;persist();return;}
-    state.activeTimer={...activeMission,sessionId: currentSessionId,remainingSeconds,totalTimerSeconds,sessionWorkSeconds,timerRunning,sessionStartedAt,sessionGoalReached,timerDeadlineMs:timerRunning?timerDeadlineMs:null,savedAt:new Date().toISOString()};
-    persist();
-  }
-  function clearActiveTimer(){if(timer)clearInterval(timer);timer=null;timerRunning=false;timerDeadlineMs=null;lastTimerSyncMs=null;state.activeTimer=null;persist();}
-  function restoreSavedFocus(){
-  const a = state.activeTimer;
-  if(!a) return;
-
-  const task = state.tasks.find(t => t.id === a.taskId);
-  const sub = task?.subtasks.find(s => s.id === a.subtaskId);
-
-  if(!task || !sub || sub.completed){
-    state.activeTimer = null;
-    persist();
-    return;
-  }
-
-  activeMission = {
-    taskId: task.id,
-    subtaskId: sub.id
-  };
-currentSessionId = a.sessionId || createSessionId();
-
-  remainingSeconds = Math.max(0, Number(a.remainingSeconds || 0));
-  totalTimerSeconds = Math.max(
-    60,
-    Number(a.totalTimerSeconds || state.settings.focusMinutes * 60)
-  );
-  sessionWorkSeconds = Math.max(0, Number(a.sessionWorkSeconds || 0));
-  sessionStartedAt = a.sessionStartedAt || new Date().toISOString();
-  sessionGoalReached = !!a.sessionGoalReached;
-  timerRunning = false;
-  timerDeadlineMs = null;
-
-  if(a.timerRunning && a.timerDeadlineMs){
-    const now = Date.now();
-    const deadline = Number(a.timerDeadlineMs);
-
-    const restoredRemaining = Math.max(
-      0,
-      Math.ceil((deadline - now) / 1000)
-    );
-
-    const elapsed = Math.max(
-      0,
-      remainingSeconds - restoredRemaining
-    );
-
-    sessionWorkSeconds += elapsed;
-    remainingSeconds = restoredRemaining;
-
-    if(now >= deadline){
-      remainingSeconds = 0;
-      sessionGoalReached = true;
-
-      dom.focusTaskTitle.textContent = sub.title;
-      dom.focusParentTitle.textContent =
-        `${task.title} ・ 前回の集中から復元`;
-
-      updateTimerDisplay();
-
-      openModal(dom.focusDialog);
-
-      handleGoalReached();
-      return;
+    if(focusPhase==="overtime"&&timerRunning&&overtimeStartMs){
+      const now=Date.now();
+      const next=Math.max(overtimeSeconds,Math.floor((now-overtimeStartMs)/1000));
+      const elapsed=Math.max(0,next-overtimeSeconds);
+      if(elapsed>0){overtimeSeconds=next;sessionWorkSeconds+=elapsed;}
     }
+    state.activeTimer={...activeMission,sessionId:currentSessionId,remainingSeconds,totalTimerSeconds,sessionWorkSeconds,timerRunning,sessionStartedAt,sessionGoalReached,timerDeadlineMs:(timerRunning&&focusPhase!=="overtime")?timerDeadlineMs:null,savedAt:new Date().toISOString(),focusPhase,overtimeSeconds,overtimeTelemetryStarted,overtimeRewardCount};
+    persist();
   }
 
-  dom.focusTaskTitle.textContent = sub.title;
-  dom.focusParentTitle.textContent =
-    `${task.title} ・ 前回の途中から`;
+  function clearActiveTimer(){
+    if(timer)clearInterval(timer);timer=null;timerRunning=false;timerDeadlineMs=null;lastTimerSyncMs=null;overtimeStartMs=null;state.activeTimer=null;persist();
+    focusPhase="countdown";overtimeSeconds=0;overtimeTelemetryStarted=false;overtimeRewardCount=0;
+  }
 
-  dom.focusMessage.textContent =
-    "前回の集中を途中保存しています。再開すると、残り時間から続けられます。";
+  function restoreSavedFocus(){
+    const a=state.activeTimer;if(!a)return;
+    const task=state.tasks.find(t=>t.id===a.taskId);const sub=task?.subtasks.find(s=>s.id===a.subtaskId);
+    if(!task||!sub||sub.completed){state.activeTimer=null;persist();return;}
+    activeMission={taskId:task.id,subtaskId:sub.id};
+    currentSessionId=a.sessionId||createSessionId();
+    totalTimerSeconds=Math.max(60,Number(a.totalTimerSeconds||state.settings.focusMinutes*60));
+    remainingSeconds=Math.max(0,Number(a.remainingSeconds||0));
+    sessionWorkSeconds=Math.max(0,Number(a.sessionWorkSeconds||0));
+    sessionStartedAt=a.sessionStartedAt||new Date().toISOString();
+    sessionGoalReached=!!a.sessionGoalReached;
+    focusPhase=["countdown","grace","overtime"].includes(a.focusPhase)?a.focusPhase:(sessionGoalReached?"grace":"countdown");
+    overtimeSeconds=Math.max(0,Number(a.overtimeSeconds||0));
+    overtimeTelemetryStarted=!!a.overtimeTelemetryStarted;
+    const savedOvertimeRewardCount=Number(a.overtimeRewardCount);
+    overtimeRewardCount=Number.isFinite(savedOvertimeRewardCount)&&savedOvertimeRewardCount>=0
+      ? Math.floor(savedOvertimeRewardCount)
+      : Math.floor(overtimeSeconds/OVERTIME_REWARD_INTERVAL_SECONDS);
+    timerRunning=false;timerDeadlineMs=null;overtimeStartMs=null;persistTick=0;
+    dom.focusTaskTitle.textContent=sub.title;
+    dom.focusParentTitle.textContent=isEnglish()?`${task.title} · Restored`:`${task.title} ・ 前回の集中から復元`;
+    dom.completeFocus.textContent=sessionGoalReached?(isEnglish()?"Complete step too":"ステップも完了"):(isEnglish()?"Complete step":"ステップ完了");
+    dom.stopFocus.textContent=sessionGoalReached?(isEnglish()?"Stop for today":"今日はここまで"):(isEnglish()?"Save progress":"ここまで保存");
 
-  dom.toggleTimer.textContent =
-    remainingSeconds > 0
-      ? "再開する"
-      : `もう${state.settings.focusMinutes}分`;
+    if(focusPhase==="countdown"){
+      if(a.timerRunning&&a.timerDeadlineMs){
+        const now=Date.now(),deadline=Number(a.timerDeadlineMs);
+        const restoredRemaining=Math.max(0,Math.ceil((deadline-now)/1000));
+        const elapsed=Math.max(0,remainingSeconds-restoredRemaining);
+        sessionWorkSeconds+=elapsed;remainingSeconds=restoredRemaining;
+        if(now>=deadline){
+          remainingSeconds=0;updateTimerDisplay();openModal(dom.focusDialog);handleGoalReached();return;
+        }
+      }
+      dom.focusMessage.textContent=isEnglish()?"Your previous focus session was restored. Resume when you are ready.":"前回の集中を途中保存しています。再開すると、残り時間から続けられます。";
+      setFocusPhaseUI();updateTimerDisplay();openModal(dom.focusDialog);showToast("前回の集中を復元しました");checkpointTimer();return;
+    }
 
-  dom.completeFocus.textContent = "ステップ完了";
-  dom.stopFocus.textContent = "ここまで保存";
-
-  updateTimerDisplay();
-  openModal(dom.focusDialog);
-
-  showToast("前回の集中を復元しました");
-}
+    // Closed/reloaded time after the goal is deliberately not added to continuation time.
+    focusPhase="overtime";
+    remainingSeconds=0;
+    timerRunning=false;
+    overtimeStartMs=null;
+    dom.focusMessage.innerHTML=isEnglish()?`<span class="focus-success">🎉 Goal already reached.</span><span class="overtime-note">Continuation measurement was restored paused. Resume it only if you are still working.</span>`:`<span class="focus-success">🎉 5分達成済みです。</span><span class="overtime-note">前回の継続計測は停止状態で復元しました。今も続けている場合だけ再開してください。</span>`;
+    setFocusPhaseUI();updateTimerDisplay();openModal(dom.focusDialog);showToast("前回の集中を復元しました");checkpointTimer();
+  }
   function openGuide(firstLaunch=false){
     guideFirstLaunch = !!firstLaunch;
     if(dom.guideClose) dom.guideClose.hidden = guideFirstLaunch;
-    if(dom.guideContinue) dom.guideContinue.textContent = guideFirstLaunch ? "次へ：所属を回答する" : "閉じる";
+    if(dom.guideContinue){
+      dom.guideContinue.textContent = guideFirstLaunch
+        ? (isEnglish()?"Next: profile":"次へ：所属を回答する")
+        : (isEnglish()?"Close":"閉じる");
+    }
     openModal(dom.guideDialog);
   }
 
@@ -2915,7 +3334,7 @@ currentSessionId = a.sessionId || createSessionId();
       return;
     }
     guideFirstLaunch = false;
-    showToast("使い方を確認しました");
+    showToast(isEnglish()?"Guide reviewed":"使い方を確認しました");
   }
 
   function openProfile(firstLaunch=false){
@@ -2990,7 +3409,7 @@ currentSessionId = a.sessionId || createSessionId();
         focus_seconds:Math.max(0,Math.min(86400,Number(focusSeconds||0))),
         task_category:taskCategory||"other",
         session_id:currentSessionId,
-        app_version:"2.4"
+        app_version:"2.5"
       };
       const {error}=await supabaseClient.from("nudge_events").insert(payload);
       if(error) throw error;
@@ -3011,7 +3430,20 @@ currentSessionId = a.sessionId || createSessionId();
   }
 
   function taskTitleForActiveMission(){const task=state.tasks.find(t=>t.id===activeMission?.taskId);return task?.title||"";}
-  function classifyTask(title){const t=String(title||"");if(/勉強|暗記|単語|試験|テスト|問題集|宿題|課題|study|memor|vocab|exam|test|homework|assignment/i.test(t))return"study";if(/レポート|論文|作文|文章|原稿|書く|志望理由|願書|report|essay|paper|write|writing/i.test(t))return"writing";if(/掃除|片付け|整理|clean|tidy|organize/i.test(t))return"cleaning";if(/練習|運動|筋トレ|走る|practice|exercise|workout|run|training/i.test(t))return"exercise";if(/メール|連絡|返信|電話|申込|出願|email|reply|call|apply|submit|contact/i.test(t))return"communication";return"other";}
+  function classifyTask(title){
+    const t=String(title||"").normalize("NFKC").toLowerCase();
+    if(/nudge|試してみる|5分だけ始める|start for 5 minutes|try nudge/.test(t))return"tutorial";
+    if(/勉強|学習|暗記|単語|試験|テスト|問題|問題集|宿題|課題|予習|復習|授業|講義|教科書|参考書|ノート|数学|算数|国語|現代文|古文|漢文|英語|英文|理科|物理|化学|生物|地学|社会|歴史|日本史|世界史|地理|公民|政治経済|倫理|情報|簿記|資格|英検|toeic|toefl|study|learn|memor|vocab|exam|test|homework|assignment|school|class|lesson|math|science|history|geography|language/.test(t))return"study";
+    if(/レポート|論文|作文|文章|原稿|執筆|志望理由|願書|小論文|履歴書|エントリーシート|es\b|資料作成|スライド|プレゼン|発表資料|report|essay|paper|write|writing|draft|document|resume|statement|slide|presentation/.test(t))return"writing";
+    if(/掃除|片付け|整理|整頓|洗濯|皿洗い|食器|ゴミ|ごみ|部屋|机|収納|断捨離|clean|tidy|organize|laundry|dish|declutter|room/.test(t))return"cleaning";
+    if(/練習|運動|筋トレ|走る|ランニング|ジョギング|散歩|ウォーキング|ストレッチ|ヨガ|部活|サッカー|野球|バスケ|テニス|バレー|水泳|ダンス|トレーニング|practice|exercise|workout|run|jog|walk|stretch|yoga|training|soccer|football|baseball|basketball|tennis|swim|dance/.test(t))return"exercise";
+    if(/メール|連絡|返信|電話|line|メッセージ|dm\b|申込|申し込み|出願|提出|送信|予約|問い合わせ|相談|連絡する|email|reply|call|message|contact|apply|application|submit|send|book|reservation/.test(t))return"communication";
+    if(/絵|イラスト|描く|デザイン|制作|創作|動画|編集|撮影|写真|音楽|作曲|楽器|ピアノ|ギター|プログラミング|コーディング|開発|ゲーム制作|illustrat|draw|design|creative|video|edit|photo|music|compose|piano|guitar|program|coding|develop/.test(t))return"creative";
+    if(/計画|予定|スケジュール|todo|やること|段取り|準備|調べる|調査|検索|リサーチ|目標|planning|plan|schedule|prepare|research|search|goal/.test(t))return"planning";
+    if(/料理|ご飯|食事|朝食|昼食|夕食|買い物|買う|風呂|入浴|歯磨き|着替え|荷造り|片づけ|生活|家事|cook|meal|breakfast|lunch|dinner|shopping|shop|bath|shower|pack|chores/.test(t))return"daily_life";
+    if(/仕事|バイト|アルバイト|勤務|シフト|会議|業務|作業|職場|顧客|売上|work|job|shift|meeting|office|client|business/.test(t))return"work";
+    return"other";
+  }
   function normalizeAgeGroup(v){return ["10代","20代","30代","40代","50代以上"].includes(v)?v:"回答しない";}
   function normalizeRoleGroup(v){return ["中学生","高校生","大学・専門学校生","社会人","その他"].includes(v)?v:"回答しない";}
 
