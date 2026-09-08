@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#4f8f63" />
-  <meta name="version" content="Nudge Ver.2.6" />
+  <meta name="version" content="Nudge Ver.2.7" />
   <meta name="description" content="5分だけ始めることで、今日の一歩を後押しするブラウザアプリ Nudge" />
-  <title>Nudge Ver.2.6｜5分だけ始める</title>
+  <title>Nudge Ver.2.7｜5分だけ始める</title>
   
   
 <style>
@@ -1242,15 +1242,22 @@ main {
   transform: translate(-50%, 0);
 }
 
-.confetti-piece {
+.confetti-layer {
   position: fixed;
-  z-index: 200;
-  top: -24px;
+  inset: 0;
+  z-index: 5000;
+  pointer-events: none;
+  overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  top: -28px;
   width: 10px;
   height: 18px;
   border-radius: 3px;
   background: currentColor;
   pointer-events: none;
+  opacity: 1;
   animation: confettiFall 1.5s linear forwards;
 }
 
@@ -1260,6 +1267,8 @@ main {
     opacity: 0.7;
   }
 }
+
+/* Confetti motion under reduced-motion is handled by a later, gentler override. */
 
 @media (max-width: 760px) {
   main {
@@ -1427,8 +1436,12 @@ main {
 .task-details{margin-top:16px;padding-top:2px;border-top:1px solid var(--border)}
 .task-details[hidden]{display:none!important}
 .details-hint{margin:14px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface-soft);color:var(--muted);font-size:12px;line-height:1.6}
-.plan-editor-row-v21{display:grid;grid-template-columns:auto minmax(0,1fr) 82px auto;gap:8px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:14px;background:var(--surface-soft)}
+.plan-editor-row-v21{display:grid;grid-template-columns:auto auto minmax(0,1fr) 82px auto;gap:8px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:14px;background:var(--surface-soft);transition:opacity .15s,transform .15s,box-shadow .15s}
+.plan-editor-row-v21.is-dragging{opacity:.72;transform:scale(.995);box-shadow:0 12px 28px rgba(44,73,52,.16)}
 .plan-editor-row-v21 input[type="text"]{min-width:0}
+.plan-drag-handle{width:38px;height:38px;border:1px solid var(--border);border-radius:10px;background:var(--surface);cursor:grab;touch-action:none;user-select:none;display:grid;place-items:center;font-size:18px;line-height:1}
+.plan-drag-handle:active{cursor:grabbing}
+body.nudge-dragging{user-select:none;cursor:grabbing!important;overscroll-behavior:contain}
 .plan-minutes{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px;color:var(--muted);font-size:12px}
 .plan-minutes input{width:58px;padding:8px 6px;text-align:center}
 .focus-success{display:block;margin:14px auto 0;max-width:420px;padding:12px 14px;border-radius:14px;background:var(--surface-soft);color:var(--primary-dark);font-weight:900;line-height:1.55}
@@ -1444,9 +1457,22 @@ main {
 .activity-tag{display:inline-flex;align-items:center;margin-left:6px;padding:3px 7px;border-radius:999px;background:var(--surface-soft);color:var(--primary-dark);font-size:10px;font-weight:900}
 .goal-pulse{animation:goalPulse .55s ease}
 @keyframes goalPulse{0%{transform:scale(.96)}55%{transform:scale(1.025)}100%{transform:scale(1)}}
-@media(max-width:620px){.quick-start-row{grid-template-columns:1fr}.plan-editor-row-v21{grid-template-columns:auto minmax(0,1fr);}.plan-minutes,.plan-editor-row-v21 .plan-editor-actions{grid-column:2}.focus-actions{grid-template-columns:1fr}.reward-actions{grid-template-columns:1fr}.comparison-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.quick-start-row{grid-template-columns:1fr}.plan-editor-row-v21{grid-template-columns:auto auto minmax(0,1fr);}.plan-minutes,.plan-editor-row-v21 .plan-editor-actions{grid-column:3}.plan-drag-handle{width:42px;height:42px}.focus-actions{grid-template-columns:1fr}.reward-actions{grid-template-columns:1fr}.comparison-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.hero-card{padding:20px}.character-panel{grid-template-columns:88px 1fr;padding:14px}.character-stage{min-height:88px}.character-emoji{font-size:48px}.hero-copy{margin-top:12px}.section-heading{margin-top:24px}.comparison-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+@media (prefers-reduced-motion: reduce) {
+  .confetti-layer .confetti-piece {
+    animation-name: confettiFallReduced !important;
+    animation-duration: 1.05s !important;
+    animation-timing-function: ease-out !important;
+    animation-fill-mode: forwards !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@keyframes confettiFallReduced {
+  from { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  to { transform: translate(calc(var(--drift) * .28), 72vh) rotate(180deg); opacity: .55; }
+}
 
 
 /* Ver.2.3: mobile profile + reflection */
@@ -1811,7 +1837,7 @@ main {
 
 
 
-/* ===== Ver.2.6: repeat tasks / My Sets / personal suggestions ===== */
+/* ===== Ver.2.7: repeat tasks / My Folder / personal suggestions ===== */
 .myset-section {
   margin: 18px 0 22px;
   padding: 20px;
@@ -1857,8 +1883,26 @@ main {
 .feature-tutorial-content h2 { margin:4px 0 10px; }
 .feature-tutorial-content p { color:var(--muted); line-height:1.7; }
 .feature-tutorial-points { margin:12px 0 18px; padding-left:1.2rem; line-height:1.7; }
-.myset-form textarea { width:100%; min-height:150px; resize:vertical; padding:12px; border:1px solid var(--border); border-radius:12px; font:inherit; color:var(--text); background:var(--surface); }
 .myset-form .settings-note { margin-top:6px; }
+.myset-task-editor { display:grid; gap:10px; margin-top:8px; }
+.myset-task-row { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:start; padding:12px; border:1px solid var(--border); border-radius:14px; background:var(--surface-soft); transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease; }
+.myset-task-row.is-dragging { opacity:.82; box-shadow:0 12px 28px rgba(44,73,52,.18); transform:scale(1.01); z-index:3; }
+.myset-drag-handle { width:38px; height:42px; border:1px solid var(--border); border-radius:11px; background:var(--surface); cursor:grab; touch-action:none; user-select:none; display:grid; place-items:center; font-size:19px; }
+.myset-drag-handle:active { cursor:grabbing; }
+.myset-task-main { display:grid; gap:9px; min-width:0; }
+.myset-task-title { width:100%; }
+.myset-repeat-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.myset-repeat-check { display:flex; align-items:center; gap:7px; margin:0; font-weight:700; }
+.myset-repeat-check input[type=checkbox] { width:18px!important; height:18px!important; min-width:18px!important; }
+.myset-target-wrap { display:flex; align-items:center; gap:6px; margin:0; color:var(--muted); font-size:.9rem; }
+.myset-target-wrap input { width:78px!important; padding:8px 9px!important; }
+.myset-remove-task { align-self:start; min-width:40px; height:40px; padding:0 10px; }
+.myset-add-task { width:100%; margin-top:10px; }
+.myset-editor-hint { margin:8px 0 0; color:var(--muted); font-size:.86rem; line-height:1.55; }
+@media (max-width:620px){
+  .myset-task-row { grid-template-columns:auto minmax(0,1fr); }
+  .myset-remove-task { grid-column:2; justify-self:end; margin-top:-4px; }
+}
 .guide-mini-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 .ver26-guide-note { margin-top:12px; padding:12px; border-radius:12px; background:var(--surface-soft); color:var(--muted); }
 @media (max-width: 720px){
@@ -1868,6 +1912,9 @@ main {
   .repeat-target-row { grid-template-columns:1fr; }
 }
 
+
+/* Ver.2.7 */
+.repeat-complete-no-target{margin-top:10px;width:100%;font-weight:800;}
 </style></head>
 <body>
   <div class="app-shell">
@@ -1876,7 +1923,7 @@ main {
         <span class="brand-mark" aria-hidden="true">🌱</span>
         <span>
           <strong>Nudge</strong>
-          <small>5分だけ始める ・ Ver.2.6</small>
+          <small>5分だけ始める ・ Ver.2.7</small>
         </span>
       </button>
 
@@ -1982,11 +2029,11 @@ main {
         <article class="myset-section" aria-labelledby="mySetHeading">
           <div class="myset-head">
             <div>
-              <p class="eyebrow">MY SETS</p>
-              <h2 id="mySetHeading">マイセット</h2>
+              <p class="eyebrow">MY FOLDERS</p>
+              <h2 id="mySetHeading">マイフォルダ</h2>
               <p>よく使う複数タスクを、自分用のセットとしてこの端末に保存できます。</p>
             </div>
-            <button id="createMySetButton" class="secondary-button" type="button">＋ マイセットを作る</button>
+            <button id="createMySetButton" class="secondary-button" type="button">＋ マイフォルダを作る</button>
           </div>
           <div id="mySetList" class="myset-list"></div>
         </article>
@@ -2133,13 +2180,13 @@ main {
             <button id="openGuideFromSettings" class="secondary-button" type="button">📘 使い方を見る</button>
             <div class="guide-mini-actions">
               <button id="openRepeatTutorial" class="text-button" type="button">🔁 反復タスクの使い方</button>
-              <button id="openMySetTutorial" class="text-button" type="button">📁 マイセットの使い方</button>
+              <button id="openMySetTutorial" class="text-button" type="button">📁 マイフォルダの使い方</button>
             </div>
           </article>
 
           <article class="settings-card version-card">
             <h2>Nudgeの更新履歴</h2>
-            <p class="settings-note">各バージョンで追加・改善した内容を確認できます。現在はVer.2.6です。</p>
+            <p class="settings-note">各バージョンで追加・改善した内容を確認できます。現在はVer.2.7です。</p>
             <button id="openVersionHistory" class="secondary-button" type="button">🕘 更新履歴を見る</button>
           </article>
 
@@ -2286,6 +2333,7 @@ main {
           <button id="repeatPlus" type="button" aria-label="反復回数を1増やす">＋1</button>
         </div>
         <small id="repeatTotalNote" class="repeat-total-note">累計 0回</small>
+        <button id="repeatCompleteNoTarget" type="button" class="text-button repeat-complete-no-target" hidden>このタスクを完了</button>
       </div>
 
       <div class="focus-actions">
@@ -2340,7 +2388,7 @@ main {
         <li class="guide-step"><span class="guide-step-number">3</span><div><strong>5分後も続けられる</strong><p>5分達成後は30秒の区切りを表示し、そのまま作業している場合は追加の継続時間を計測します。継続5分ごとに10 EXPを獲得できます。いつでも終了・ステップ完了できます。</p></div></li>
         <li class="guide-step"><span class="guide-step-number">4</span><div><strong>最後に振り返る</strong><p>利用後は振り返りフォームや改善点・要望フォームから感想を送れます。</p></div></li>
       </ol>
-      <p class="ver26-guide-note"><strong>Ver.2.6：</strong>繰り返す作業は「反復タスク」、よく使う複数タスクは「マイセット」として保存できます。新機能は初めて触るときだけ短い説明が表示されます。</p>
+      <p class="ver26-guide-note"><strong>Ver.2.7：</strong>よく使うタスクは「マイフォルダ」にまとめて、そのままシンプルに開始できます。反復タスクと目標回数もフォルダ内に保存できます。</p>
       <p class="guide-caution"><strong>試験利用のお願い：</strong>普段どおりに使い、テスト目的でタスクや完了記録を不自然に大量作成しないでください。</p>
       <div class="modal-actions">
         <button id="guideContinue" type="button" class="primary-button">次へ：所属を回答する</button>
@@ -2356,14 +2404,24 @@ main {
       </div>
       <div class="version-list">
         <article class="version-item current">
-          <div class="version-item-head"><h3>Ver.2.6</h3><span class="version-badge">CURRENT</span></div>
+          <div class="version-item-head"><h3>Ver.2.7</h3><span class="version-badge">CURRENT</span></div>
+          <ul><li>計画編集画面のステップもドラッグ＆ドロップで並べ替えられるよう改善</li></ul>
+          <ul>
+            <li>マイフォルダから追加したタスクは自動分解せず、保存した内容をそのまま1ステップで開始できるよう改善</li>
+            <li>マイフォルダをタスクごとの分割入力に変更し、各タスクで反復設定・目標回数を指定できるよう改善</li>
+            <li>マイフォルダ内のタスクをドラッグ＆ドロップで並べ替えられるよう対応</li>
+            <li>目標なし（0回）の反復タスクでも「このタスクを完了」を選べるよう改善</li>
+          </ul>
+        </article>
+        <article class="version-item">
+          <div class="version-item-head"><h3>Ver.2.6</h3></div>
           <ul>
             <li>反復タスクを追加し、集中中に「＋1」で実行回数を記録できるよう改善</li>
             <li>反復タスクに任意の目標回数を設定し、今回の回数・目標・累計回数を表示</li>
             <li>反復回数をrepeat_summaryとしてsession_idに紐づけ、タスク本文を送らず匿名集計できるよう対応</li>
-            <li>よく使う複数タスクを端末内にまとめて保存・再追加できる「マイセット」を追加</li>
+            <li>よく使う複数タスクを端末内にまとめて保存・再追加できる「マイフォルダ」を追加</li>
             <li>端末内の利用履歴から、よく使うタスク候補を最大5件表示</li>
-            <li>反復タスクとマイセットは初回利用時だけ短いミニチュートリアルを表示し、設定から再確認可能</li>
+            <li>反復タスクとマイフォルダは初回利用時だけ短いミニチュートリアルを表示し、設定から再確認可能</li>
             <li>反復カウンターを「−1 / ＋1」に統一し、反復タスク中の重複する途中保存ボタンを整理</li>
             <li>反復目標達成時に「まだ続ける / 反復を記録して終了 / このタスクを完了」の3択を表示し、目標達成とタスク完了を分離</li>
           </ul>
@@ -2446,7 +2504,7 @@ main {
   <div id="featureTutorialDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="featureTutorialTitle">
     <div class="feature-tutorial-content">
       <div id="featureTutorialIcon" class="feature-tutorial-icon" aria-hidden="true">🔁</div>
-      <p class="eyebrow">VER.2.6 QUICK GUIDE</p>
+      <p class="eyebrow">VER.2.7 QUICK GUIDE</p>
       <h2 id="featureTutorialTitle">反復タスク</h2>
       <p id="featureTutorialText">集中中に「＋1」を押すと、そのセッションで何回できたかを記録できます。</p>
       <ul id="featureTutorialPoints" class="feature-tutorial-points"></ul>
@@ -2457,20 +2515,23 @@ main {
   <div id="mySetDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="mySetDialogTitle">
     <form id="mySetForm" class="myset-form">
       <div class="modal-header">
-        <div><p class="eyebrow">MY SET</p><h2 id="mySetDialogTitle">マイセットを作る</h2></div>
+        <div><p class="eyebrow">MY FOLDER</p><h2 id="mySetDialogTitle">マイフォルダを作る</h2></div>
         <button type="button" class="icon-button" data-close-dialog aria-label="閉じる">×</button>
       </div>
-      <label>セット名
+      <label>フォルダ名
         <input id="mySetName" maxlength="40" required placeholder="例：定期テスト勉強" />
       </label>
-      <label>まとめて保存するタスク
-        <textarea id="mySetTasks" maxlength="1200" required placeholder="1行に1タスクずつ入力\n例：英単語を復習する\n数学の問題集を進める"></textarea>
-      </label>
-      <p class="settings-note">タスク本文はこの端末内だけに保存します。1セット最大20タスクです。</p>
+      <div>
+        <strong>まとめて保存するタスク</strong>
+        <div id="mySetTaskEditor" class="myset-task-editor" aria-live="polite"></div>
+        <button id="mySetAddTask" type="button" class="secondary-button myset-add-task">＋ タスクを追加</button>
+        <p class="myset-editor-hint">各タスクを個別に入力できます。反復タスクだけ反復をONにして目標回数を設定してください。左の「⠿」をドラッグすると順番を入れ替えられます。目標0回は「目標なし」です。</p>
+      </div>
+      <p class="settings-note">フォルダから追加したタスクは自動分解せず、そのまま1ステップで始められます。タスク本文はこの端末内だけに保存し、1フォルダ最大20タスクです。</p>
       <button id="mySetImportCurrent" type="button" class="text-button">現在の未完了タスクを読み込む</button>
       <div class="modal-actions">
         <button type="button" class="secondary-button" data-close-dialog>キャンセル</button>
-        <button type="submit" class="primary-button">マイセットを保存</button>
+        <button type="submit" class="primary-button">マイフォルダを保存</button>
       </div>
     </form>
   </div>
@@ -2515,7 +2576,8 @@ main {
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "nudge-app-v2-6";
+  const STORAGE_KEY = "nudge-app-v2-7";
+  const V26_KEY = "nudge-app-v2-6";
   const V25_KEY = "nudge-app-v2-5";
   const V24_KEY = "nudge-app-v2-4";
   const V23_KEY = "nudge-app-v2-3";
@@ -2542,7 +2604,7 @@ main {
   let editingMySetId = null;
 
   const defaultState = () => ({
-    version: "2.6",
+    version: "2.7",
     points: 0,
     totalSeconds: 0,
     totalMinutes: 0,
@@ -2635,11 +2697,25 @@ main {
   ];
 
 
-  const I18N_EN = {"振り返りフォームと改善点・要望フォームをホームの「今日のNudge」下へ移動":"Move the reflection and feedback forms to Home below Today’s Nudge.","「今日のNudge」メッセージが4時間ごとに自動で切り替わるよう改善":"Rotate the Today’s Nudge message automatically every four hours.","5分だけ始める":"Start for 5 minutes","5分だけ始める ・ Ver.2.4":"Start for 5 minutes · Ver.2.4","今日の一歩を、":"Take one small step,","5分だけ。":"just 5 minutes.","やる気が出るのを待たずに、小さく始めるためのデイリーミッション。":"Daily missions that help you start small instead of waiting for motivation.","今日やること":"Today","＋ 追加する":"+ Add","今日のNudge":"Today's Nudge","「全部やる」ではなく、「始める」に成功しよう。5分できたら、それだけで今日の達成です。":"Don't aim to finish everything. Succeed at starting. Five minutes is already a win.","タスク管理":"Tasks","大きな課題を、小さく始められる形にします。":"Turn a big task into a small first step.","＋ 新しいタスク":"+ New task","未完了":"Active","完了":"Completed","すべて":"All","サンプルを追加":"Add samples","積み上げ記録":"Progress","比べる相手は、過去の自分です。":"Compare with your past self.","始めた回数":"Starts","集中した分数":"Focus minutes","行動した連続日数":"Active streak","完了したステップ":"Steps completed","先週の自分と比べる":"Compare with last week","今週の「始めた」":"Starts this week","先週の「始めた」":"Starts last week","小さな一歩を記録していきましょう。":"Keep recording small steps.","この7日間":"Last 7 days","称号":"Badges","最近の一歩":"Recent steps","設定":"Settings","自分が始めやすい環境に調整します。":"Adjust Nudge to make starting easier for you.","集中時間":"Focus time","1回のタイマー":"Timer length","基本は「5分だけ」。試すときは1分にもできます。":"The default is 5 minutes. You can use 1 minute for testing.","演出":"Effects","効果音":"Sound","開始・達成時に短い音を鳴らす":"Play a short sound when starting or reaching a goal.","紙吹雪":"Confetti","達成時に小さな演出を表示する":"Show a small celebration when you reach a goal.","プロフィール":"Profile","年代・立場と、匿名利用データの送信設定を変更できます。":"Change age group, role and anonymous analytics settings.","プロフィールを編集":"Edit profile","3日間の振り返り":"3-day reflection","回答フォームはNudgeとは別のタブ／ウィンドウで開きます。":"The reflection form opens in a separate tab/window.","📝 振り返りフォームを別画面で開く":"📝 Open reflection form","使い方":"How to use","初回に表示される4ステップのガイドを、いつでももう一度確認できます。":"Review the four-step guide shown on first launch.","📘 使い方を見る":"📘 View guide","Nudgeの更新履歴":"Nudge changelog","各バージョンで追加・改善した内容を確認できます。現在はVer.2.5です。":"See what changed in each version. Current version: 2.4.","🕘 更新履歴を見る":"🕘 View changelog","改善点・要望":"Feedback & requests","GoogleフォームをNudgeとは別のタブ／ウィンドウで開きます。使いにくかった点や追加してほしい機能を送れます。":"Open a Google Form in a separate tab/window to send usability feedback and feature requests.","💬 改善点・要望フォームを別画面で開く":"💬 Open feedback form","データ":"Data","この端末のブラウザに保存されたデータを消去します。":"Delete data stored in this browser on this device.","すべてのデータを初期化":"Reset all data","ホーム":"Home","タスク":"Tasks","記録":"Records","まず、やることだけ":"Start with just the task","何をやりますか？":"What do you want to do?","細かく決めなくても大丈夫。名前だけ入力して、そのまま5分を始められます。":"You do not need every detail. Enter a task name and start for 5 minutes.","▶ 5分だけ始める":"▶ Start for 5 minutes","詳しく計画する":"Plan details","期限や予想時間が分かる場合だけ設定してください。Nudgeのプラン案は後から自由に直せます。":"Only add a due date or estimate if you know them. You can edit Nudge's plan later.","期限":"Due date","予想時間":"Estimated time","優先度":"Priority","ふつう":"Medium","高い":"High","低い":"Low","Nudgeのプラン案を自動作成する":"Create a Nudge plan automatically","入力した予想時間を参考に、5〜15分程度の行動ステップ案を端末内で作ります。作成後に編集できます。":"Using your estimate, Nudge creates 5–15 minute action steps on this device. You can edit them afterward.","ステップを編集する":"Edit steps","キャンセル":"Cancel","この計画で追加":"Add this plan","残り時間":"Time left","完璧にやらなくていい。始めた時点で前進です。":"It does not have to be perfect. Starting is progress.","一時停止":"Pause","ステップ完了":"Complete step","ここまで保存":"Save progress","ステップ完了！":"Step complete!","小さな一歩を完了しました。":"You completed a small step.","同じタスクでもう5分":"Another 5 min on this task","次のタスクへ":"Next task","今日はここまで":"Stop for today","Nudgeの使い方":"How to use Nudge","最初に4つだけ確認してください。Nudgeは「全部終わらせる」より、まず小さく始めることを助けるアプリです。":"Check these four steps first. Nudge helps you start small rather than finish everything at once.","やることを登録":"Add a task","タスク名だけでもOK。必要なら期限や予想時間を追加します。":"A task name is enough. Add a due date or estimate only if needed.","「5分だけ始める」":"“Start for 5 minutes”","最初の一歩を小さくして、タイマーで集中を始めます。":"Make the first step small and start a focus timer.","達成後に次を選ぶ":"Choose what to do next","もう5分続ける、次のタスクへ進む、今日はここまで、から選べます。":"Choose another 5 minutes, the next task, or stop for today.","最後に振り返る":"Reflect at the end","利用後は振り返りフォームや改善点・要望フォームから感想を送れます。":"After using Nudge, you can send feedback through the reflection or feedback form.","試験利用のお願い：":"Test-use request:","普段どおりに使い、テスト目的でタスクや完了記録を不自然に大量作成しないでください。":"Please use Nudge normally and do not create large numbers of fake tasks or completion records for testing.","次へ：所属を回答する":"Next: answer profile","閉じる":"Close","計画を編集":"Edit plan","Nudgeの自動プランは「たたき台」です。順番・内容・数を自由に直してから保存できます。":"Nudge's automatic plan is a draft. Edit the order, content and number of steps before saving.","＋追加":"+ Add","この計画で保存":"Save this plan","所属・立場":"Role","選択してください":"Select","中学生":"Middle school student","高校生":"High school student","大学・専門学校生":"College / vocational student","社会人":"Working adult","その他":"Other","回答しない":"Prefer not to say","年代":"Age group","10代":"Teens","20代":"20s","30代":"30s","40代":"40s","50代以上":"50s+","匿名・集計された利用データの分析に協力する":"Help improve Nudge with anonymous usage data","年代・立場、5分開始・達成などの匿名イベントをNudge改善用サーバーへ送信します。名前・学校名・住所・タスク本文は送信しません。いつでもOFFにできます。":"Sends anonymous events such as age group, role, starts and goals. Names, school names, addresses and task text are not sent. You can turn this off anytime.","あとで":"Later","保存してはじめる":"Save and start","言語 / Language":"Language","画面表示を日本語または英語に切り替えます。入力したタスク名はそのまま表示されます。":"Switch the interface between Japanese and English. Your task names are not translated.","表示言語":"Display language","日本語":"Japanese","1分（試用）":"1 min (trial)","3分":"3 min","5分":"5 min","10分":"10 min","15分":"15 min","25分":"25 min","30分":"30 min","60分":"60 min","120分以上":"120+ min","0回":"0","日":"days","初回起動時に「Nudgeの使い方」4ステップを表示":"Show a four-step “How to use Nudge” guide on first launch.","使い方ガイドの後に所属・年代のプロフィール設定へ進む導線に変更":"After the guide, move users to role and age-group setup.","設定画面にバージョンごとの更新履歴を追加":"Add a version-by-version changelog in Settings.","改善点・要望をGoogleフォームへ別タブで送れる導線を追加":"Open the feedback Google Form in a separate tab.","設定から日本語／英語の表示を切り替えられる機能を追加":"Add Japanese/English interface switching in Settings.","振り返りアンケートを別タブ／ウィンドウで開けるように改善":"Open the reflection survey in a separate tab/window.","プロフィール入力を試験利用の最初に行う導線へ変更":"Move profile setup to the start of the trial flow.","スマホでのプロフィール・モーダル・チェックボックス表示崩れを修正":"Fix mobile layout issues in profile, modals and checkboxes.","タイマーをバックグラウンド・再読み込み後に復元できるよう改善":"Improve timer recovery after backgrounding or reloading.","5分達成後に「同じタスクでもう5分」「次のタスク」「今日はここまで」を選べるよう改善":"After a 5-minute goal, let users choose another block, the next task, or stop.","session_idを追加し、集中開始から5分達成までを同一セッションとして追跡":"Add session_id to connect focus start and goal events.","focus_start / focus_goal / step_complete / reflection_opened などの行動ログを確認できるよう改善":"Track events such as focus_start, focus_goal, step_complete and reflection_opened.","Supabaseと接続し、匿名利用イベントの収集を導入":"Connect Supabase and add anonymous usage-event collection.","匿名認証とRLSを使い、ブラウザからは必要なイベントのみ送信する構成に変更":"Use anonymous auth and RLS so the browser can only send required events.","年代・所属と利用イベントを組み合わせて集計できるようにした":"Enable analysis of usage events by age group and role.","タスク名・ステップ本文・名前・学校名・住所などは送信しない設計にした":"Do not send task text, step text, names, school names or addresses.","「5分達成」と「ステップ完了」を別の成功として扱うよう変更":"Separate the 5-minute goal from step completion.","タスク名だけ入力してすぐ「5分だけ始める」導線を追加":"Allow users to enter only a task name and start immediately.","自動作成したステップの内容・順番・予想分数を編集できるよう改善":"Allow editing of generated step text, order and estimated minutes.","途中まで進めたステップを優先表示し、続きから再開できるよう改善":"Prioritize partially started steps and support resuming.","記録画面を「始めた回数・集中時間・連続日数・完了ステップ」を中心に見直し":"Refocus records on starts, focus time, streak and completed steps.","大きなタスクと予想時間から、小さな行動ステップ案を作る機能を追加":"Generate small action-step drafts from a large task and time estimate.","ステップ案を編集・並べ替えてから確定できる計画編集機能を追加":"Add a plan editor for editing and reordering step drafts.","1ステップずつ集中し、途中保存して後から再開できる流れを実装":"Add one-step-at-a-time focus with partial save and resume.","「5分だけ始める」ことを中心にしたNudgeの最初の試作版":"The first Nudge prototype centered on “start for 5 minutes.”","小さな開始・ポイント・記録・育成要素の基本構造を実装":"Implement the basic structure for small starts, points, records and growth.","Nudgeの芽":"Nudge sprout","Nudgeの若葉":"Nudge leaf","Nudgeの苗":"Nudge seedling","Nudgeの木":"Nudge tree","Nudgeの花":"Nudge flower","今日のミッションは完了です":"Today's missions are complete","新しいタスクを追加するか、今日はここまでにしましょう。":"Add a new task, or call it a day.","タスクを追加":"Add task","表示するタスクがありません":"No tasks to show","大きなタスクを登録し、小さなステップにしてみましょう。":"Add a larger task and break it into small steps.","ステップ進捗":"Step progress","期限なし":"No due date","開始":"Start","最初の一歩から記録していきましょう。":"Start by recording one small step.","先週と同じペースです。小さく続けられています。":"You are at the same pace as last week. Keep it small and steady.","目標達成":"Goal reached","途中まで":"Partial","始めると、ここに「小さな一歩」が残ります。":"Your small steps will appear here after you start.","最初の一歩":"First step","初めて集中を記録":"Logged first focus session","3日連続":"3-day streak","3日続けて始めた":"Started for 3 days in a row","10回スタート":"10 starts","10回の小さな開始":"10 small starts","集中60分":"60 focus minutes","合計60分に到達":"Reached 60 focus minutes","育てる人":"Grower","レベル7に到達":"Reached level 7","100の一歩":"100 steps","100回始めた":"Started 100 times","詳細を閉じる":"Hide details","まず、やることを入力してください":"Enter what you want to do first.","タスク名を入力してください":"Enter a task name.","計画を保存しました。好きなステップから5分だけ！":"Plan saved. Start any step for 5 minutes!","ステップを編集":"Edit steps","ステップがありません。「＋追加」で1つ作ってください。":"No steps yet. Use “+ Add” to create one.","分":"min","削除":"Delete","ステップを1つ以上残してください":"Keep at least one step.","計画を更新しました":"Plan updated.","このプランでタスクを追加できます":"You can add the task with this plan.","タスクを削除しました":"Task deleted.","前回の続きから。今日も小さく始めます。":"Continue from last time. Start small again today.","再開する":"Resume","ステップも完了":"Complete step too","5分達成を保存しました。今日はここまで！":"5-minute goal saved. That's enough for today!","途中まで保存しました。次回は続きから5分だけ。":"Progress saved. Resume for 5 minutes next time.","次にどうするか選べます。ここで終えても、今日の一歩は記録されています。":"Choose what to do next. Even if you stop here, today's step is recorded.","ホームへ戻る":"Back to Home","別画面を開けませんでした。ブラウザのポップアップ設定を確認してください":"Could not open a new tab. Check your browser pop-up settings.","前回の集中を復元しました":"Restored your previous focus session.","使い方を確認しました":"Guide completed.","最初に所属を教えてください":"Tell us your role first","試作版の利用傾向を振り返るため、まず所属を選んでください。「回答しない」も選べます。匿名分析をONにした場合のみ、所属・年代と利用イベントをNudge改善用サーバーへ送信します。":"To understand trial usage, choose your role first. You can choose “Prefer not to say.” Role, age group and usage events are sent only when anonymous analytics is on.","名前・学校名・住所などは入力しません。匿名分析をONにした場合のみ、年代・立場と利用イベントをNudge改善用サーバーへ送信します。":"Nudge does not ask for names, school names or addresses. Age group, role and usage events are sent only when anonymous analytics is on.","保存してNudgeをはじめる":"Save and start Nudge","保存する":"Save","最初に所属を選んでください":"Select your role first.","プロフィールを保存しました。匿名分析への協力がONです":"Profile saved. Anonymous analytics is on.","プロフィールを保存しました":"Profile saved.","いつでも設定から変更できます":"You can change this anytime in Settings.","集中時間を変更しました":"Focus time changed.","サンプルタスクを追加しました":"Sample tasks added.","ポイント、記録、タスク、マイセット、プロフィールをすべて初期化します。よろしいですか？":"Reset all points, records, tasks and profile data?","データを初期化しました":"Data reset.","Nudgeを試してみる":"Try Nudge","「5分だけ始める」を押してみる":"Tap “Start for 5 minutes”","新しいタスク":"New task","このタスク":"this task","まず5分だけ：":"First 5 min: ","プラン案":"Plan draft","✦ 端末内ルールで案を作成・外部AI通信なし":"✦ Created on-device with rules · no external AI request","条件・提出形式を確認する":"Check requirements and format","必要な資料を1つ集める":"Gather one needed resource","見出し・要点を3つ作る":"Draft three headings/key points","最初の部分を書く":"Write the first section","読み直して1か所直す":"Review and fix one part","提出前の確認をする":"Do a final check before submitting","範囲とゴールを確認する":"Check scope and goal","教材を開いて最初の5問だけ進める":"Open the material and do the first 5 questions","分からない所に印をつける":"Mark anything unclear","次の5問だけ進める":"Do the next 5 questions","間違いを見直す":"Review mistakes","次回の開始位置を決める":"Choose where to resume next time","対象の場所を1か所決める":"Choose one area","不要な物を3つ分ける":"Sort three unnecessary items","元の場所に5つ戻す":"Put five items back","一角だけ整える":"Tidy one small area","残りをもう5分だけ進める":"Continue the rest for 5 more minutes","終わった場所を確認する":"Check what you finished","期限と必要事項を確認する":"Check deadline and requirements","必要な情報を3点メモする":"Note three needed pieces of information","最初の入力・1文を進める":"Complete the first field or sentence","残りの内容を埋める":"Fill in the remaining content","誤りがないか確認する":"Check for errors","送信・提出前の最終確認をする":"Final check before sending/submitting","必要なものを準備する":"Prepare what you need","軽く始める":"Start lightly","基本動作を少し進める":"Do a little of the basic movement","もう1セットだけ続ける":"Do one more set","記録を残す":"Record what you did","ゴールと条件を確認する":"Check the goal and conditions","必要なものを1つ準備する":"Prepare one needed item","次にやることを1つ決める":"Choose one next action","もう5分だけ続ける":"Continue for 5 more minutes","できた所と次の開始位置を記録する":"Record what you did and where to resume","ホームへ":"Go Home","集中画面を閉じる":"Close focus view","未完了に戻す":"Mark active","完了にする":"Mark complete","追加するステップ":"Add a step","例：英語のレポートを書く":"Example: write an English report","5分達成後の継続時間5分ごとに10 EXPを獲得し、次の報酬までの残り分数を表示する継続ボーナスを追加":"Add a continuation bonus that awards 10 EXP for every 5 minutes beyond the goal and shows minutes until the next reward.","5分達成後は30秒の区切りを表示し、そのまま作業している場合は追加の継続時間を計測します。継続5分ごとに10 EXPを獲得できます。いつでも終了・ステップ完了できます。":"After the goal, Nudge shows a 30-second transition and measures extra continuation time. Earn 10 EXP for every 5 minutes you continue. You can stop or complete the step anytime."};
+  const I18N_EN = {"振り返りフォームと改善点・要望フォームをホームの「今日のNudge」下へ移動":"Move the reflection and feedback forms to Home below Today’s Nudge.","「今日のNudge」メッセージが4時間ごとに自動で切り替わるよう改善":"Rotate the Today’s Nudge message automatically every four hours.","5分だけ始める":"Start for 5 minutes","5分だけ始める ・ Ver.2.4":"Start for 5 minutes · Ver.2.4","今日の一歩を、":"Take one small step,","5分だけ。":"just 5 minutes.","やる気が出るのを待たずに、小さく始めるためのデイリーミッション。":"Daily missions that help you start small instead of waiting for motivation.","今日やること":"Today","＋ 追加する":"+ Add","今日のNudge":"Today's Nudge","「全部やる」ではなく、「始める」に成功しよう。5分できたら、それだけで今日の達成です。":"Don't aim to finish everything. Succeed at starting. Five minutes is already a win.","タスク管理":"Tasks","大きな課題を、小さく始められる形にします。":"Turn a big task into a small first step.","＋ 新しいタスク":"+ New task","未完了":"Active","完了":"Completed","すべて":"All","サンプルを追加":"Add samples","積み上げ記録":"Progress","比べる相手は、過去の自分です。":"Compare with your past self.","始めた回数":"Starts","集中した分数":"Focus minutes","行動した連続日数":"Active streak","完了したステップ":"Steps completed","先週の自分と比べる":"Compare with last week","今週の「始めた」":"Starts this week","先週の「始めた」":"Starts last week","小さな一歩を記録していきましょう。":"Keep recording small steps.","この7日間":"Last 7 days","称号":"Badges","最近の一歩":"Recent steps","設定":"Settings","自分が始めやすい環境に調整します。":"Adjust Nudge to make starting easier for you.","集中時間":"Focus time","1回のタイマー":"Timer length","基本は「5分だけ」。試すときは1分にもできます。":"The default is 5 minutes. You can use 1 minute for testing.","演出":"Effects","効果音":"Sound","開始・達成時に短い音を鳴らす":"Play a short sound when starting or reaching a goal.","紙吹雪":"Confetti","達成時に小さな演出を表示する":"Show a small celebration when you reach a goal.","プロフィール":"Profile","年代・立場と、匿名利用データの送信設定を変更できます。":"Change age group, role and anonymous analytics settings.","プロフィールを編集":"Edit profile","3日間の振り返り":"3-day reflection","回答フォームはNudgeとは別のタブ／ウィンドウで開きます。":"The reflection form opens in a separate tab/window.","📝 振り返りフォームを別画面で開く":"📝 Open reflection form","使い方":"How to use","初回に表示される4ステップのガイドを、いつでももう一度確認できます。":"Review the four-step guide shown on first launch.","📘 使い方を見る":"📘 View guide","Nudgeの更新履歴":"Nudge changelog","各バージョンで追加・改善した内容を確認できます。現在はVer.2.5です。":"See what changed in each version. Current version: 2.4.","🕘 更新履歴を見る":"🕘 View changelog","改善点・要望":"Feedback & requests","GoogleフォームをNudgeとは別のタブ／ウィンドウで開きます。使いにくかった点や追加してほしい機能を送れます。":"Open a Google Form in a separate tab/window to send usability feedback and feature requests.","💬 改善点・要望フォームを別画面で開く":"💬 Open feedback form","データ":"Data","この端末のブラウザに保存されたデータを消去します。":"Delete data stored in this browser on this device.","すべてのデータを初期化":"Reset all data","ホーム":"Home","タスク":"Tasks","記録":"Records","まず、やることだけ":"Start with just the task","何をやりますか？":"What do you want to do?","細かく決めなくても大丈夫。名前だけ入力して、そのまま5分を始められます。":"You do not need every detail. Enter a task name and start for 5 minutes.","▶ 5分だけ始める":"▶ Start for 5 minutes","詳しく計画する":"Plan details","期限や予想時間が分かる場合だけ設定してください。Nudgeのプラン案は後から自由に直せます。":"Only add a due date or estimate if you know them. You can edit Nudge's plan later.","期限":"Due date","予想時間":"Estimated time","優先度":"Priority","ふつう":"Medium","高い":"High","低い":"Low","Nudgeのプラン案を自動作成する":"Create a Nudge plan automatically","入力した予想時間を参考に、5〜15分程度の行動ステップ案を端末内で作ります。作成後に編集できます。":"Using your estimate, Nudge creates 5–15 minute action steps on this device. You can edit them afterward.","ステップを編集する":"Edit steps","キャンセル":"Cancel","この計画で追加":"Add this plan","残り時間":"Time left","完璧にやらなくていい。始めた時点で前進です。":"It does not have to be perfect. Starting is progress.","一時停止":"Pause","ステップ完了":"Complete step","ここまで保存":"Save progress","ステップ完了！":"Step complete!","小さな一歩を完了しました。":"You completed a small step.","同じタスクでもう5分":"Another 5 min on this task","次のタスクへ":"Next task","今日はここまで":"Stop for today","Nudgeの使い方":"How to use Nudge","最初に4つだけ確認してください。Nudgeは「全部終わらせる」より、まず小さく始めることを助けるアプリです。":"Check these four steps first. Nudge helps you start small rather than finish everything at once.","やることを登録":"Add a task","タスク名だけでもOK。必要なら期限や予想時間を追加します。":"A task name is enough. Add a due date or estimate only if needed.","「5分だけ始める」":"“Start for 5 minutes”","最初の一歩を小さくして、タイマーで集中を始めます。":"Make the first step small and start a focus timer.","達成後に次を選ぶ":"Choose what to do next","もう5分続ける、次のタスクへ進む、今日はここまで、から選べます。":"Choose another 5 minutes, the next task, or stop for today.","最後に振り返る":"Reflect at the end","利用後は振り返りフォームや改善点・要望フォームから感想を送れます。":"After using Nudge, you can send feedback through the reflection or feedback form.","試験利用のお願い：":"Test-use request:","普段どおりに使い、テスト目的でタスクや完了記録を不自然に大量作成しないでください。":"Please use Nudge normally and do not create large numbers of fake tasks or completion records for testing.","次へ：所属を回答する":"Next: answer profile","閉じる":"Close","計画を編集":"Edit plan","Nudgeの自動プランは「たたき台」です。順番・内容・数を自由に直してから保存できます。":"Nudge's automatic plan is a draft. Edit the order, content and number of steps before saving.","＋追加":"+ Add","この計画で保存":"Save this plan","所属・立場":"Role","選択してください":"Select","中学生":"Middle school student","高校生":"High school student","大学・専門学校生":"College / vocational student","社会人":"Working adult","その他":"Other","回答しない":"Prefer not to say","年代":"Age group","10代":"Teens","20代":"20s","30代":"30s","40代":"40s","50代以上":"50s+","匿名・集計された利用データの分析に協力する":"Help improve Nudge with anonymous usage data","年代・立場、5分開始・達成などの匿名イベントをNudge改善用サーバーへ送信します。名前・学校名・住所・タスク本文は送信しません。いつでもOFFにできます。":"Sends anonymous events such as age group, role, starts and goals. Names, school names, addresses and task text are not sent. You can turn this off anytime.","あとで":"Later","保存してはじめる":"Save and start","言語 / Language":"Language","画面表示を日本語または英語に切り替えます。入力したタスク名はそのまま表示されます。":"Switch the interface between Japanese and English. Your task names are not translated.","表示言語":"Display language","日本語":"Japanese","1分（試用）":"1 min (trial)","3分":"3 min","5分":"5 min","10分":"10 min","15分":"15 min","25分":"25 min","30分":"30 min","60分":"60 min","120分以上":"120+ min","0回":"0","日":"days","初回起動時に「Nudgeの使い方」4ステップを表示":"Show a four-step “How to use Nudge” guide on first launch.","使い方ガイドの後に所属・年代のプロフィール設定へ進む導線に変更":"After the guide, move users to role and age-group setup.","設定画面にバージョンごとの更新履歴を追加":"Add a version-by-version changelog in Settings.","改善点・要望をGoogleフォームへ別タブで送れる導線を追加":"Open the feedback Google Form in a separate tab.","設定から日本語／英語の表示を切り替えられる機能を追加":"Add Japanese/English interface switching in Settings.","振り返りアンケートを別タブ／ウィンドウで開けるように改善":"Open the reflection survey in a separate tab/window.","プロフィール入力を試験利用の最初に行う導線へ変更":"Move profile setup to the start of the trial flow.","スマホでのプロフィール・モーダル・チェックボックス表示崩れを修正":"Fix mobile layout issues in profile, modals and checkboxes.","タイマーをバックグラウンド・再読み込み後に復元できるよう改善":"Improve timer recovery after backgrounding or reloading.","5分達成後に「同じタスクでもう5分」「次のタスク」「今日はここまで」を選べるよう改善":"After a 5-minute goal, let users choose another block, the next task, or stop.","session_idを追加し、集中開始から5分達成までを同一セッションとして追跡":"Add session_id to connect focus start and goal events.","focus_start / focus_goal / step_complete / reflection_opened などの行動ログを確認できるよう改善":"Track events such as focus_start, focus_goal, step_complete and reflection_opened.","Supabaseと接続し、匿名利用イベントの収集を導入":"Connect Supabase and add anonymous usage-event collection.","匿名認証とRLSを使い、ブラウザからは必要なイベントのみ送信する構成に変更":"Use anonymous auth and RLS so the browser can only send required events.","年代・所属と利用イベントを組み合わせて集計できるようにした":"Enable analysis of usage events by age group and role.","タスク名・ステップ本文・名前・学校名・住所などは送信しない設計にした":"Do not send task text, step text, names, school names or addresses.","「5分達成」と「ステップ完了」を別の成功として扱うよう変更":"Separate the 5-minute goal from step completion.","タスク名だけ入力してすぐ「5分だけ始める」導線を追加":"Allow users to enter only a task name and start immediately.","自動作成したステップの内容・順番・予想分数を編集できるよう改善":"Allow editing of generated step text, order and estimated minutes.","途中まで進めたステップを優先表示し、続きから再開できるよう改善":"Prioritize partially started steps and support resuming.","記録画面を「始めた回数・集中時間・連続日数・完了ステップ」を中心に見直し":"Refocus records on starts, focus time, streak and completed steps.","大きなタスクと予想時間から、小さな行動ステップ案を作る機能を追加":"Generate small action-step drafts from a large task and time estimate.","ステップ案を編集・並べ替えてから確定できる計画編集機能を追加":"Add a plan editor for editing and reordering step drafts.","1ステップずつ集中し、途中保存して後から再開できる流れを実装":"Add one-step-at-a-time focus with partial save and resume.","「5分だけ始める」ことを中心にしたNudgeの最初の試作版":"The first Nudge prototype centered on “start for 5 minutes.”","小さな開始・ポイント・記録・育成要素の基本構造を実装":"Implement the basic structure for small starts, points, records and growth.","Nudgeの芽":"Nudge sprout","Nudgeの若葉":"Nudge leaf","Nudgeの苗":"Nudge seedling","Nudgeの木":"Nudge tree","Nudgeの花":"Nudge flower","今日のミッションは完了です":"Today's missions are complete","新しいタスクを追加するか、今日はここまでにしましょう。":"Add a new task, or call it a day.","タスクを追加":"Add task","表示するタスクがありません":"No tasks to show","大きなタスクを登録し、小さなステップにしてみましょう。":"Add a larger task and break it into small steps.","ステップ進捗":"Step progress","期限なし":"No due date","開始":"Start","最初の一歩から記録していきましょう。":"Start by recording one small step.","先週と同じペースです。小さく続けられています。":"You are at the same pace as last week. Keep it small and steady.","目標達成":"Goal reached","途中まで":"Partial","始めると、ここに「小さな一歩」が残ります。":"Your small steps will appear here after you start.","最初の一歩":"First step","初めて集中を記録":"Logged first focus session","3日連続":"3-day streak","3日続けて始めた":"Started for 3 days in a row","10回スタート":"10 starts","10回の小さな開始":"10 small starts","集中60分":"60 focus minutes","合計60分に到達":"Reached 60 focus minutes","育てる人":"Grower","レベル7に到達":"Reached level 7","100の一歩":"100 steps","100回始めた":"Started 100 times","詳細を閉じる":"Hide details","まず、やることを入力してください":"Enter what you want to do first.","タスク名を入力してください":"Enter a task name.","計画を保存しました。好きなステップから5分だけ！":"Plan saved. Start any step for 5 minutes!","ステップを編集":"Edit steps","ステップがありません。「＋追加」で1つ作ってください。":"No steps yet. Use “+ Add” to create one.","分":"min","削除":"Delete","ステップを1つ以上残してください":"Keep at least one step.","計画を更新しました":"Plan updated.","このプランでタスクを追加できます":"You can add the task with this plan.","タスクを削除しました":"Task deleted.","前回の続きから。今日も小さく始めます。":"Continue from last time. Start small again today.","再開する":"Resume","ステップも完了":"Complete step too","5分達成を保存しました。今日はここまで！":"5-minute goal saved. That's enough for today!","途中まで保存しました。次回は続きから5分だけ。":"Progress saved. Resume for 5 minutes next time.","次にどうするか選べます。ここで終えても、今日の一歩は記録されています。":"Choose what to do next. Even if you stop here, today's step is recorded.","ホームへ戻る":"Back to Home","別画面を開けませんでした。ブラウザのポップアップ設定を確認してください":"Could not open a new tab. Check your browser pop-up settings.","前回の集中を復元しました":"Restored your previous focus session.","使い方を確認しました":"Guide completed.","最初に所属を教えてください":"Tell us your role first","試作版の利用傾向を振り返るため、まず所属を選んでください。「回答しない」も選べます。匿名分析をONにした場合のみ、所属・年代と利用イベントをNudge改善用サーバーへ送信します。":"To understand trial usage, choose your role first. You can choose “Prefer not to say.” Role, age group and usage events are sent only when anonymous analytics is on.","名前・学校名・住所などは入力しません。匿名分析をONにした場合のみ、年代・立場と利用イベントをNudge改善用サーバーへ送信します。":"Nudge does not ask for names, school names or addresses. Age group, role and usage events are sent only when anonymous analytics is on.","保存してNudgeをはじめる":"Save and start Nudge","保存する":"Save","最初に所属を選んでください":"Select your role first.","プロフィールを保存しました。匿名分析への協力がONです":"Profile saved. Anonymous analytics is on.","プロフィールを保存しました":"Profile saved.","いつでも設定から変更できます":"You can change this anytime in Settings.","集中時間を変更しました":"Focus time changed.","サンプルタスクを追加しました":"Sample tasks added.","ポイント、記録、タスク、マイフォルダ、プロフィールをすべて初期化します。よろしいですか？":"Reset all points, records, tasks and profile data?","データを初期化しました":"Data reset.","Nudgeを試してみる":"Try Nudge","「5分だけ始める」を押してみる":"Tap “Start for 5 minutes”","新しいタスク":"New task","このタスク":"this task","まず5分だけ：":"First 5 min: ","プラン案":"Plan draft","✦ 端末内ルールで案を作成・外部AI通信なし":"✦ Created on-device with rules · no external AI request","条件・提出形式を確認する":"Check requirements and format","必要な資料を1つ集める":"Gather one needed resource","見出し・要点を3つ作る":"Draft three headings/key points","最初の部分を書く":"Write the first section","読み直して1か所直す":"Review and fix one part","提出前の確認をする":"Do a final check before submitting","範囲とゴールを確認する":"Check scope and goal","教材を開いて最初の5問だけ進める":"Open the material and do the first 5 questions","分からない所に印をつける":"Mark anything unclear","次の5問だけ進める":"Do the next 5 questions","間違いを見直す":"Review mistakes","次回の開始位置を決める":"Choose where to resume next time","対象の場所を1か所決める":"Choose one area","不要な物を3つ分ける":"Sort three unnecessary items","元の場所に5つ戻す":"Put five items back","一角だけ整える":"Tidy one small area","残りをもう5分だけ進める":"Continue the rest for 5 more minutes","終わった場所を確認する":"Check what you finished","期限と必要事項を確認する":"Check deadline and requirements","必要な情報を3点メモする":"Note three needed pieces of information","最初の入力・1文を進める":"Complete the first field or sentence","残りの内容を埋める":"Fill in the remaining content","誤りがないか確認する":"Check for errors","送信・提出前の最終確認をする":"Final check before sending/submitting","必要なものを準備する":"Prepare what you need","軽く始める":"Start lightly","基本動作を少し進める":"Do a little of the basic movement","もう1セットだけ続ける":"Do one more set","記録を残す":"Record what you did","ゴールと条件を確認する":"Check the goal and conditions","必要なものを1つ準備する":"Prepare one needed item","次にやることを1つ決める":"Choose one next action","もう5分だけ続ける":"Continue for 5 more minutes","できた所と次の開始位置を記録する":"Record what you did and where to resume","ホームへ":"Go Home","集中画面を閉じる":"Close focus view","未完了に戻す":"Mark active","完了にする":"Mark complete","追加するステップ":"Add a step","例：英語のレポートを書く":"Example: write an English report","5分達成後の継続時間5分ごとに10 EXPを獲得し、次の報酬までの残り分数を表示する継続ボーナスを追加":"Add a continuation bonus that awards 10 EXP for every 5 minutes beyond the goal and shows minutes until the next reward.","5分達成後は30秒の区切りを表示し、そのまま作業している場合は追加の継続時間を計測します。継続5分ごとに10 EXPを獲得できます。いつでも終了・ステップ完了できます。":"After the goal, Nudge shows a 30-second transition and measures extra continuation time. Earn 10 EXP for every 5 minutes you continue. You can stop or complete the step anytime."};
   const ORIGINAL_TEXT = new WeakMap();
   const ORIGINAL_ATTRS = new WeakMap();
 
   Object.assign(I18N_EN, {
+    "計画編集画面のステップもドラッグ＆ドロップで並べ替えられるよう改善":"Allow plan-editor steps to be reordered with drag and drop.",
+    "5分だけ始める ・ Ver.2.7":"Start for 5 minutes · Ver.2.7",
+    "各バージョンで追加・改善した内容を確認できます。現在はVer.2.7です。":"See what changed in each version. Current version: 2.7.",
+    "Ver.2.7：":"Ver.2.7:",
+    "よく使うタスクは「マイフォルダ」にまとめて、そのままシンプルに開始できます。反復タスクと目標回数もフォルダ内に保存できます。":"Save frequently used tasks in My Folder and start them directly. Repeat-task settings and targets can also be stored in the folder.",
+    "マイフォルダから追加したタスクは自動分解せず、保存した内容をそのまま1ステップで開始できるよう改善":"Tasks added from My Folder now start as a single saved step without automatic breakdown.",
+    "マイフォルダに反復タスクと目標回数を保存・再利用できるよう対応":"My Folder can now save and reuse repeat tasks and their target counts.",
+    "マイフォルダをタスクごとの分割入力に変更し、各タスクで反復設定・目標回数を指定できるよう改善":"Changed My Folder to separate per-task inputs with repeat settings and target counts for each task.",
+    "マイフォルダ内のタスクをドラッグ＆ドロップで並べ替えられるよう対応":"Added drag-and-drop reordering for tasks inside My Folder.",
+    "目標なし（0回）の反復タスクでも「このタスクを完了」を選べるよう改善":"Repeat tasks with no target (0) can now be marked complete.",
+    "通常タスクはそのまま1行で入力します。反復タスクは「🔁 タスク名 | 目標回数」の形で保存できます。目標なしは「| 0」です。フォルダから追加したタスクは自動分解せず、そのまま1ステップで始められます。タスク本文はこの端末内だけに保存し、1フォルダ最大20タスクです。":"Enter one normal task per line. For a repeat task, use “🔁 Task name | target”. Use “| 0” for no target. Tasks added from My Folder start directly as one step without automatic breakdown. Task text stays on this device, with up to 20 tasks per folder.",
+    "反復設定を含め、現在の未完了タスクを読み込みました":"Loaded current active tasks, including repeat settings.",
+    "フォルダ名を入力してください":"Enter a folder name.",
+
     "5分だけ始める ・ Ver.2.5":"Start for 5 minutes · Ver.2.5",
     "各バージョンで追加・改善した内容を確認できます。現在はVer.2.5です。":"See what changed in each version. Current version: 2.5.",
     "5分後も続けられる":"Keep going after 5 minutes",
@@ -2660,11 +2736,21 @@ main {
   });
 
   Object.assign(I18N_EN, {
-    "5分だけ始める ・ Ver.2.6":"Start for 5 minutes · Ver.2.6",
-    "各バージョンで追加・改善した内容を確認できます。現在はVer.2.6です。":"See what changed in each version. Current version: 2.6.",
-    "マイセット":"My Sets",
+    "5分だけ始める ・ Ver.2.7":"Start for 5 minutes · Ver.2.7",
+    "各バージョンで追加・改善した内容を確認できます。現在はVer.2.7です。":"See what changed in each version. Current version: 2.7.",
+    "マイフォルダ":"My Folders",
+    "タスクを追加":"Add task",
+    "ドラッグして並べ替え":"Drag to reorder",
+    "反復タスク":"Repeat task",
+    "目標":"Target",
+    "回（0＝なし）":"times (0 = none)",
+    "＋ タスクを追加":"+ Add task",
+    "各タスクを個別に入力できます。反復タスクだけ反復をONにして目標回数を設定してください。左の「⠿」をドラッグすると順番を入れ替えられます。目標0回は「目標なし」です。":"Enter each task separately. Turn on Repeat only for repeat tasks and set a target count if needed. Drag the ⠿ handle to reorder tasks. A target of 0 means no target.",
+    "フォルダから追加したタスクは自動分解せず、そのまま1ステップで始められます。タスク本文はこの端末内だけに保存し、1フォルダ最大20タスクです。":"Tasks added from My Folder are not automatically broken down; they start directly as a single step. Task text is stored only on this device, with up to 20 tasks per folder.",
+    "例：定期テスト勉強":"Example: exam study",
+
     "よく使う複数タスクを、自分用のセットとしてこの端末に保存できます。":"Save groups of frequently used tasks as your own sets on this device.",
-    "＋ マイセットを作る":"+ Create My Set",
+    "＋ マイフォルダを作る":"+ Create My Folder",
     "自分のよく使う候補":"Your frequent tasks",
     "この端末内の利用履歴から候補を表示します。タスク本文はサーバーへ送りません。":"Suggestions are generated from on-device history. Task text is not sent to the server.",
     "反復タスクとして記録する":"Track as a repeat task",
@@ -2676,27 +2762,27 @@ main {
     "今回の集中":"This focus session",
     "反復を記録して終了":"Save repeats and finish",
     "🔁 反復タスクの使い方":"🔁 Repeat task guide",
-    "📁 マイセットの使い方":"📁 My Set guide",
-    "セット名":"Set name",
+    "📁 マイフォルダの使い方":"📁 My Folder guide",
+    "フォルダ名":"Folder name",
     "まとめて保存するタスク":"Tasks to save together",
-    "タスク本文はこの端末内だけに保存します。1セット最大20タスクです。":"Task text is stored only on this device. Up to 20 tasks per set.",
+    "タスク本文はこの端末内だけに保存します。1フォルダ最大20タスクです。":"Task text is stored only on this device. Up to 20 tasks per folder.",
     "現在の未完了タスクを読み込む":"Load current active tasks",
-    "マイセットを保存":"Save My Set",
-    "マイセットを作る":"Create My Set",
-    "マイセットを編集":"Edit My Set",
+    "マイフォルダを保存":"Save My Folder",
+    "マイフォルダを作る":"Create My Folder",
+    "マイフォルダを編集":"Edit My Folder",
     "わかった":"Got it",
     "反復タスク":"Repeat tasks",
     "よく使うタスクをまとめて保存":"Save frequently used tasks together",
-    "このセットを追加":"Add this set",
+    "このフォルダを追加":"Add this folder",
     "編集":"Edit",
     "Ver.2.6：":"Ver.2.6:",
-    "繰り返す作業は「反復タスク」、よく使う複数タスクは「マイセット」として保存できます。新機能は初めて触るときだけ短い説明が表示されます。":"Use Repeat Tasks for repeated work and My Sets to save groups of frequently used tasks. A short guide appears only the first time you use each feature.",
+    "繰り返す作業は「反復タスク」、よく使う複数タスクは「マイフォルダ」として保存できます。新機能は初めて触るときだけ短い説明が表示されます。":"Use Repeat Tasks for repeated work and My Folders to save groups of frequently used tasks. A short guide appears only the first time you use each feature.",
     "反復タスクを追加し、集中中に「＋1」で実行回数を記録できるよう改善":"Add Repeat Tasks so users can record repetitions with +1 during focus.",
     "反復タスクに任意の目標回数を設定し、今回の回数・目標・累計回数を表示":"Set an optional repetition target and show this session's count, target, and lifetime total.",
     "反復回数をrepeat_summaryとしてsession_idに紐づけ、タスク本文を送らず匿名集計できるよう対応":"Link repetition counts to session_id as repeat_summary for anonymous analysis without sending task text.",
-    "よく使う複数タスクを端末内にまとめて保存・再追加できる「マイセット」を追加":"Add My Sets to save and re-add groups of frequently used tasks on this device.",
+    "よく使う複数タスクを端末内にまとめて保存・再追加できる「マイフォルダ」を追加":"Add My Folders to save and re-add groups of frequently used tasks on this device.",
     "端末内の利用履歴から、よく使うタスク候補を最大5件表示":"Show up to five frequently used task suggestions from on-device history.",
-    "反復タスクとマイセットは初回利用時だけ短いミニチュートリアルを表示し、設定から再確認可能":"Show short one-time tutorials for Repeat Tasks and My Sets, with guides available again from Settings.",
+    "反復タスクとマイフォルダは初回利用時だけ短いミニチュートリアルを表示し、設定から再確認可能":"Show short one-time tutorials for Repeat Tasks and My Folders, with guides available again from Settings.",
     "反復カウンターを「−1 / ＋1」に統一し、反復タスク中の重複する途中保存ボタンを整理":"Use consistent −1 / +1 repeat controls and remove the redundant progress-save button during repeat tasks.",
     "反復目標達成時に「まだ続ける / 反復を記録して終了 / このタスクを完了」の3択を表示し、目標達成とタスク完了を分離":"When a repeat target is reached, offer Keep going / Save repeats and finish / Complete this task, keeping goal achievement separate from task completion.",
     "タスク分類ルールを拡張し、チュートリアル・学習・文章作成・家事・運動・連絡・制作・計画・生活・仕事などをより細かく判定":"Expand task classification across tutorial, study, writing, chores, exercise, communication, creative work, planning, daily life, work, and more.",
@@ -2848,11 +2934,11 @@ main {
       "thisWeekStarts","lastWeekStarts","comparisonMessage","focusMinutes","soundToggle","confettiToggle","taskDialog","taskForm","taskTitle",
       "taskDue","taskEstimate","taskPriority","autoBreakdown","taskDetails","toggleTaskDetails","quickStartTask","breakdownPreview","openPlanEditor","personalSuggestionWrap","personalSuggestionList","repeatModeToggle","repeatTargetWrap","repeatTarget",
       "focusDialog","focusTaskTitle","focusParentTitle","timerDisplay","timerLabel","timerProgress","focusMessage","overtimeRewardPanel","overtimeRewardTitle","overtimeRewardRule","overtimeRewardNextLabel","overtimeRewardRemaining","overtimeRewardProgressBar","overtimeRewardEarned","repeatPanel","repeatPanelTitle","repeatPanelTarget","repeatCountDisplay","repeatProgressText","repeatTotalNote","repeatMinus","repeatPlus","toggleTimer","completeFocus","stopFocus",
-      "repeatGoalDialog","repeatGoalEyebrow","repeatGoalTitle","repeatGoalSummary","repeatGoalMessage","repeatGoalContinue","repeatGoalSave","repeatGoalComplete","repeatGoalNote",
+      "repeatCompleteNoTarget","repeatGoalDialog","repeatGoalEyebrow","repeatGoalTitle","repeatGoalSummary","repeatGoalMessage","repeatGoalContinue","repeatGoalSave","repeatGoalComplete","repeatGoalNote",
       "rewardDialog","rewardPoints","rewardMessage","rewardStop","rewardSame","rewardNext","toast","profileDialog","profileForm","profileAge","profileRole",
       "profileAnalytics","profileLater","profileEyebrow","profileTitle","profileNote","openReflection","planDialog","planDialogTitle","planEditorList","planNewStep","planAddStep","planSave","editProfile",
       "guideDialog","guideClose","guideContinue","openGuideFromSettings","versionDialog","openVersionHistory","openFeedback","languageSelect","openRepeatTutorial","openMySetTutorial",
-      "createMySetButton","mySetList","mySetDialog","mySetForm","mySetDialogTitle","mySetName","mySetTasks","mySetImportCurrent","featureTutorialDialog","featureTutorialIcon","featureTutorialTitle","featureTutorialText","featureTutorialPoints","featureTutorialDone"
+      "createMySetButton","mySetList","mySetDialog","mySetForm","mySetDialogTitle","mySetName","mySetTaskEditor","mySetAddTask","mySetImportCurrent","featureTutorialDialog","featureTutorialIcon","featureTutorialTitle","featureTutorialText","featureTutorialPoints","featureTutorialDone"
     ].forEach(id => dom[id] = document.getElementById(id));
   }
 
@@ -2880,6 +2966,7 @@ main {
     dom.planSave.addEventListener("click", commitPlan);
     dom.planEditorList.addEventListener("input", handlePlanInput);
     dom.planEditorList.addEventListener("click", handlePlanAction);
+    dom.planEditorList.addEventListener("pointerdown", beginPlanPointerDrag);
 
     dom.missionList.addEventListener("click", handleMissionListClick);
     dom.taskList.addEventListener("click", handleTaskListClick);
@@ -2890,6 +2977,10 @@ main {
     dom.createMySetButton?.addEventListener("click", requestCreateMySet);
     dom.mySetList?.addEventListener("click", handleMySetAction);
     dom.mySetForm?.addEventListener("submit", saveMySet);
+    dom.mySetAddTask?.addEventListener("click", () => addMySetEditorRow());
+    dom.mySetTaskEditor?.addEventListener("click", handleMySetEditorClick);
+    dom.mySetTaskEditor?.addEventListener("change", handleMySetEditorChange);
+    dom.mySetTaskEditor?.addEventListener("pointerdown", beginMySetPointerDrag);
     dom.mySetImportCurrent?.addEventListener("click", importCurrentTasksToMySet);
     dom.featureTutorialDone?.addEventListener("click", finishFeatureTutorial);
     dom.openRepeatTutorial?.addEventListener("click", () => showFeatureTutorial("repeat"));
@@ -2899,6 +2990,7 @@ main {
     dom.toggleTimer.addEventListener("click", toggleTimer);
     dom.repeatMinus?.addEventListener("click", () => changeRepeatCount(-1));
     dom.repeatPlus?.addEventListener("click", () => changeRepeatCount(1));
+    dom.repeatCompleteNoTarget?.addEventListener("click", () => finishRepeatSession(true));
     dom.repeatGoalContinue?.addEventListener("click", continueRepeatAfterGoal);
     dom.repeatGoalSave?.addEventListener("click", () => finishRepeatSession(false));
     dom.repeatGoalComplete?.addEventListener("click", () => finishRepeatSession(true));
@@ -2961,7 +3053,7 @@ main {
   function loadState() {
     try {
       let raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) raw = localStorage.getItem(V25_KEY) || localStorage.getItem(V24_KEY) || localStorage.getItem(V23_KEY) || localStorage.getItem(V22_KEY) || localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
+      if (!raw) raw = localStorage.getItem(V26_KEY) || localStorage.getItem(V25_KEY) || localStorage.getItem(V24_KEY) || localStorage.getItem(V23_KEY) || localStorage.getItem(V22_KEY) || localStorage.getItem(V21_KEY) || localStorage.getItem(V2_KEY) || localStorage.getItem(LEGACY_KEY);
       const saved = raw ? JSON.parse(raw) : null;
       const base = defaultState();
       if (!saved) return base;
@@ -2975,7 +3067,7 @@ main {
       }
       const totalSeconds = Number(saved.totalSeconds ?? (Number(saved.totalMinutes || 0) * 60));
       const merged = {
-        ...base, ...saved, version: "2.6", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
+        ...base, ...saved, version: "2.7", totalSeconds, totalMinutes: Math.round(totalSeconds / 60),
         settings: { ...base.settings, ...(saved.settings || {}) },
         profile: { ...base.profile, ...(saved.profile || {}) },
         onboarding: { ...base.onboarding, ...(saved.onboarding || {}) },
@@ -3012,7 +3104,7 @@ main {
     if(!set || !Array.isArray(set.items)) return null;
     const items=set.items.map(item=>({title:String(item?.title||"").trim(),estimate:Math.max(5,Number(item?.estimate||30)),priority:["low","medium","high"].includes(item?.priority)?item.priority:"medium",repeatMode:!!item?.repeatMode,repeatTarget:Math.max(0,Number(item?.repeatTarget||0))})).filter(item=>item.title).slice(0,20);
     if(!items.length) return null;
-    return {id:set.id||uid(),name:String(set.name||"マイセット").trim().slice(0,40)||"マイセット",items,createdAt:set.createdAt||new Date().toISOString()};
+    return {id:set.id||uid(),name:String(set.name||"マイフォルダ").trim().slice(0,40)||"マイフォルダ",items,createdAt:set.createdAt||new Date().toISOString()};
   }
 
   function persist() { state.totalMinutes = Math.round(Number(state.totalSeconds || 0) / 60); try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {} }
@@ -3081,13 +3173,13 @@ main {
     if(!dom.mySetList) return;
     const sets=Array.isArray(state.mySets)?state.mySets:[];
     if(!sets.length){
-      dom.mySetList.innerHTML=`<p class="myset-empty">${isEnglish()?"No My Sets yet. Save tasks you use often.":"まだマイセットはありません。よく使うタスクをまとめて保存できます。"}</p>`;
+      dom.mySetList.innerHTML=`<p class="myset-empty">${isEnglish()?"No My Folders yet. Save tasks you use often.":"まだマイフォルダはありません。よく使うタスクをまとめて保存できます。"}</p>`;
       return;
     }
     dom.mySetList.innerHTML=sets.map(set=>{
-      const preview=set.items.slice(0,3).map(x=>escapeHtml(x.title)).join(isEnglish()?", ":"、");
+      const preview=set.items.slice(0,3).map(x=>`${x.repeatMode?"🔁 ":""}${escapeHtml(x.title)}${x.repeatMode&&Number(x.repeatTarget||0)>0?` (${isEnglish()?"target":"目標"}${Number(x.repeatTarget)}${isEnglish()?"":"回"})`:""}`).join(isEnglish()?", ":"、");
       const more=set.items.length>3?(isEnglish()?` +${set.items.length-3} more`:` ほか${set.items.length-3}件`):"";
-      return `<article class="myset-card"><div><h3>📁 ${escapeHtml(set.name)}</h3><p>${set.items.length}${isEnglish()?" tasks":"タスク"} · ${preview}${more}</p></div><div class="myset-actions"><button class="primary-button" type="button" data-myset-apply="${set.id}">${isEnglish()?"Add this set":"このセットを追加"}</button><button class="secondary-button" type="button" data-myset-edit="${set.id}">${isEnglish()?"Edit":"編集"}</button><button class="text-button" type="button" data-myset-delete="${set.id}">${isEnglish()?"Delete":"削除"}</button></div></article>`;
+      return `<article class="myset-card"><div><h3>📁 ${escapeHtml(set.name)}</h3><p>${set.items.length}${isEnglish()?" tasks":"タスク"} · ${preview}${more}</p></div><div class="myset-actions"><button class="primary-button" type="button" data-myset-apply="${set.id}">${isEnglish()?"Add this folder":"このフォルダを追加"}</button><button class="secondary-button" type="button" data-myset-edit="${set.id}">${isEnglish()?"Edit":"編集"}</button><button class="text-button" type="button" data-myset-delete="${set.id}">${isEnglish()?"Delete":"削除"}</button></div></article>`;
     }).join("");
   }
 
@@ -3131,13 +3223,13 @@ main {
     featureTutorialType=type;featureTutorialNextAction=nextAction;
     const repeat=type==="repeat";
     if(dom.featureTutorialIcon)dom.featureTutorialIcon.textContent=repeat?"🔁":"📁";
-    if(dom.featureTutorialTitle)dom.featureTutorialTitle.textContent=repeat?(isEnglish()?"Repeat tasks":"反復タスク"):(isEnglish()?"My Sets":"マイセット");
+    if(dom.featureTutorialTitle)dom.featureTutorialTitle.textContent=repeat?(isEnglish()?"Repeat tasks":"反復タスク"):(isEnglish()?"My Folders":"マイフォルダ");
     if(dom.featureTutorialText)dom.featureTutorialText.textContent=repeat
       ?(isEnglish()?"Tap +1 during focus to record how many repetitions you completed in that session.":"集中中に「＋1」を押すと、そのセッションで何回できたかを記録できます。")
       :(isEnglish()?"Save several tasks together on this device and add them again with one tap.":"よく使う複数タスクをこの端末にまとめて保存し、次回は1タップで追加できます。");
     if(dom.featureTutorialPoints)dom.featureTutorialPoints.innerHTML=repeat
       ?(isEnglish()?"<li>Set an optional target count.</li><li>When you reach it, choose: keep going, save and finish, or complete the task.</li><li>See this session and lifetime counts.</li><li>Only the count is sent to analytics; task text is not sent.</li>":"<li>必要なら目標回数を設定できます。</li><li>目標達成時は「まだ続ける / 反復を記録して終了 / このタスクを完了」から選べます。</li><li>今回の回数と累計回数を確認できます。</li><li>匿名分析では回数だけを送り、タスク本文は送りません。</li>")
-      :(isEnglish()?"<li>Up to 20 tasks per set.</li><li>Task text stays on this device.</li><li>Edit, delete, or add the set whenever you want.</li>":"<li>1セット最大20タスクです。</li><li>タスク本文は端末内だけに保存します。</li><li>編集・削除・再追加をいつでも行えます。</li>");
+      :(isEnglish()?"<li>Add tasks one by one and choose Repeat only where needed.</li><li>Drag the ⠿ handle to reorder tasks.</li><li>Up to 20 tasks per folder; task text stays on this device.</li>":"<li>タスクを1件ずつ入力し、必要なものだけ反復をONにできます。</li><li>⠿ハンドルをドラッグして順番を変更できます。</li><li>1フォルダ最大20タスクで、タスク本文は端末内だけに保存します。</li>");
     openModal(dom.featureTutorialDialog);
   }
 
@@ -3155,50 +3247,119 @@ main {
     openMySetDialog();
   }
 
+  function mySetEditorItems(){
+    if(!dom.mySetTaskEditor) return [];
+    return [...dom.mySetTaskEditor.querySelectorAll(".myset-task-row")].map(row=>({
+      title:String(row.querySelector(".myset-task-title")?.value||"").trim().slice(0,60),
+      estimate:30,
+      priority:"medium",
+      repeatMode:!!row.querySelector(".myset-repeat-toggle")?.checked,
+      repeatTarget:Math.max(0,Math.min(999,Math.floor(Number(row.querySelector(".myset-repeat-target")?.value||0))))
+    })).filter(x=>x.title).slice(0,20);
+  }
+
+  function makeMySetEditorRow(item={}){
+    const row=document.createElement("div");
+    row.className="myset-task-row";
+    row.innerHTML=`<button type="button" class="myset-drag-handle" aria-label="${isEnglish()?"Drag to reorder":"ドラッグして並べ替え"}" title="${isEnglish()?"Drag to reorder":"ドラッグして並べ替え"}">⠿</button><div class="myset-task-main"><input class="myset-task-title" maxlength="60" placeholder="${isEnglish()?"Task name":"タスク名"}" value="${escapeAttr(item.title||"")}"><div class="myset-repeat-row"><label class="myset-repeat-check"><input type="checkbox" class="myset-repeat-toggle" ${item.repeatMode?"checked":""}><span>${isEnglish()?"Repeat task":"反復タスク"}</span></label><label class="myset-target-wrap" ${item.repeatMode?"":"hidden"}><span>${isEnglish()?"Target":"目標"}</span><input type="number" class="myset-repeat-target" min="0" max="999" step="1" value="${Math.max(0,Number(item.repeatTarget||0))}"><span>${isEnglish()?"times (0 = none)":"回（0＝なし）"}</span></label></div></div><button type="button" class="text-button myset-remove-task" aria-label="${isEnglish()?"Delete task":"タスクを削除"}">×</button>`;
+    return row;
+  }
+
+  function renderMySetEditor(items=[]){
+    if(!dom.mySetTaskEditor)return;
+    dom.mySetTaskEditor.innerHTML="";
+    const list=(items||[]).slice(0,20);
+    (list.length?list:[{}]).forEach(item=>dom.mySetTaskEditor.appendChild(makeMySetEditorRow(item)));
+  }
+
+  function addMySetEditorRow(item={}){
+    if(!dom.mySetTaskEditor)return;
+    const count=dom.mySetTaskEditor.querySelectorAll(".myset-task-row").length;
+    if(count>=20){showToast(isEnglish()?"A folder can contain up to 20 tasks.":"1フォルダ最大20タスクです");return;}
+    const row=makeMySetEditorRow(item);dom.mySetTaskEditor.appendChild(row);row.querySelector(".myset-task-title")?.focus();
+  }
+
+  function handleMySetEditorClick(event){
+    const remove=event.target.closest(".myset-remove-task");if(!remove)return;
+    const row=remove.closest(".myset-task-row");if(!row)return;
+    const rows=dom.mySetTaskEditor.querySelectorAll(".myset-task-row");
+    if(rows.length<=1){row.querySelector(".myset-task-title").value="";row.querySelector(".myset-repeat-toggle").checked=false;row.querySelector(".myset-target-wrap").hidden=true;row.querySelector(".myset-repeat-target").value=0;return;}
+    row.remove();
+  }
+
+  function handleMySetEditorChange(event){
+    if(!event.target.classList.contains("myset-repeat-toggle"))return;
+    const row=event.target.closest(".myset-task-row");const wrap=row?.querySelector(".myset-target-wrap");if(wrap)wrap.hidden=!event.target.checked;
+  }
+
+  let mySetDragState=null;
+  function beginMySetPointerDrag(event){
+    const handle=event.target.closest(".myset-drag-handle");if(!handle||!dom.mySetTaskEditor)return;
+    const row=handle.closest(".myset-task-row");if(!row)return;
+    event.preventDefault();
+    row.classList.add("is-dragging");
+    document.body.classList.add("nudge-dragging");
+    mySetDragState={row,handle,pointerId:event.pointerId};
+    const move=(e)=>{
+      if(!mySetDragState||e.pointerId!==mySetDragState.pointerId)return;
+      e.preventDefault();
+      const siblings=[...dom.mySetTaskEditor.querySelectorAll(".myset-task-row:not(.is-dragging)")];
+      const before=siblings.find(el=>{const r=el.getBoundingClientRect();return e.clientY<r.top+r.height/2;});
+      if(before)dom.mySetTaskEditor.insertBefore(row,before);else dom.mySetTaskEditor.appendChild(row);
+    };
+    const finish=(e)=>{
+      if(!mySetDragState||e.pointerId!==mySetDragState.pointerId)return;
+      row.classList.remove("is-dragging");
+      document.body.classList.remove("nudge-dragging");
+      window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",finish);mySetDragState=null;
+    };
+    window.addEventListener("pointermove",move,{passive:false});window.addEventListener("pointerup",finish);window.addEventListener("pointercancel",finish);
+  }
+
   function openMySetDialog(setId=null){
     editingMySetId=setId;
     const set=(state.mySets||[]).find(x=>x.id===setId);
-    dom.mySetDialogTitle.textContent=set?(isEnglish()?"Edit My Set":"マイセットを編集"):(isEnglish()?"Create My Set":"マイセットを作る");
+    dom.mySetDialogTitle.textContent=set?(isEnglish()?"Edit My Folder":"マイフォルダを編集"):(isEnglish()?"Create My Folder":"マイフォルダを作る");
     dom.mySetName.value=set?.name||"";
-    dom.mySetTasks.value=set?.items?.map(x=>x.title).join("\n")||"";
+    renderMySetEditor(set?.items||[]);
     openModal(dom.mySetDialog);setTimeout(()=>dom.mySetName.focus(),50);
   }
 
   function importCurrentTasksToMySet(){
-    const titles=(state.tasks||[]).filter(t=>!t.completed).map(t=>t.title).filter(Boolean).slice(0,20);
-    if(!titles.length){showToast(isEnglish()?"No active tasks to import.":"読み込める未完了タスクがありません");return;}
-    dom.mySetTasks.value=titles.join("\n");
-    showToast(isEnglish()?"Loaded current active tasks.":"現在の未完了タスクを読み込みました");
+    const items=(state.tasks||[]).filter(t=>!t.completed&&t.title).slice(0,20).map(t=>({title:t.title,repeatMode:!!t.repeatMode,repeatTarget:Math.max(0,Number(t.repeatTarget||0))}));
+    if(!items.length){showToast(isEnglish()?"No active tasks to import.":"読み込める未完了タスクがありません");return;}
+    renderMySetEditor(items);
+    showToast(isEnglish()?"Loaded current active tasks, including repeat settings.":"反復設定を含め、現在の未完了タスクを読み込みました");
   }
 
   function saveMySet(event){
     event.preventDefault();
     const name=String(dom.mySetName.value||"").trim().slice(0,40);
-    const titles=[...new Set(String(dom.mySetTasks.value||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean))].slice(0,20);
-    if(!name){showToast(isEnglish()?"Enter a set name.":"セット名を入力してください");return;}
-    if(!titles.length){showToast(isEnglish()?"Add at least one task.":"タスクを1つ以上入力してください");return;}
-    const items=titles.map(title=>({title,estimate:30,priority:"medium",repeatMode:false,repeatTarget:0}));
+    const items=mySetEditorItems();
+    if(!name){showToast(isEnglish()?"Enter a folder name.":"フォルダ名を入力してください");return;}
+    if(!items.length){showToast(isEnglish()?"Add at least one task.":"タスクを1つ以上入力してください");return;}
     if(editingMySetId){
       const set=(state.mySets||[]).find(x=>x.id===editingMySetId);if(set){set.name=name;set.items=items;}
     }else{
       state.mySets=[...(state.mySets||[]),{id:uid(),name,items,createdAt:new Date().toISOString()}];
     }
     state.tutorials={...(state.tutorials||{}),mySetSeen:true};persist();closeModal(dom.mySetDialog);editingMySetId=null;renderMySets();renderPersonalSuggestions();
-    showToast(isEnglish()?"My Set saved.":"マイセットを保存しました");
+    showToast(isEnglish()?"My Folder saved.":"マイフォルダを保存しました");
   }
 
   function handleMySetAction(event){
     const apply=event.target.closest("[data-myset-apply]"),edit=event.target.closest("[data-myset-edit]"),del=event.target.closest("[data-myset-delete]");
     if(apply){
       const set=(state.mySets||[]).find(x=>x.id===apply.dataset.mysetApply);if(!set)return;
-      const created=set.items.map(item=>({id:uid(),title:item.title,due:"",estimate:Number(item.estimate||30),priority:item.priority||"medium",createdAt:new Date().toISOString(),completed:false,repeatMode:!!item.repeatMode,repeatTarget:Number(item.repeatTarget||0),repeatTotal:0,subtasks:createBreakdown(item.title,Number(item.estimate||30))}));
-      state.tasks.unshift(...created);persist();renderAll();showToast(isEnglish()?`Added ${created.length} tasks from My Set.`:`マイセットから${created.length}件のタスクを追加しました`);return;
+      const fm=Math.max(1,Number(state.settings.focusMinutes||5));
+      const created=set.items.map(item=>({id:uid(),title:item.title,due:"",estimate:Number(item.estimate||fm),priority:item.priority||"medium",createdAt:new Date().toISOString(),completed:false,repeatMode:!!item.repeatMode,repeatTarget:Number(item.repeatTarget||0),repeatTotal:0,subtasks:[{id:uid(),title:item.title,minutes:fm,completed:false,progressSeconds:0,lastSessionSeconds:0}]}));
+      state.tasks.unshift(...created);persist();renderAll();showToast(isEnglish()?`Added ${created.length} tasks from My Folder.`:`マイフォルダから${created.length}件のタスクを追加しました`);return;
     }
     if(edit){openMySetDialog(edit.dataset.mysetEdit);return;}
     if(del){
       const set=(state.mySets||[]).find(x=>x.id===del.dataset.mysetDelete);if(!set)return;
-      if(!confirm(isEnglish()?`Delete My Set “${set.name}”?`:`マイセット「${set.name}」を削除しますか？`))return;
-      state.mySets=state.mySets.filter(x=>x.id!==set.id);persist();renderMySets();showToast(isEnglish()?"My Set deleted.":"マイセットを削除しました");
+      if(!confirm(isEnglish()?`Delete My Folder “${set.name}”?`:`マイフォルダ「${set.name}」を削除しますか？`))return;
+      state.mySets=state.mySets.filter(x=>x.id!==set.id);persist();renderMySets();showToast(isEnglish()?"My Folder deleted.":"マイフォルダを削除しました");
     }
   }
 
@@ -3255,10 +3416,41 @@ main {
   function handleTaskSubmit(event){event.preventDefault();const title=dom.taskTitle.value.trim();if(!title){showToast("タスク名を入力してください");return;}let steps=normalizeDraft();if(!steps.length)steps=createBreakdown(title,Number(dom.taskEstimate.value||30));const repeatMode=!!dom.repeatModeToggle?.checked,repeatTarget=repeatMode?Math.max(0,Math.min(999,Number(dom.repeatTarget?.value||0))):0;state.tasks.unshift({id:uid(),title,due:dom.taskDue.value||"",estimate:Number(dom.taskEstimate.value||30),priority:dom.taskPriority.value,createdAt:new Date().toISOString(),completed:false,repeatMode,repeatTarget,repeatTotal:0,subtasks:steps});persist();sendTelemetry("task_created", {taskCategory: classifyTask(title)});closeModal(dom.taskDialog);renderAll();showToast(isEnglish()?`Plan saved. Start any step for ${state.settings.focusMinutes} min!`:`計画を保存しました。好きなステップから${state.settings.focusMinutes}分だけ！`);}
 
   function openPlanEditor(taskId,steps,title){editingTaskId=taskId;draftSteps=(steps||[]).map(s=>({...s,id:s.id||uid(),minutes:Number(s.minutes||5),progressSeconds:Number(s.progressSeconds||0),lastSessionSeconds:Number(s.lastSessionSeconds||0)}));dom.planDialogTitle.textContent=title?(isEnglish()?`Plan: “${title}”`:`「${title}」の計画`):(isEnglish()?"Edit steps":"ステップを編集");dom.planNewStep.value="";renderPlanEditor();openModal(dom.planDialog);}
-  function renderPlanEditor(){dom.planEditorList.innerHTML=draftSteps.length?draftSteps.map((s,i)=>`<div class="plan-editor-row-v21"><strong>${i+1}</strong><input type="text" data-step-input="${s.id}" value="${escapeAttr(s.title)}" maxlength="80" aria-label="ステップ${i+1}"><label class="plan-minutes"><input type="number" data-step-minutes="${s.id}" value="${Number(s.minutes||5)}" min="1" max="120" aria-label="ステップ${i+1}の予想分数"><span>分</span></label><div class="plan-editor-actions"><button type="button" data-up="${s.id}" ${i===0?"disabled":""}>↑</button><button type="button" data-down="${s.id}" ${i===draftSteps.length-1?"disabled":""}>↓</button><button type="button" data-del="${s.id}" aria-label="削除">×</button></div></div>`).join(""):`<p class="settings-note">ステップがありません。「＋追加」で1つ作ってください。</p>`;applyLanguage(dom.planEditorList);}
+  function renderPlanEditor(){dom.planEditorList.innerHTML=draftSteps.length?draftSteps.map((s,i)=>`<div class="plan-editor-row-v21" data-plan-row-id="${s.id}"><button type="button" class="plan-drag-handle" aria-label="${isEnglish()?"Drag to reorder":"ドラッグして並べ替え"}" title="${isEnglish()?"Drag to reorder":"ドラッグして並べ替え"}">⠿</button><strong>${i+1}</strong><input type="text" data-step-input="${s.id}" value="${escapeAttr(s.title)}" maxlength="80" aria-label="ステップ${i+1}"><label class="plan-minutes"><input type="number" data-step-minutes="${s.id}" value="${Number(s.minutes||5)}" min="1" max="120" aria-label="ステップ${i+1}の予想分数"><span>分</span></label><div class="plan-editor-actions"><button type="button" data-del="${s.id}" aria-label="削除">×</button></div></div>`).join(""):`<p class="settings-note">ステップがありません。「＋追加」で1つ作ってください。</p>`;applyLanguage(dom.planEditorList);}
   function addPlanStep(){const v=dom.planNewStep.value.trim();if(!v)return;draftSteps.push({id:uid(),title:v,minutes:5,completed:false,progressSeconds:0,lastSessionSeconds:0});dom.planNewStep.value="";draftDirty=true;renderPlanEditor();}
   function handlePlanInput(event){const id=event.target.dataset.stepInput||event.target.dataset.stepMinutes;if(!id)return;const s=draftSteps.find(x=>x.id===id);if(!s)return;if(event.target.dataset.stepInput)s.title=event.target.value;else s.minutes=Math.max(1,Math.min(120,Number(event.target.value||5)));draftDirty=true;}
-  function handlePlanAction(event){const b=event.target.closest("button");if(!b)return;const id=b.dataset.up||b.dataset.down||b.dataset.del;if(!id)return;const i=draftSteps.findIndex(x=>x.id===id);if(i<0)return;if(b.dataset.up&&i>0)[draftSteps[i-1],draftSteps[i]]=[draftSteps[i],draftSteps[i-1]];if(b.dataset.down&&i<draftSteps.length-1)[draftSteps[i+1],draftSteps[i]]=[draftSteps[i],draftSteps[i+1]];if(b.dataset.del)draftSteps.splice(i,1);draftDirty=true;renderPlanEditor();}
+  function handlePlanAction(event){const b=event.target.closest("button");if(!b||!b.dataset.del)return;const id=b.dataset.del;const i=draftSteps.findIndex(x=>x.id===id);if(i<0)return;draftSteps.splice(i,1);draftDirty=true;renderPlanEditor();}
+
+  let planDragState=null;
+  function beginPlanPointerDrag(event){
+    const handle=event.target.closest(".plan-drag-handle");if(!handle||!dom.planEditorList)return;
+    const row=handle.closest(".plan-editor-row-v21");if(!row)return;
+    event.preventDefault();
+    row.classList.add("is-dragging");
+    document.body.classList.add("nudge-dragging");
+    planDragState={row,handle,pointerId:event.pointerId};
+    const move=(e)=>{
+      if(!planDragState||e.pointerId!==planDragState.pointerId)return;
+      e.preventDefault();
+      const siblings=[...dom.planEditorList.querySelectorAll(".plan-editor-row-v21:not(.is-dragging)")];
+      const before=siblings.find(el=>{const r=el.getBoundingClientRect();return e.clientY<r.top+r.height/2;});
+      if(before)dom.planEditorList.insertBefore(row,before);else dom.planEditorList.appendChild(row);
+      const modal=dom.planDialog;
+      if(modal){const r=modal.getBoundingClientRect();if(e.clientY<r.top+70)modal.scrollTop-=14;else if(e.clientY>r.bottom-70)modal.scrollTop+=14;}
+    };
+    const finish=(e)=>{
+      if(!planDragState||e.pointerId!==planDragState.pointerId)return;
+      row.classList.remove("is-dragging");
+      document.body.classList.remove("nudge-dragging");
+      window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",finish);
+      const order=[...dom.planEditorList.querySelectorAll(".plan-editor-row-v21")].map(r=>r.dataset.planRowId);
+      const byId=new Map(draftSteps.map(step=>[String(step.id),step]));
+      const reordered=order.map(id=>byId.get(String(id))).filter(Boolean);
+      if(reordered.length===draftSteps.length){draftSteps=reordered;draftDirty=true;}
+      planDragState=null;renderPlanEditor();
+    };
+    window.addEventListener("pointermove",move,{passive:false});window.addEventListener("pointerup",finish);window.addEventListener("pointercancel",finish);
+  }
   function normalizeDraft(){return draftSteps.map(s=>({...s,title:String(s.title||"").trim(),minutes:Math.max(1,Number(s.minutes||5)),completed:!!s.completed,progressSeconds:Number(s.progressSeconds||0),lastSessionSeconds:Number(s.lastSessionSeconds||0)})).filter(s=>s.title);}
   function commitPlan(){const steps=normalizeDraft();if(!steps.length){showToast("ステップを1つ以上残してください");return;}draftSteps=steps;draftDirty=true;if(editingTaskId){const task=state.tasks.find(t=>t.id===editingTaskId);if(task){task.subtasks=steps;task.completed=steps.every(s=>s.completed);analytics("planEdits");sendTelemetry("plan_edit", {taskCategory: classifyTask(task.title)});persist();renderAll();showToast("計画を更新しました");}}else{renderDraftPreview();showToast("このプランでタスクを追加できます");}closePlanEditor();}
   function closePlanEditor(){closeModal(dom.planDialog);}
@@ -3295,6 +3487,7 @@ main {
     if(dom.stopFocus) dom.stopFocus.hidden=enabled;
     if(!enabled){
       if(dom.completeFocus) dom.completeFocus.textContent=isEnglish()?"Complete step":"ステップ完了";
+      if(dom.repeatCompleteNoTarget) dom.repeatCompleteNoTarget.hidden=true;
       return;
     }
     const target=Math.max(0,Number(task.repeatTarget||0));
@@ -3305,6 +3498,10 @@ main {
     dom.repeatProgressText.textContent=target>0?(isEnglish()?`${activeRepeatCount} / ${target}`:`${activeRepeatCount} / ${target} 回`):(isEnglish()?"This focus session":"今回の集中");
     dom.repeatTotalNote.textContent=isEnglish()?`Lifetime total ${total} repetitions`:`累計 ${total}回`;
     dom.completeFocus.textContent=isEnglish()?"Save repeats and finish":"反復を記録して終了";
+    if(dom.repeatCompleteNoTarget){
+      dom.repeatCompleteNoTarget.hidden=target>0;
+      dom.repeatCompleteNoTarget.textContent=isEnglish()?"Complete this task":"このタスクを完了";
+    }
   }
 
   function changeRepeatCount(delta){
@@ -3979,7 +4176,7 @@ main {
         focus_seconds:Math.max(0,Math.min(86400,Number(focusSeconds||0))),
         task_category:taskCategory||"other",
         session_id:currentSessionId,
-        app_version:"2.6"
+        app_version:"2.7"
       };
       if(eventType==="repeat_summary"){
         payload.repeat_count=Math.max(0,Math.min(9999,Math.floor(Number(repeatCount||0))));
@@ -4030,7 +4227,24 @@ main {
   function closeModal(el){if(!el)return;el.classList.remove("open");if(!document.querySelector(".modal.open"))document.body.classList.remove("modal-open");}
   function showToast(message){dom.toast.textContent=isEnglish()?translateText(message):message;dom.toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>dom.toast.classList.remove("show"),2200);}
 
-  function launchConfetti(){const colors=["#346f49","#e6a33d","#9bbf81","#f1c85b","#76a6d8"];for(let i=0;i<30;i++){const p=document.createElement("span");p.className="confetti-piece";p.style.left=`${Math.random()*100}vw`;p.style.color=colors[Math.floor(Math.random()*colors.length)];p.style.setProperty("--drift",`${(Math.random()-.5)*240}px`);p.style.animationDelay=`${Math.random()*.35}s`;document.body.appendChild(p);setTimeout(()=>p.remove(),2100);}}
+  function launchConfetti(){
+    const colors=["#346f49","#e6a33d","#9bbf81","#f1c85b","#76a6d8"];
+    const layer=document.createElement("div");
+    layer.className="confetti-layer";
+    layer.setAttribute("aria-hidden","true");
+    const reduced=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    for(let i=0;i<42;i++){
+      const p=document.createElement("span");
+      p.className="confetti-piece";
+      p.style.left=`${Math.random()*100}%`;
+      p.style.color=colors[Math.floor(Math.random()*colors.length)];
+      p.style.setProperty("--drift",`${(Math.random()-.5)*320}px`);
+      p.style.animationDelay=`${Math.random()*(reduced?.12:.28)}s`;
+      layer.appendChild(p);
+    }
+    document.body.appendChild(layer);
+    setTimeout(()=>layer.remove(),reduced?1500:2200);
+  }
   function playTone(f,d){if(!state.settings.sound)return;try{const A=window.AudioContext||window.webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.08,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d);}catch{}}
   function playSuccessSound(){if(!state.settings.sound)return;playTone(660,.10);setTimeout(()=>playTone(880,.12),100);}
 
